@@ -1,0 +1,14 @@
+name: Feature request
+description: A tool, field or data source you would like to see
+labels: [enhancement]
+body:
+  - type: textarea
+    id: want
+    attributes:
+      label: What would you like to ask your agent that it cannot answer today?
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Where does the data live? (URL / endpoint, if you know)

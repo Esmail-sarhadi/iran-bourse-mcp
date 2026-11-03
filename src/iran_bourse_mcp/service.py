@@ -1,0 +1,816 @@
+"""High-level, agent-facing operations. Each public coroutine maps 1:1 to an MCP tool."""
+
+from __future__ import annotations
+
+import asyncio
+import datetime as dt
+from typing import Any
+
+from . import shape
+from .api import CODAL_SITE, TseApi
+from .client import Http, NotAvailable
+from .dates import (
+    DateError,
+    fmt_date,
+    fmt_time,
+    from_date,
+    is_session_hours,
+    jdate,
+    parse_date,
+    parse_time,
+    tehran_now,
+    to_date,
+)
+from .resolver import FLOW_NAMES, Instrument, Resolver
+from .text import ascii_digits, clean, match_key
+
+MARKET_FLOW = {"bourse": 1, "fara": 2, "fara-bourse": 2, "ifb": 2}
+MAX_ROWS = 5000
+SESSION_WINDOW = (83000, 123500)  # HHMMSS: pre-open through just after close
+
+
+class InputError(ValueError):
+    """Bad tool arguments (reported to the agent as a normal tool error)."""
+
+
+def _flow(market: str | None) -> int:
+    if market is None:
+        return 1
+    flow = MARKET_FLOW.get(str(market).strip().lower())
+    if flow is None:
+        raise InputError("market must be 'bourse' or 'fara'.")
+    return flow
+
+
+def _clamp(value: int, low: int, high: int) -> int:
+    return max(low, min(high, int(value)))
+
+
+def _date_arg(value: str | int | None) -> int | None:
+    if value in (None, ""):
+        return None
+    try:
+        return parse_date(value)
+    except DateError as exc:
+        raise InputError(str(exc)) from exc
+
+
+def _time_arg(value: str | int | None) -> int | None:
+    try:
+        return parse_time(value)
+    except DateError as exc:
+        raise InputError(str(exc)) from exc
+
+
+class Bourse:
+    """Facade over :class:`TseApi` implementing every tool."""
+
+    def __init__(self, http: Http | None = None) -> None:
+        self.http = http or Http()
+        self.api = TseApi(self.http)
+        self.resolver = Resolver(self.api)
+
+    async def aclose(self) -> None:
+        await self.http.aclose()
+
+    # ------------------------------------------------------------------ shared helpers
+    async def _inst(self, symbol: str) -> Instrument:
+        return await self.resolver.resolve(symbol)
+
+    async def _latest_deven(self, ins: str) -> int:
+        closing = await self.api.closing_info(ins)
+        deven = int(closing.get("dEven") or 0)
+        if deven:
+            return deven
+        overview = await self.api.market_overview(1)
+        return int(overview.get("marketActivityDEven") or from_date(tehran_now().date()))
+
+    async def _limits(self, ins: str, deven: int, info: dict | None = None) -> tuple[float | None, float | None]:
+        try:
+            rows = await self.api.thresholds(ins, deven)
+        except NotAvailable:
+            rows = []
+        same_day = [r for r in rows if int(r.get("dEven") or 0) == deven]
+        if same_day:
+            row = sorted(same_day, key=lambda r: r.get("hEven") or 0)[-1]
+            return shape._f(row.get("psGelStaMax")), shape._f(row.get("psGelStaMin"))
+        if info is None:
+            info = await self.api.instrument_info(ins)
+        thr = info.get("staticThreshold") or {}
+        return shape._f(thr.get("psGelStaMax")), shape._f(thr.get("psGelStaMin"))
+
+    async def _official_day(self, ins: str, deven: int) -> dict | None:
+        rows = await self.api.daily_prices(ins)
+        for row in rows:
+            if int(row.get("dEven") or 0) == deven:
+                return row
+        return None
+
+    # ------------------------------------------------------------------ market level
+    async def market_status(self) -> dict:
+        now = tehran_now()
+        overview, dates, server_time = await asyncio.gather(
+            self.api.market_overview(1),
+            self.api.market_dates(),
+            self.api.server_time(),
+            return_exceptions=True,
+        )
+        result: dict[str, Any] = {
+            "tehran_time": now.strftime("%Y-%m-%d %H:%M:%S"),
+            "tehran_jdate": jdate(from_date(now.date())),
+            "weekday": now.strftime("%A"),
+            "is_trading_weekday": now.weekday() in (5, 6, 0, 1, 2),
+            "within_session_hours": is_session_hours(now),
+            "session": "Saturday-Wednesday 09:00-12:30 Asia/Tehran (public holidays are not modelled)",
+        }
+        if not isinstance(overview, Exception):
+            result["bourse"] = shape.shape_overview(overview)
+        if not isinstance(dates, Exception):
+            result["gateway"] = [
+                {"market": clean(d.get("stockType")), "open_time": d.get("openTime"), "close_time": d.get("closeTime"), "is_open": d.get("isOpen")}
+                for d in dates
+            ]
+        if not isinstance(server_time, Exception):
+            result["exchange_server_time"] = str(server_time).strip()
+        return result
+
+    async def market_overview(self, market: str = "bourse") -> dict:
+        flow = _flow(market)
+        overview = await self.api.market_overview(flow)
+        return {"market": "bourse" if flow == 1 else "fara-bourse", **shape.shape_overview(overview)}
+
+    async def indices(self, market: str = "bourse", only_selected: bool = False) -> dict:
+        flow = _flow(market)
+        rows = [shape.shape_index_row(r) for r in await self.api.indices(flow)]
+        # The headline indices have no numeric industry code prefix.
+        headline = [r for r in rows if r["code"] is None]
+        industries = [r for r in rows if r["code"] is not None]
+        industries.sort(key=lambda r: r["change_pct"] if r["change_pct"] is not None else -999, reverse=True)
+        return {
+            "market": "bourse" if flow == 1 else "fara-bourse",
+            "headline_indices": headline,
+            "industry_indices": [] if only_selected else industries,
+        }
+
+    async def market_watch(
+        self,
+        market: str | None = None,
+        security_type: str | None = None,
+        industry: str | None = None,
+        board: str | None = None,
+        min_value: float = 0,
+        only_traded: bool = True,
+        sort_by: str = "value",
+        descending: bool = True,
+        limit: int = 50,
+        detail: str = "compact",
+    ) -> dict:
+        if sort_by not in shape.WATCH_SORT_KEYS:
+            raise InputError(f"sort_by must be one of {sorted(shape.WATCH_SORT_KEYS)}")
+        rows = [shape.shape_watch_row(r) for r in await self.api.market_watch()]
+        total = len(rows)
+
+        def contains(haystack: str | None, needle: str | None) -> bool:
+            return needle is None or match_key(needle) in match_key(haystack)
+
+        if market:
+            want_fara = _flow(market) == 2
+            rows = [r for r in rows if ("فرابورس" in (r["market"] or "")) == want_fara]
+        rows = [
+            r
+            for r in rows
+            if contains(r["security_type"], security_type)
+            and contains(r["industry"], industry)
+            and contains(r["board"], board)
+            and (r["value"] or 0) >= min_value
+            and (not only_traded or (r["volume"] or 0) > 0)
+        ]
+        key = shape.WATCH_SORT_KEYS[sort_by]
+        rows.sort(key=lambda r: (r[key] is None, -(r[key] or 0) if descending else (r[key] or 0)))
+        matched = len(rows)
+        rows = rows[: _clamp(limit, 1, 700)]
+        if detail != "full":
+            rows = [_compact_watch(r) for r in rows]
+        return {"total_instruments": total, "matched": matched, "returned": len(rows), "sorted_by": sort_by, "rows": rows, "units": "rial"}
+
+    async def _instrument_index(self) -> dict[str, str]:
+        """instrumentId (as used by the TSE gateway) -> insCode (as used by the cdn API)."""
+        overview = await self.api.market_overview(1)
+        deven = int(overview.get("marketActivityDEven") or 0)
+        daily = await self.api.prices_on_day(deven)
+        return {r["instrumentID"]: str(r["insCode"]) for r in daily if r.get("instrumentID") and r.get("insCode")}
+
+    async def _client_flows_by_instrument(self) -> dict[str, dict]:
+        """instrumentId -> raw client-type row, joined through the daily price table."""
+        index, flows = await asyncio.gather(self._instrument_index(), self.api.client_type_all())
+        by_ins = {v: k for k, v in index.items()}
+        return {by_ins[str(f["insCode"])]: f for f in flows if str(f.get("insCode")) in by_ins}
+
+    async def _confirm_queues(self, rows: list[dict], side: str) -> list[dict]:
+        """Fetch the real order book of limit-locked candidates and keep genuine queues.
+
+        The gateway's top-of-book fields are empty outside the session, so queue size has to come
+        from BestLimits.
+        """
+        index = await self._instrument_index()
+        flag = "at_upper_limit" if side == "buy" else "at_lower_limit"
+        candidates = sorted((r for r in rows if r[flag] and index.get(r["instrument_id"])), key=lambda r: r["value"] or 0, reverse=True)[:80]
+        books = await asyncio.gather(*(self.api.best_limits(index[r["instrument_id"]]) for r in candidates), return_exceptions=True)
+        wanted = "buy_queue" if side == "buy" else "sell_queue"
+        out = []
+        for row, book in zip(candidates, books, strict=True):
+            if isinstance(book, Exception):
+                continue
+            shaped = shape.shape_order_book(book, row["price_limits"]["upper"], row["price_limits"]["lower"])
+            if shaped["queue"]["state"] == wanted:
+                out.append({**row, "queue_volume": shaped["queue"]["queue_volume"], "queue_orders": shaped["queue"]["queue_orders"], "queue_value": shaped["queue"]["queue_value"]})
+        out.sort(key=lambda r: r["queue_value"], reverse=True)
+        return out
+
+    async def top_movers(self, kind: str = "gainers", market: str | None = None, security_type: str | None = "سهام", limit: int = 20) -> dict:
+        kinds = {
+            "gainers", "losers", "value", "volume", "trades",
+            "buy_queue", "sell_queue", "real_inflow", "real_outflow", "real_buyer_power",
+        }
+        if kind not in kinds:
+            raise InputError(f"kind must be one of {sorted(kinds)}")
+        watch = await self.market_watch(
+            market=market, security_type=security_type, only_traded=True, sort_by="value", limit=700, detail="full"
+        )
+        rows = watch["rows"]
+        limit = _clamp(limit, 1, 100)
+
+        if kind in ("gainers", "losers"):
+            rows.sort(key=lambda r: r["last_pct"] if r["last_pct"] is not None else 0, reverse=(kind == "gainers"))
+        elif kind in ("value", "volume", "trades"):
+            rows.sort(key=lambda r: r[kind] or 0, reverse=True)
+        elif kind in ("buy_queue", "sell_queue"):
+            rows = await self._confirm_queues(rows, "buy" if kind == "buy_queue" else "sell")
+        else:
+            flows = await self._client_flows_by_instrument()
+            enriched = []
+            for r in rows:
+                f = flows.get(r["instrument_id"])
+                if not f:
+                    continue
+                buy_v, sell_v = shape._f(f.get("buy_I_Volume")) or 0, shape._f(f.get("sell_I_Volume")) or 0
+                buy_c, sell_c = shape._f(f.get("buy_CountI")) or 0, shape._f(f.get("sell_CountI")) or 0
+                net = buy_v - sell_v
+                vwap = r["vwap"] or r["last"] or 0
+                power = shape._safe_div(shape._safe_div(buy_v, buy_c), shape._safe_div(sell_v, sell_c))
+                enriched.append(
+                    {
+                        **r,
+                        "real_net_volume": int(net),
+                        "real_net_value_estimated": int(net * vwap),
+                        "real_buyer_power": shape._r(power),
+                        "real_buyers": int(buy_c),
+                        "real_sellers": int(sell_c),
+                    }
+                )
+            rows = enriched
+            if kind == "real_inflow":
+                rows.sort(key=lambda r: r["real_net_value_estimated"], reverse=True)
+            elif kind == "real_outflow":
+                rows.sort(key=lambda r: r["real_net_value_estimated"])
+            else:  # real_buyer_power
+                rows = [r for r in rows if r["real_buyer_power"] is not None and (r["value"] or 0) > 5e9]
+                rows.sort(key=lambda r: r["real_buyer_power"], reverse=True)
+
+        out = [
+            _compact_watch(r, extra=("real_net_volume", "real_net_value_estimated", "real_buyer_power", "real_buyers", "real_sellers", "queue_volume", "queue_orders", "queue_value"))
+            for r in rows[:limit]
+        ]
+        return {"kind": kind, "count": len(out), "rows": out, "note": "real_* values are estimates: net real volume x symbol VWAP." if kind.startswith("real") else None}
+
+    async def industry_summary(self, market: str | None = None) -> dict:
+        watch = await self.market_watch(market=market, security_type="سهام", only_traded=True, limit=700, detail="full")
+        groups: dict[str, list[dict]] = {}
+        for r in watch["rows"]:
+            groups.setdefault(r["industry"] or "?", []).append(r)
+        out = []
+        for name, rows in groups.items():
+            cap = sum(r["market_cap"] or 0 for r in rows)
+            weighted = (
+                sum((r["last_pct"] or 0) * (r["market_cap"] or 0) for r in rows) / cap if cap else None
+            )
+            best = max(rows, key=lambda r: r["last_pct"] if r["last_pct"] is not None else -999)
+            worst = min(rows, key=lambda r: r["last_pct"] if r["last_pct"] is not None else 999)
+            out.append(
+                {
+                    "industry": name,
+                    "symbols": len(rows),
+                    "value": sum(r["value"] or 0 for r in rows),
+                    "volume": sum(r["volume"] or 0 for r in rows),
+                    "market_cap": cap,
+                    "avg_change_pct": shape._r(sum(r["last_pct"] or 0 for r in rows) / len(rows)),
+                    "cap_weighted_change_pct": shape._r(weighted),
+                    "index_effect": shape._r(sum(r["effect_on_index"] or 0 for r in rows)),
+                    "top_gainer": {"symbol": best["symbol"], "pct": best["last_pct"]},
+                    "top_loser": {"symbol": worst["symbol"], "pct": worst["last_pct"]},
+                    "in_buy_queue": sum(1 for r in rows if r["buy_queue_probable"]),
+                    "in_sell_queue": sum(1 for r in rows if r["sell_queue_probable"]),
+                }
+            )
+        out.sort(key=lambda r: r["value"], reverse=True)
+        return {"industries": out, "units": "rial"}
+
+    async def index_contributors(self, limit: int = 15) -> dict:
+        watch = await self.market_watch(security_type="سهام", only_traded=False, limit=700, detail="full")
+        rows = [r for r in watch["rows"] if r["effect_on_index"] is not None]
+        limit = _clamp(limit, 1, 60)
+        pos = sorted(rows, key=lambda r: r["effect_on_index"], reverse=True)[:limit]
+        neg = sorted(rows, key=lambda r: r["effect_on_index"])[:limit]
+        cut = lambda r: {"symbol": r["symbol"], "effect_on_index": r["effect_on_index"], "last_pct": r["last_pct"], "industry": r["industry"]}  # noqa: E731
+        return {"positive": [cut(r) for r in pos], "negative": [cut(r) for r in neg], "unit": "index points"}
+
+    async def market_snapshot(self, date: str | int, sort_by: str = "value", limit: int = 30, security_type: str | None = None) -> dict:
+        deven = _date_arg(date)
+        if deven is None:
+            raise InputError("date is required")
+        rows = await self.api.prices_on_day(deven)
+        if not rows:
+            return {"date": fmt_date(deven), "jdate": jdate(deven), "count": 0, "rows": [], "note": "No data (holiday or future date?)."}
+        keymap = {"value": "qTotCap", "volume": "qTotTran5J", "trades": "zTotTran", "change_pct": "priceChange"}
+        if sort_by not in keymap:
+            raise InputError(f"sort_by must be one of {sorted(keymap)}")
+        shaped = []
+        for r in rows:
+            close, y = shape._f(r.get("pClosing")), shape._f(r.get("priceYesterday"))
+            shaped.append(
+                {
+                    "symbol": clean(r.get("lVal18AFC")),
+                    "name": clean(r.get("lVal30")),
+                    "close": close,
+                    "last": shape._f(r.get("pDrCotVal")),
+                    "yesterday": y,
+                    "change_pct": shape.pct_change(close, y),
+                    "open": shape._f(r.get("priceFirst")),
+                    "high": shape._f(r.get("priceMax")),
+                    "low": shape._f(r.get("priceMin")),
+                    "volume": shape._i(r.get("qTotTran5J")),
+                    "value": shape._i(r.get("qTotCap")),
+                    "trades": shape._i(r.get("zTotTran")),
+                    "instrument_id": r.get("instrumentID"),
+                }
+            )
+        if security_type:
+            prefix = {"stock": ("IRO",), "fund": ("IRT",), "bond": ("IRB",)}.get(security_type.lower())
+            if not prefix:
+                raise InputError("security_type must be stock, fund or bond")
+            shaped = [r for r in shaped if (r["instrument_id"] or "").startswith(prefix)]
+        shaped = [r for r in shaped if (r["trades"] or 0) > 0]
+        key = "change_pct" if sort_by == "change_pct" else sort_by
+        shaped.sort(key=lambda r: (r[key] is None, -(r[key] or 0)))
+        return {
+            "date": fmt_date(deven),
+            "jdate": jdate(deven),
+            "traded_instruments": len(shaped),
+            "rows": shaped[: _clamp(limit, 1, 300)],
+            "units": "rial",
+        }
+
+    async def market_holder_moves(self, limit: int = 30) -> dict:
+        data = await self.api.holder_moves_market()
+        dates = [fmt_date(d) for d in data.get("dates", [])]
+        rows = []
+        for holder in data.get("shareHoldersChanges", []):
+            for item in holder.get("insList", []):
+                days = [shape._f(item.get(k)) for k in ("firstDay", "secondDay", "thirdDay", "fourthDay", "fifthDay")]
+                if None in days or days[0] == days[-1]:
+                    continue
+                rows.append(
+                    {
+                        "holder": clean(holder.get("name")),
+                        "instrument": clean(item.get("name")),
+                        "shares_first_day": int(days[0]),
+                        "shares_last_day": int(days[-1]),
+                        "change": int(days[-1] - days[0]),
+                        "change_pct": shape.pct_change(days[-1], days[0]),
+                    }
+                )
+        rows.sort(key=lambda r: abs(r["change_pct"] or 0), reverse=True)
+        return {"dates": dates, "moves": rows[: _clamp(limit, 1, 200)], "total_moves": len(rows),
+                "note": "Large holders whose position in an instrument changed over the last 5 reported days."}
+
+    # ------------------------------------------------------------------ symbol level
+    async def search_symbol(self, query: str, limit: int = 15) -> dict:
+        rows = await self.api.search(clean(query) or query)
+        out = []
+        for r in rows[: _clamp(limit, 1, 50)]:
+            out.append(
+                {
+                    "symbol": clean(r.get("lVal18AFC")),
+                    "name": clean(r.get("lVal30")),
+                    "ins_code": str(r.get("insCode")),
+                    "market": FLOW_NAMES.get(int(r.get("flow") or 0), str(r.get("flow"))),
+                    "board": clean(r.get("cgrValCotTitle")) or clean(r.get("cgrValCot")),
+                }
+            )
+        return {"query": query, "count": len(out), "results": out}
+
+    async def quote(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        info, closing = await asyncio.gather(self.api.instrument_info(inst.ins_code), self.api.closing_info(inst.ins_code))
+        return {"instrument": inst.brief(), **shape.shape_quote(closing, info)}
+
+    async def order_book(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        info, rows, closing = await asyncio.gather(
+            self.api.instrument_info(inst.ins_code), self.api.best_limits(inst.ins_code), self.api.closing_info(inst.ins_code)
+        )
+        thr = info.get("staticThreshold") or {}
+        book = shape.shape_order_book(rows, shape._f(thr.get("psGelStaMax")), shape._f(thr.get("psGelStaMin")))
+        return {
+            "instrument": inst.brief(),
+            "as_of": {"date": fmt_date(closing.get("dEven")), "last_trade_time": fmt_time(closing.get("hEven"))},
+            **book,
+        }
+
+    async def order_book_history(
+        self,
+        symbol: str,
+        date: str | None = None,
+        from_time: str | None = None,
+        to_time: str | None = None,
+        step_seconds: int = 300,
+    ) -> dict:
+        inst = await self._inst(symbol)
+        deven = _date_arg(date) or await self._latest_deven(inst.ins_code)
+        rows = await self.api.best_limits_history(inst.ins_code, deven)
+        if not rows:
+            return {"instrument": inst.brief(), "date": fmt_date(deven), "snapshots_in_range": 0, "note": "No order-book events (holiday, suspended, or not traded)."}
+        upper, lower = await self._limits(inst.ins_code, deven)
+        snaps = shape.reconstruct_book(rows)
+        start = _time_arg(from_time) if from_time else SESSION_WINDOW[0]
+        end = _time_arg(to_time) if to_time else SESSION_WINDOW[1]
+        timeline = shape.book_timeline(
+            snaps, upper, lower, start=start, end=end, step_seconds=_clamp(step_seconds, 5, 3600)
+        )
+        first_event, last_event = snaps[0]["time"], snaps[-1]["time"]
+        complete = last_event >= 122500
+        return {
+            "instrument": inst.brief(),
+            "date": fmt_date(deven),
+            "jdate": jdate(deven),
+            "total_events": len(snaps),
+            "events_span": {"first": fmt_time(first_event), "last": fmt_time(last_event), "covers_full_session": complete},
+            "warning": None
+            if complete
+            else "TSETMC's order-book history for this day ends before the close. For the current trading day it "
+            "is typically published only partially until the next trading day; use order_book for the live book.",
+            "price_limits": {"upper": upper, "lower": lower},
+            "window": {"from": fmt_time(start), "to": fmt_time(end)},
+            **timeline,
+            "note": "Snapshots are rebuilt from TSETMC's delta feed by carrying unchanged levels forward. "
+            "The default window covers pre-open and the session (08:30-12:35); pass from_time/to_time "
+            "('00:00', '23:59') to include the out-of-session order entry that TSETMC also records.",
+        }
+
+    async def _ticks(self, ins: str, date: str | None) -> tuple[int, list[dict]]:
+        deven = _date_arg(date)
+        latest = await self._latest_deven(ins)
+        if deven is None or deven == latest:
+            return latest, await self.api.trades_latest(ins)
+        return deven, await self.api.trades_history(ins, deven)
+
+    async def trades(
+        self,
+        symbol: str,
+        date: str | None = None,
+        from_time: str | None = None,
+        to_time: str | None = None,
+        min_volume: int = 0,
+        limit: int = 200,
+        newest_first: bool = False,
+    ) -> dict:
+        inst = await self._inst(symbol)
+        deven, raw = await self._ticks(inst.ins_code, date)
+        ticks = shape.shape_ticks(raw)
+        start, end = _time_arg(from_time), _time_arg(to_time)
+        if start or end:
+            ticks = [t for t in ticks if (start is None or _hms(t["time"]) >= start) and (end is None or _hms(t["time"]) <= end)]
+        if min_volume:
+            ticks = [t for t in ticks if t["volume"] >= min_volume]
+        matched = len(ticks)
+        if newest_first:
+            ticks.reverse()
+        limit = _clamp(limit, 1, MAX_ROWS)
+        return {
+            "instrument": inst.brief(),
+            "date": fmt_date(deven),
+            "jdate": jdate(deven),
+            "matched": matched,
+            "returned": min(matched, limit),
+            "truncated": matched > limit,
+            "trades": ticks[:limit],
+            "units": "price/value in rial, volume in shares",
+        }
+
+    async def trade_summary(
+        self,
+        symbol: str,
+        date: str | None = None,
+        from_time: str | None = None,
+        to_time: str | None = None,
+        interval_minutes: int = 5,
+    ) -> dict:
+        inst = await self._inst(symbol)
+        deven, raw = await self._ticks(inst.ins_code, date)
+        start, end = _time_arg(from_time), _time_arg(to_time)
+        if start or end:
+            raw = [r for r in raw if (start is None or (r.get("hEven") or 0) >= start) and (end is None or (r.get("hEven") or 0) <= end)]
+        official = None if (start or end) else await self._official_day(inst.ins_code, deven)
+        result = shape.aggregate_ticks(
+            raw,
+            interval_minutes=_clamp(interval_minutes, 1, 60),
+            official_volume=shape._f(official.get("qTotTran5J")) if official else None,
+            official_count=shape._f(official.get("zTotTran")) if official else None,
+        )
+        return {"instrument": inst.brief(), "date": fmt_date(deven), "jdate": jdate(deven), **result}
+
+    async def price_history(
+        self,
+        symbol: str,
+        from_date: str | None = None,
+        to_date: str | None = None,
+        limit: int = 250,
+        adjusted: bool = False,
+    ) -> dict:
+        inst = await self._inst(symbol)
+        raw = await self.api.daily_prices(inst.ins_code)
+        series, events = shape.shape_daily_prices(raw, adjusted=adjusted)
+        start, end = _date_arg(from_date), _date_arg(to_date)
+        if start:
+            series = [r for r in series if int(r["date"].replace("-", "")) >= start]
+        if end:
+            series = [r for r in series if int(r["date"].replace("-", "")) <= end]
+        total = len(series)
+        series = series[-_clamp(limit, 1, MAX_ROWS):]
+        return {
+            "instrument": inst.brief(),
+            "adjusted": adjusted,
+            "adjustment_events": events if adjusted else None,
+            "total_in_range": total,
+            "returned": len(series),
+            "rows": series,
+            "units": "rial",
+            "note": "Rows are ascending by date; 'close' is the exchange closing (weighted) price, 'last' the last trade."
+            + (" Prices are back-adjusted for capital increases and dividends." if adjusted else ""),
+        }
+
+    async def real_legal_flow(self, symbol: str, days: int = 10) -> dict:
+        inst = await self._inst(symbol)
+        days = _clamp(days, 0, 90)
+        current, closing = await asyncio.gather(self.api.client_type(inst.ins_code), self.api.closing_info(inst.ins_code))
+        volume, value = shape._f(closing.get("qTotTran5J")), shape._f(closing.get("qTotCap"))
+        vwap = shape._safe_div(value, volume)
+        out: dict[str, Any] = {
+            "instrument": inst.brief(),
+            "latest_session": {"date": fmt_date(closing.get("dEven")), **shape.shape_client_type(current, vwap=vwap)},
+        }
+        if days:
+            daily = await self.api.daily_prices(inst.ins_code)
+            dates = [int(r["dEven"]) for r in sorted(daily, key=lambda r: r["dEven"], reverse=True) if (r.get("zTotTran") or 0) > 0][:days]
+            results = await asyncio.gather(*(self.api.client_type_history(inst.ins_code, d) for d in dates), return_exceptions=True)
+            rows = [dict(r, recDate=r.get("recDate") or d) for d, r in zip(dates, results, strict=True) if isinstance(r, dict) and r]
+            series = shape.shape_client_type_history(rows)
+            net = [s["real_net_value"] for s in series if s["real_net_value"] is not None]
+            out["history"] = series
+            out["history_summary"] = {
+                "days": len(series),
+                "real_net_value_total": sum(net) if net else None,
+                "days_with_real_inflow": sum(1 for n in net if n > 0),
+                "days_with_real_outflow": sum(1 for n in net if n < 0),
+            }
+        out["units"] = "value in rial, volume in shares"
+        return out
+
+    async def shareholders(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        info, rows = await asyncio.gather(self.api.instrument_info(inst.ins_code), self.api.shareholders_last(inst.ins_code))
+        holders = shape.shape_holders(rows)
+        shares_out = shape._f(info.get("zTitad"))
+        listed_pct = sum(h["percent"] or 0 for h in holders)
+        return {
+            "instrument": inst.brief(),
+            "shares_outstanding": shape._i(shares_out),
+            "listed_holders": len(holders),
+            "listed_percent_total": shape._r(listed_pct),
+            "unlisted_percent": shape._r(100 - listed_pct),
+            "top5_percent": shape._r(sum(h["percent"] or 0 for h in holders[:5])),
+            "holders": holders,
+            "note": "TSETMC lists holders above ~1% (major shareholders / سهامداران عمده). holder_id can be passed to shareholder_portfolio.",
+        }
+
+    async def shareholder_history(self, symbol: str, date: str | None = None) -> dict:
+        inst = await self._inst(symbol)
+        deven = _date_arg(date) or await self._latest_deven(inst.ins_code)
+        rows = await self.api.shareholder_snapshots(inst.ins_code, deven)
+        return {"instrument": inst.brief(), "snapshots": shape.shape_holder_snapshots(rows)}
+
+    async def shareholder_portfolio(self, holder_id: int | str) -> dict:
+        rows = await self.api.holder_portfolio(holder_id)
+        holdings = []
+        for r in rows:
+            instrument = r.get("instrument") or {}
+            holdings.append(
+                {
+                    "symbol": clean(instrument.get("lVal18AFC")),
+                    "name": clean(instrument.get("lVal30")),
+                    "shares": shape._i(r.get("numberOfShares")),
+                    "percent": shape._f(r.get("perOfShares")),
+                    "change_amount": shape._f(r.get("changeAmount")),
+                }
+            )
+        holdings.sort(key=lambda h: h["percent"] or 0, reverse=True)
+        return {"holder_id": holder_id, "holdings": holdings}
+
+    async def corporate_actions(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        adjustments, capital = await asyncio.gather(self.api.price_adjustments(inst.ins_code), self.api.share_changes(inst.ins_code))
+        adj = []
+        for r in sorted(adjustments, key=lambda r: r.get("dEven") or 0, reverse=True):
+            before, after = shape._f(r.get("pClosingNotAdjusted")), shape._f(r.get("pClosing"))
+            adj.append(
+                {
+                    "date": fmt_date(r.get("dEven")),
+                    "jdate": jdate(r.get("dEven")),
+                    "price_before": before,
+                    "price_after": after,
+                    "factor": shape._r(shape._safe_div(after, before), 6),
+                }
+            )
+        cap = []
+        for r in sorted(capital, key=lambda r: r.get("dEven") or 0, reverse=True):
+            old, new = shape._f(r.get("numberOfShareOld")), shape._f(r.get("numberOfShareNew"))
+            cap.append(
+                {
+                    "date": fmt_date(r.get("dEven")),
+                    "jdate": jdate(r.get("dEven")),
+                    "shares_before": shape._i(old),
+                    "shares_after": shape._i(new),
+                    "increase_pct": shape.pct_change(new, old),
+                }
+            )
+        return {"instrument": inst.brief(), "price_adjustments": adj, "capital_changes": cap}
+
+    async def symbol_statistics(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        rows = await self.api.statistics(inst.ins_code)
+        return {"instrument": inst.brief(), "metrics": shape.shape_statistics(rows)}
+
+    async def supervisor_messages(self, symbol: str | None = None, limit: int = 10, full_text: bool = False, market: str = "bourse") -> dict:
+        limit = _clamp(limit, 1, 100)
+        if symbol:
+            inst = await self._inst(symbol)
+            rows = await self.api.messages_for(inst.ins_code)
+            label: Any = inst.brief()
+        else:
+            rows = await self.api.messages_flow(_flow(market), limit)
+            label = {"market": market}
+        rows = sorted(rows, key=lambda r: (r.get("dEven") or 0, r.get("hEven") or 0), reverse=True)[:limit]
+        return {"scope": label, "messages": [shape.shape_message(r, full_text=full_text) for r in rows]}
+
+    async def etf_nav(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        try:
+            etf, closing = await asyncio.gather(self.api.etf(inst.ins_code), self.api.closing_info(inst.ins_code))
+        except NotAvailable:
+            return {"instrument": inst.brief(), "available": False, "note": "Not a fund/ETF unit, so no NAV data."}
+        last = shape._f(closing.get("pDrCotVal"))
+        redemption, issue = shape._f(etf.get("pRedTran")), shape._f(etf.get("pSubTran"))
+        return {
+            "instrument": inst.brief(),
+            "available": True,
+            "date": fmt_date(etf.get("deven")),
+            "time": fmt_time(etf.get("hEven")),
+            "last_price": last,
+            "nav_redemption": redemption,
+            "nav_issue": issue,
+            "premium_to_redemption_nav_pct": shape.pct_change(last, redemption),
+            "premium_to_issue_nav_pct": shape.pct_change(last, issue),
+            "note": "pRedTran / pSubTran are the exchange's redemption (ابطال) and issue (صدور) NAV figures.",
+        }
+
+    # ------------------------------------------------------------------ Codal
+    async def codal_filings(
+        self,
+        symbol: str | None = None,
+        from_date: str | None = None,
+        to_date: str | None = None,
+        title_contains: str | None = None,
+        category: int = -1,
+        letter_type: int = -1,
+        limit: int = 20,
+        page: int = 1,
+    ) -> dict:
+        params: dict[str, Any] = {"Category": category, "LetterType": letter_type, "PageNumber": max(1, page)}
+        if symbol:
+            inst = await self._inst(symbol)
+            params["Symbol"] = inst.symbol
+        for key, value in (("FromDate", from_date), ("ToDate", to_date)):
+            deven = _date_arg(value)
+            if deven:
+                jy, jm, jd = _jalali(deven)
+                params[key] = f"{jy:04d}/{jm:02d}/{jd:02d}"
+        data = await self.api.codal_search(**params)
+        letters = [shape.shape_codal_letter(r, CODAL_SITE) for r in data.get("Letters", [])]
+        if title_contains:
+            needle = match_key(title_contains)
+            letters = [r for r in letters if needle in match_key(r["title"])]
+        return {
+            "total_matches": data.get("Total"),
+            "pages": data.get("Page"),
+            "page": params["PageNumber"],
+            "returned": len(letters[: _clamp(limit, 1, 100)]),
+            "filings": letters[: _clamp(limit, 1, 100)],
+            "note": "published/sent are Jalali timestamps as shown on Codal. Pass 'page' to read older filings.",
+        }
+
+    async def codal_company(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        data = await self.api.codal_publisher(inst.symbol)
+        if not data:
+            return {"instrument": inst.brief(), "available": False}
+        return {
+            "instrument": inst.brief(),
+            "available": True,
+            "name": clean(data.get("name")),
+            "isic": data.get("isic"),
+            "ceo": clean(data.get("executiveManager")),
+            "address": clean(data.get("address")),
+            "phone": data.get("telNo"),
+            "fax": data.get("faxNo"),
+            "activity": clean(data.get("activitySubject")),
+        }
+
+    # ------------------------------------------------------------------ everything about one symbol
+    async def symbol_overview(self, symbol: str) -> dict:
+        inst = await self._inst(symbol)
+        ins = inst.ins_code
+
+        async def safe(coro: Any) -> Any:
+            try:
+                return await coro
+            except NotAvailable:
+                return None
+
+        info, identity, closing, book, client, holders, filings, messages = await asyncio.gather(
+            self.api.instrument_info(ins),
+            safe(self.api.identity(ins)),
+            self.api.closing_info(ins),
+            safe(self.api.best_limits(ins)),
+            safe(self.api.client_type(ins)),
+            safe(self.api.shareholders_last(ins)),
+            safe(self.api.codal_search(Symbol=inst.symbol, PageNumber=1)),
+            safe(self.api.messages_for(ins)),
+        )
+        quote = shape.shape_quote(closing, info)
+        thr = info.get("staticThreshold") or {}
+        out: dict[str, Any] = {
+            "identity": shape.shape_identity(info, identity),
+            "quote": quote,
+            "order_book": shape.shape_order_book(book or [], shape._f(thr.get("psGelStaMax")), shape._f(thr.get("psGelStaMin"))),
+        }
+        if client:
+            out["real_legal"] = shape.shape_client_type(client, vwap=quote["vwap"])
+        if holders:
+            top = shape.shape_holders(holders)
+            out["major_shareholders"] = {"top5_percent": shape._r(sum(h["percent"] or 0 for h in top[:5])), "top": top[:5]}
+        if filings:
+            out["recent_filings"] = [shape.shape_codal_letter(r, CODAL_SITE) for r in filings.get("Letters", [])[:5]]
+        if messages:
+            recent = sorted(messages, key=lambda r: (r.get("dEven") or 0, r.get("hEven") or 0), reverse=True)[:3]
+            out["recent_supervisor_messages"] = [shape.shape_message(r, limit=240) for r in recent]
+        return out
+
+
+# ---------------------------------------------------------------------- module helpers
+def _hms(text: str | None) -> int:
+    return int(ascii_digits((text or "00:00:00").replace(":", "")))
+
+
+def _jalali(deven: int) -> tuple[int, int, int]:
+    from .dates import gregorian_to_jalali
+
+    d = to_date(deven)
+    return gregorian_to_jalali(d.year, d.month, d.day)
+
+
+_COMPACT = (
+    "symbol", "name", "last", "last_pct", "close", "close_pct", "volume", "value", "trades",
+    "pe", "market_cap", "at_upper_limit", "at_lower_limit", "industry",
+)
+
+
+def _compact_watch(row: dict, extra: tuple[str, ...] = ()) -> dict:
+    out = {k: row.get(k) for k in _COMPACT}
+    for key in extra:
+        if key in row:
+            out[key] = row[key]
+    return out
+
+
+def utc_now() -> dt.datetime:  # pragma: no cover - tiny wrapper for easy patching
+    return dt.datetime.now(dt.timezone.utc)

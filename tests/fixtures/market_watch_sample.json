@@ -1,0 +1,230 @@
+[
+ {
+  "instrumentId": "IRO1ABAD0001",
+  "instrumentName": "آباد",
+  "companyNamePersian": "توریستی ورفاهی آبادگران ایران",
+  "tradeVolume": {
+   "value": 8377275,
+   "state": 0
+  },
+  "tradeValue": {
+   "value": 15154490475,
+   "state": 0
+  },
+  "tradeCount": {
+   "value": 64,
+   "state": 0
+  },
+  "highValue": {
+   "value": 1809,
+   "state": 0
+  },
+  "lowValue": {
+   "value": 1809,
+   "state": 0
+  },
+  "minValue": 1705,
+  "maxValue": 1809,
+  "lastPrice": {
+   "value": 1809,
+   "state": 0
+  },
+  "lastPriceChange": {
+   "value": 52,
+   "state": 0
+  },
+  "lastPriceChangePercent": {
+   "value": 2.96,
+   "state": 0
+  },
+  "closingPrice": {
+   "value": 1809,
+   "state": 0
+  },
+  "closingPriceChange": {
+   "value": 52,
+   "state": 0
+  },
+  "closingPriceChangePercent": {
+   "value": 2.96,
+   "state": 0
+  },
+  "yesterdayPrice": {
+   "value": 1757,
+   "state": 0
+  },
+  "effectonIndex": "21.30",
+  "pe": {
+   "value": 301.5,
+   "state": 0
+  },
+  "eps": {
+   "value": 6.0,
+   "state": 0
+  },
+  "marketValue": {
+   "value": 21459059892000,
+   "state": 0
+  },
+  "sellPrice": {
+   "value": null,
+   "state": 0
+  },
+  "buyPrice": {
+   "value": null,
+   "state": 0
+  },
+  "boardId": 2,
+  "boardName": "بازار اول - فرعی",
+  "firstPrice": {
+   "value": 1809,
+   "state": 0
+  },
+  "sellQuantity": {
+   "value": null,
+   "state": 0
+  },
+  "sellCount": {
+   "value": null,
+   "state": 0
+  },
+  "buyQuantity": {
+   "value": null,
+   "state": 0
+  },
+  "buyCount": {
+   "value": null,
+   "state": 0
+  },
+  "instrumentstatusid": null,
+  "instrumentstatusname": null,
+  "marketid": 20,
+  "marketname": "بورس",
+  "markettypeid": "NO",
+  "markettypename": "نرمال",
+  "activemarkettypeid": 3,
+  "activemarkettypename": null,
+  "industryid": 55,
+  "industryname": "هتل و رستوران                           ",
+  "industrysubid": 5510,
+  "industrysubname": "هتل ها ، اردو و دیگر تدارکات اقامت کوتاه",
+  "securitiesid": "O",
+  "securitiesname": "سهام عادی",
+  "stateid": "A ",
+  "statename": "مجاز"
+ },
+ {
+  "instrumentId": "IRO1FOLD0001",
+  "instrumentName": "فولاد",
+  "companyNamePersian": "فولاد مبارکه اصفهان",
+  "tradeVolume": {
+   "value": 646253701,
+   "state": 0
+  },
+  "tradeValue": {
+   "value": 2719753642780,
+   "state": 0
+  },
+  "tradeCount": {
+   "value": 6819,
+   "state": 0
+  },
+  "highValue": {
+   "value": 4210,
+   "state": 0
+  },
+  "lowValue": {
+   "value": 4180,
+   "state": 0
+  },
+  "minValue": 3970,
+  "maxValue": 4210,
+  "lastPrice": {
+   "value": 4210,
+   "state": 0
+  },
+  "lastPriceChange": {
+   "value": 120,
+   "state": 0
+  },
+  "lastPriceChangePercent": {
+   "value": 2.93,
+   "state": 0
+  },
+  "closingPrice": {
+   "value": 4210,
+   "state": 0
+  },
+  "closingPriceChange": {
+   "value": 120,
+   "state": 0
+  },
+  "closingPriceChangePercent": {
+   "value": 2.93,
+   "state": 0
+  },
+  "yesterdayPrice": {
+   "value": 4090,
+   "state": 0
+  },
+  "effectonIndex": "8016.70",
+  "pe": {
+   "value": 6.08,
+   "state": 0
+  },
+  "eps": {
+   "value": 693.0,
+   "state": 0
+  },
+  "marketValue": {
+   "value": 8146350000000000,
+   "state": 0
+  },
+  "sellPrice": {
+   "value": null,
+   "state": 0
+  },
+  "buyPrice": {
+   "value": null,
+   "state": 0
+  },
+  "boardId": 1,
+  "boardName": "بازار اول - اصلی",
+  "firstPrice": {
+   "value": 4180,
+   "state": 0
+  },
+  "sellQuantity": {
+   "value": null,
+   "state": 0
+  },
+  "sellCount": {
+   "value": null,
+   "state": 0
+  },
+  "buyQuantity": {
+   "value": null,
+   "state": 0
+  },
+  "buyCount": {
+   "value": null,
+   "state": 0
+  },
+  "instrumentstatusid": null,
+  "instrumentstatusname": null,
+  "marketid": 20,
+  "marketname": "بورس",
+  "markettypeid": "NO",
+  "markettypename": "نرمال",
+  "activemarkettypeid": 1,
+  "activemarkettypename": null,
+  "industryid": 27,
+  "industryname": "فلزات اساسی                             ",
+  "industrysubid": 2710,
+  "industrysubname": "تولید آهن و فولاد پایه                  ",
+  "securitiesid": "O",
+  "securitiesname": "سهام عادی",
+  "stateid": "A ",
+  "statename": "مجاز"
+ }
+]

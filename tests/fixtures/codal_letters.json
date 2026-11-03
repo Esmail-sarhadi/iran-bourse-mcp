@@ -1,0 +1,59 @@
+{
+ "Total": 1475,
+ "Letters": [
+  {
+   "SuperVision": {
+    "UnderSupervision": 0,
+    "AdditionalInfo": "",
+    "Reasons": []
+   },
+   "TracingNo": 1621524,
+   "Symbol": "فولاد",
+   "CompanyName": "فولاد مبارکه اصفهان",
+   "UnderSupervision": 0,
+   "Title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به  ۱۴۰۵/۰۷/۳۰",
+   "LetterCode": "ن-۳۰",
+   "SentDateTime": "۱۴۰۵/۰۸/۰۶ ۱۶:۰۱:۴۸",
+   "PublishDateTime": "۱۴۰۵/۰۸/۰۶ ۱۶:۰۱:۴۸",
+   "HasHtml": true,
+   "IsEstimate": false,
+   "Url": "/Reports/Decision.aspx?LetterSerial=LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d&rt=0&let=58&ct=0&ft=-1",
+   "HasExcel": true,
+   "HasPdf": true,
+   "HasXbrl": false,
+   "HasAttachment": true,
+   "AttachmentUrl": "/Reports/Attachment.aspx?LetterSerial=LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d",
+   "PdfUrl": "DownloadFile.aspx?hs=LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d&ft=1005&let=58",
+   "ExcelUrl": "https://excel.codal.ir/service/Excel/GetAll/LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d/0",
+   "XbrlUrl": "",
+   "TedanUrl": "http://www.tedan.ir"
+  },
+  {
+   "SuperVision": {
+    "UnderSupervision": 0,
+    "AdditionalInfo": "",
+    "Reasons": []
+   },
+   "TracingNo": 1618277,
+   "Symbol": "فولاد",
+   "CompanyName": "فولاد مبارکه اصفهان",
+   "UnderSupervision": 0,
+   "Title": "توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده",
+   "LetterCode": "ن-۲۶",
+   "SentDateTime": "۱۴۰۵/۰۷/۳۰ ۱۴:۴۰:۵۳",
+   "PublishDateTime": "۱۴۰۵/۰۷/۳۰ ۱۴:۴۰:۵۳",
+   "HasHtml": true,
+   "IsEstimate": false,
+   "Url": "/Reports/Decision.aspx?LetterSerial=q1TwzvITsscrZmqLPHatbw%3d%3d&rt=0&let=174&ct=0&ft=-1",
+   "HasExcel": false,
+   "HasPdf": true,
+   "HasXbrl": false,
+   "HasAttachment": true,
+   "AttachmentUrl": "/Reports/Attachment.aspx?LetterSerial=q1TwzvITsscrZmqLPHatbw%3d%3d",
+   "PdfUrl": "DownloadFile.aspx?hs=q1TwzvITsscrZmqLPHatbw%3d%3d&ft=1005&let=174",
+   "ExcelUrl": "",
+   "XbrlUrl": "",
+   "TedanUrl": "http://www.tedan.ir"
+  }
+ ]
+}

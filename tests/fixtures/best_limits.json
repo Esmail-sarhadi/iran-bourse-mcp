@@ -1,0 +1,57 @@
+[
+ {
+  "number": 1,
+  "qTitMeDem": 189651617,
+  "zOrdMeDem": 1345,
+  "pMeDem": 4210.0,
+  "pMeOf": 4240.0,
+  "zOrdMeOf": 7,
+  "qTitMeOf": 114476,
+  "title": null,
+  "insCode": null
+ },
+ {
+  "number": 2,
+  "qTitMeDem": 315501,
+  "zOrdMeDem": 17,
+  "pMeDem": 4200.0,
+  "pMeOf": 4260.0,
+  "zOrdMeOf": 1,
+  "qTitMeOf": 5000,
+  "title": null,
+  "insCode": null
+ },
+ {
+  "number": 3,
+  "qTitMeDem": 393354,
+  "zOrdMeDem": 6,
+  "pMeDem": 4190.0,
+  "pMeOf": 4300.0,
+  "zOrdMeOf": 1,
+  "qTitMeOf": 300000,
+  "title": null,
+  "insCode": null
+ },
+ {
+  "number": 4,
+  "qTitMeDem": 7221272,
+  "zOrdMeDem": 36,
+  "pMeDem": 4180.0,
+  "pMeOf": 4320.0,
+  "zOrdMeOf": 3,
+  "qTitMeOf": 239021,
+  "title": null,
+  "insCode": null
+ },
+ {
+  "number": 5,
+  "qTitMeDem": 665025,
+  "zOrdMeDem": 15,
+  "pMeDem": 4170.0,
+  "pMeOf": 4330.0,
+  "zOrdMeOf": 19,
+  "qTitMeOf": 961076,
+  "title": null,
+  "insCode": null
+ }
+]

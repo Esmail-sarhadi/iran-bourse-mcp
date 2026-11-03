@@ -1,0 +1,65 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "iran-bourse-mcp"
+dynamic = ["version"]
+description = "MCP server giving AI agents complete, clean, analysis-ready Tehran Stock Exchange (TSETMC) and Codal data: quotes, order book, tick trades, real/legal flow, shareholders, filings and more."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.10"
+authors = [{ name = "Mohammad Saleh Mahdinejad" }]
+keywords = ["mcp", "model-context-protocol", "tsetmc", "tehran-stock-exchange", "iran", "bourse", "codal", "fara-bourse", "persian", "finance", "ai-agents"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Financial and Insurance Industry",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Office/Business :: Financial :: Investment",
+]
+dependencies = [
+  "mcp>=1.2.0",
+  "httpx>=0.27",
+]
+
+[project.urls]
+Homepage = "https://github.com/msmahdinejad/iran-bourse-mcp"
+Issues = "https://github.com/msmahdinejad/iran-bourse-mcp/issues"
+
+[project.scripts]
+iran-bourse-mcp = "iran_bourse_mcp.cli:main"
+
+[tool.hatch.version]
+path = "src/iran_bourse_mcp/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/iran_bourse_mcp"]
+
+[dependency-groups]
+dev = [
+  "pytest>=8",
+  "pytest-asyncio>=0.23",
+  "respx>=0.21",
+  "ruff>=0.5",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = ["live: hits the real TSETMC/Codal servers (needs a connection that can reach them)"]
+addopts = "-m 'not live'"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]

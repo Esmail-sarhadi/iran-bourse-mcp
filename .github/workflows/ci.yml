@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12", "3.13"]
+        mcp: ["mcp>=1.2,<2", "mcp>=2"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Install
+        run: uv sync --python ${{ matrix.python }}
+      - name: Pin MCP SDK generation
+        run: uv pip install "${{ matrix.mcp }}"
+      - name: Lint
+        run: uv run --no-sync ruff check .
+      - name: Offline tests
+        run: uv run --no-sync pytest -q
