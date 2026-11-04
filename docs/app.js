@@ -31,7 +31,7 @@
       "bench.eyebrow": "Measured, not claimed", "bench.h2": "Fewer tokens, fewer requests, right answers.",
       "bench.lead": "Everyday tasks, run against the live exchange. The raw route is the best case for an agent that already knows the hidden endpoints.",
       "bench.tok.h": "Tokens the model must read", "bench.tok.sub": "Log scale. Raw JSON payload vs the MCP response.",
-      "bench.time.h": "Wall-clock time to the data", "bench.time.sub": "Seconds. Sequential raw requests vs one tool call.",
+      "bench.time.h": "Wall-clock time to the data", "bench.time.sub": "Seconds. Sequential raw requests vs one tool call. Single-endpoint tasks take about as long either way.",
       "bench.req.h": "HTTP requests the agent must make", "bench.req.sub": "Log scale. MCP always needs one call.",
       "bench.acc.h": "Agent trials: accuracy", "bench.agents.h": "Agent trials: cost of getting the answer",
       "bench.traps.h": "Traps in the raw data that give confident wrong answers", "bench.traps.sub": "Each was found on the live endpoints and is handled by the server.",
@@ -66,7 +66,7 @@
       "bench.eyebrow": "اندازه‌گیری‌شده، نه ادعا", "bench.h2": "توکن کمتر، درخواست کمتر، جواب درست.",
       "bench.lead": "کارهای روزمره روی بورس واقعی اجرا شد. مسیر خام بهترین حالت ممکن برای ایجنتی است که endpoint های پنهان را از قبل می‌شناسد.",
       "bench.tok.h": "توکنی که مدل باید بخواند", "bench.tok.sub": "مقیاس لگاریتمی. حجم JSON خام در برابر پاسخ MCP.",
-      "bench.time.h": "زمان رسیدن به داده", "bench.time.sub": "ثانیه. درخواست‌های متوالی خام در برابر یک فراخوانی ابزار.",
+      "bench.time.h": "زمان رسیدن به داده", "bench.time.sub": "ثانیه. درخواست‌های متوالی خام در برابر یک فراخوانی ابزار. کارهای تک‌endpoint در هر دو حالت زمان مشابهی دارند.",
       "bench.req.h": "درخواست HTTP لازم", "bench.req.sub": "مقیاس لگاریتمی. با MCP همیشه یک فراخوانی کافی است.",
       "bench.acc.h": "آزمون ایجنت‌ها: دقت", "bench.agents.h": "آزمون ایجنت‌ها: هزینه رسیدن به جواب",
       "bench.traps.h": "تله‌های داده‌ی خام که جواب غلطِ مطمئن می‌دهند", "bench.traps.sub": "همه روی endpoint های زنده پیدا شدند و سرور آن‌ها را مدیریت می‌کند.",
@@ -85,7 +85,8 @@
   };
   var lang = store("lang") || ((navigator.language || "en").toLowerCase().indexOf("fa") === 0 ? "fa" : "en");
   var t = function (k) { return (T[lang] && T[lang][k]) || T.en[k] || k; };
-  var nf = function (n, d) { return Number(n).toLocaleString(lang === "fa" ? "fa-IR" : "en-US", { maximumFractionDigits: d == null ? 0 : d }); };
+  // data stays in Latin digits in both languages: monospaced fonts have no Persian digits and traders read prices that way
+  var nf = function (n, d) { return Number(n).toLocaleString("en-US", { maximumFractionDigits: d == null ? 0 : d }); };
 
   function applyLang() {
     document.documentElement.lang = lang;
@@ -160,7 +161,7 @@
   function renderStats() {
     var tools = (D.tools || []).length, clients = (D.clients || []).filter(function (c) { return c.id !== "generic"; }).length;
     var cov = f_cov();
-    var cells = [[nf(tools), lang === "fa" ? "ابزار فقط‌خواندنی" : "read-only tools"], [nf(clients) + "+", lang === "fa" ? "ایجنت و IDE پشتیبانی‌شده" : "agents and IDEs"], [cov, lang === "fa" ? "پوشش ریز معاملات نسبت به آمار رسمی" : "tick coverage vs official totals"], [nf(D.tests || 107), lang === "fa" ? "تست آفلاین، دو نسل MCP SDK" : "offline tests, two MCP SDK generations"]];
+    var cells = [[nf(tools), lang === "fa" ? "ابزار فقط‌خواندنی" : "read-only tools"], [nf(clients), lang === "fa" ? "ایجنت و IDE، به‌علاوه هر کلاینت MCP" : "agents and IDEs, plus any MCP client"], [cov, lang === "fa" ? "پوشش ریز معاملات نسبت به آمار رسمی" : "tick coverage vs official totals"], [nf(D.tests || 107), lang === "fa" ? "تست آفلاین، دو نسل MCP SDK" : "offline tests, two MCP SDK generations"]];
     $("#stats").innerHTML = cells.map(function (c) { return "<div><b>" + esc(c[0]) + "</b><span>" + esc(c[1]) + "</span></div>"; }).join("");
   }
   function f_cov() { try { return SNAP.foolad.trade_summary.completeness.volume_coverage_pct.toFixed(0) + "%"; } catch (e) { return "100%"; } }
@@ -218,14 +219,17 @@
   function hideTip() { tip.hidden = true; }
 
   function hbar(cfg) {
-    var W = 720, labelW = 178, x0 = labelW + 12, x1 = W - 76, rowH = 22 + cfg.series.length * 16, top = 6, H = top + cfg.cats.length * rowH + 28;
+    var host = document.getElementById(cfg.chart);
+    var W = Math.max(300, Math.min(760, host.clientWidth || 720)), narrow = W < 520;
+    var labelW = narrow ? 0 : 178, x0 = narrow ? 6 : labelW + 12, x1 = W - (narrow ? 50 : 76), head = narrow ? 18 : 0;
+    var rowH = head + 22 + cfg.series.length * 16, top = 6, H = top + cfg.cats.length * rowH + 28;
     var all = []; cfg.cats.forEach(function (c) { cfg.series.forEach(function (s) { var v = cfg.values[c.id] && cfg.values[c.id][s.key]; if (v != null) all.push(v); }); });
     var sx, ticks = [];
     if (cfg.scale === "log") {
-      var lo = Math.floor(Math.log10(Math.min.apply(null, all) * 0.8)), hi = Math.ceil(Math.log10(Math.max.apply(null, all) * 1.2));
-      if (lo === hi) hi++;
-      for (var p = lo; p <= hi; p++) ticks.push(Math.pow(10, p));
-      sx = function (v) { return x0 + (Math.log10(Math.max(v, Math.pow(10, lo))) - lo) / (hi - lo) * (x1 - x0); };
+      var lowV = cfg.domainMin || Math.min.apply(null, all) * 0.8, highV = Math.max.apply(null, all) * 1.25;
+      var lo = Math.log10(lowV), hi = Math.log10(highV);
+      for (var p = Math.ceil(lo); p <= Math.floor(hi); p++) ticks.push(Math.pow(10, p));
+      sx = function (v) { return x0 + (Math.log10(Math.max(v, lowV)) - lo) / (hi - lo) * (x1 - x0); };
     } else {
       var max = Math.max.apply(null, all) * 1.08, step = niceStep(max / 4);
       for (var q = 0; q <= max; q += step) ticks.push(q);
@@ -235,10 +239,11 @@
     ticks.forEach(function (tv) { var x = sx(tv); s += '<line class="gridline" x1="' + x + '" x2="' + x + '" y1="' + top + '" y2="' + (H - 24) + '"/><text class="tick" x="' + x + '" y="' + (H - 8) + '" text-anchor="middle">' + cfg.tick(tv) + "</text>"; });
     cfg.cats.forEach(function (c, i) {
       var y = top + i * rowH + 6;
-      s += '<text x="' + (labelW) + '" y="' + (y + (cfg.series.length * 16) / 2 + 3) + '" text-anchor="end" font-size="13">' + esc(c.label) + "</text>";
+      if (narrow) s += '<text x="' + x0 + '" y="' + (y + 11) + '" font-size="12.5">' + esc(c.label) + "</text>";
+      else s += '<text x="' + labelW + '" y="' + (y + (cfg.series.length * 16) / 2 + 3) + '" text-anchor="end" font-size="13">' + esc(c.label) + "</text>";
       cfg.series.forEach(function (se, j) {
         var v = cfg.values[c.id] && cfg.values[c.id][se.key]; if (v == null) return;
-        var by = y + j * 16, w = Math.max(2, sx(v) - x0), r = Math.min(4, w / 2);
+        var by = y + head + j * 16, w = Math.max(2, sx(v) - x0), r = Math.min(4, w / 2);
         var path = "M" + x0 + " " + by + "h" + (w - r) + "a" + r + " " + r + " 0 0 1 " + r + " " + r + "v" + (14 - 2 * r) + "a" + r + " " + r + " 0 0 1 -" + r + " " + r + "h-" + (w - r) + "z";
         s += '<path class="bar" d="' + path + '" fill="' + se.c + '" data-tip="' + esc(cfg.tip(c, se, v)) + '"/>';
         s += '<text class="val" x="' + (x0 + w + 6) + '" y="' + (by + 11) + '">' + cfg.fmt(v) + "</text>";
@@ -248,7 +253,7 @@
     var legend = cfg.series.map(function (se) { return '<span><i style="background:' + se.c + '"></i>' + esc(se.name) + "</span>"; }).join("");
     var table = '<details class="tbl"><summary>' + (lang === "fa" ? "نمایش جدول" : "View as table") + '</summary><div class="table-wrap"><table><thead><tr><th></th>' + cfg.series.map(function (se) { return "<th>" + esc(se.name) + "</th>"; }).join("") + "</tr></thead><tbody>" +
       cfg.cats.map(function (c) { return "<tr><td>" + esc(c.label) + "</td>" + cfg.series.map(function (se) { var v = cfg.values[c.id] && cfg.values[c.id][se.key]; return '<td class="num">' + (v == null ? "—" : cfg.fmt(v)) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div></details>";
-    document.getElementById(cfg.chart).innerHTML = s + table;
+    host.innerHTML = s + table;
     document.getElementById(cfg.legend).innerHTML = legend;
     $$("#" + cfg.chart + " .bar").forEach(function (b) { b.addEventListener("mousemove", function (e) { showTip(e, b.getAttribute("data-tip")); }); b.addEventListener("mouseleave", hideTip); });
   }
@@ -268,7 +273,7 @@
       tip: function (c, se, v) { var x = dp.tasks.filter(function (k) { return k.id === c.id; })[0]; return "<b>" + esc(c.label) + "</b><br>" + esc(se.name) + ": " + nf(v) + " tokens" + (se.key === "mcp" ? "<br>÷" + nf(ratio(x, "tokens"), 0) + (lang === "fa" ? " کمتر" : " fewer") : ""); } });
     hbar({ chart: "ch-time", legend: "lg-time", cats: cats, series: series, values: mk("seconds"), scale: "linear", aria: "Seconds per task", fmt: function (v) { return v.toFixed(1) + "s"; }, tick: function (v) { return v + "s"; },
       tip: function (c, se, v) { return "<b>" + esc(c.label) + "</b><br>" + esc(se.name) + ": " + v.toFixed(2) + " s"; } });
-    hbar({ chart: "ch-req", legend: "lg-req", cats: cats, series: series, values: mk("requests"), scale: "log", aria: "Requests per task", fmt: function (v) { return nf(v); }, tick: function (v) { return v; },
+    hbar({ chart: "ch-req", legend: "lg-req", cats: cats, series: series, values: mk("requests"), scale: "log", domainMin: 0.5, aria: "Requests per task", fmt: function (v) { return nf(v); }, tick: function (v) { return v; },
       tip: function (c, se, v) { return "<b>" + esc(c.label) + "</b><br>" + esc(se.name) + ": " + nf(v) + " HTTP requests"; } });
 
     // traps
@@ -297,13 +302,13 @@
       hbar({ chart: "ch-acc", legend: "lg-acc", cats: tasks.map(function (id) { return { id: id, label: tnames[id] || id }; }), series: aseries, values: avals, scale: "linear", aria: "Accuracy per task", fmt: function (v) { return Math.round(v) + "%"; }, tick: function (v) { return v + "%"; },
         tip: function (c, se, v) { return "<b>" + esc(c.label) + "</b><br>" + esc(se.name) + ": " + Math.round(v) + "% " + (lang === "fa" ? "فیلدهای درست" : "of fields correct"); } });
       $("#acc-sub").textContent = (lang === "fa" ? "درصد فیلدهای درست، نسبت به حقیقت مستقل. " : "Share of fields correct against independent ground truth. ") + (ag.model || "") + (ag.date ? " · " + ag.date : "");
-      $("#agents-sub").textContent = (lang === "fa" ? "میانگین هر کار، پنج کار یکسان برای هر ایجنت. " : "Mean per task, the same five tasks for every agent. ") + (ag.note || "");
+      $("#agents-sub").textContent = (lang === "fa" ? "میانگین هر کار؛ توکن خالص یعنی منهای سربار ثابت هر ایجنت. " : "Mean per task, same tasks for every agent. Net tokens exclude each agent type's fixed harness overhead. ") + (ag.note || "");
       var rows = arms.map(function (a) {
         var arm = ag.arms[a.key], rs = tasks.map(function (id) { return arm.runs[id]; }).filter(Boolean), mean = function (f) { return rs.reduce(function (s, r) { return s + (r[f] || 0); }, 0) / rs.length; };
-        return { label: arm["label_" + lang] || arm.label_en, c: a.c, acc: mean("score") * 100, tok: mean("tokens"), sec: mean("seconds"), calls: mean("tool_uses"), ok: rs.filter(function (r) { return r.answered; }).length, n: rs.length };
+        return { label: arm["label_" + lang] || arm.label_en, c: a.c, acc: mean("score") * 100, tok: mean("net_tokens"), sec: mean("seconds"), calls: mean("tool_uses"), ok: rs.filter(function (r) { return r.answered; }).length, n: rs.length };
       });
       var maxTok = Math.max.apply(null, rows.map(function (r) { return r.tok; }));
-      $("#agent-table").innerHTML = "<thead><tr><th>" + (lang === "fa" ? "ایجنت" : "Agent") + "</th><th>" + (lang === "fa" ? "دقت" : "Accuracy") + "</th><th>" + (lang === "fa" ? "توکن (میانگین)" : "Tokens (mean)") + "</th><th>" + (lang === "fa" ? "زمان" : "Time") + "</th><th>" + (lang === "fa" ? "فراخوانی ابزار" : "Tool calls") + "</th><th>" + (lang === "fa" ? "پاسخ‌داده" : "Answered") + "</th></tr></thead><tbody>" +
+      $("#agent-table").innerHTML = "<thead><tr><th>" + (lang === "fa" ? "ایجنت" : "Agent") + "</th><th>" + (lang === "fa" ? "دقت" : "Accuracy") + "</th><th>" + (lang === "fa" ? "توکن خالص (میانگین)" : "Net tokens (mean)") + "</th><th>" + (lang === "fa" ? "زمان" : "Time") + "</th><th>" + (lang === "fa" ? "فراخوانی ابزار" : "Tool calls") + "</th><th>" + (lang === "fa" ? "پاسخ‌داده" : "Answered") + "</th></tr></thead><tbody>" +
         rows.map(function (r) { return '<tr><td><i class="hbar" style="width:12px;height:12px;background:' + r.c + '"></i>' + esc(r.label) + '</td><td class="num">' + Math.round(r.acc) + '%</td><td class="num bar-cell"><i class="hbar" style="width:' + Math.max(4, r.tok / maxTok * 90) + 'px;background:' + r.c + '"></i>' + nf(r.tok) + '</td><td class="num">' + r.sec.toFixed(0) + "s</td><td class=\"num\">" + r.calls.toFixed(1) + '</td><td class="num">' + r.ok + "/" + r.n + "</td></tr>"; }).join("") + "</tbody>";
     }
     $("#bench-note").textContent = (lang === "fa" ? "روش‌شناسی: " : "Method: ") + (lang === "fa"
@@ -319,7 +324,7 @@
   function renderInstall() {
     var list = allClients(), order = ["cli", "desktop", "ide", "framework"], html = "";
     order.forEach(function (g) {
-      html += '<div class="eyebrow" style="margin:14px 0 6px;font-size:11px">' + esc(GROUP_LABEL[g][lang === "fa" ? 1 : 0]) + "</div>";
+      html += '<div class="group">' + esc(GROUP_LABEL[g][lang === "fa" ? 1 : 0]) + "</div>";
       list.filter(function (c) { return c.group === g; }).forEach(function (c) { html += '<button class="client-btn" role="tab" type="button" data-client="' + c.id + '" aria-selected="' + (c.id === selectedClient) + '">' + esc(c.label) + (c.oneclick && (c.oneclick.cursor || c.oneclick.vscode || c.oneclick.goose) ? "<small>1-click</small>" : c.auto ? "<small>auto</small>" : "") + "</button>"; });
     });
     $("#clients").innerHTML = html;
@@ -386,6 +391,9 @@
     { q: ["How can I contribute?", "چطور مشارکت کنم؟"], a: ["Open an issue with the output of iran-bourse-mcp doctor, or send a pull request. The contributing guide explains the rules: pure logic with tests, estimates labelled, read-only forever.", "یک issue با خروجی iran-bourse-mcp doctor باز کنید یا pull request بفرستید. راهنمای مشارکت قوانین را توضیح می‌دهد: منطق خالص همراه تست، تخمین‌ها برچسب‌دار، و همیشه فقط‌خواندنی."] }
   ];
   function renderFaq() { $("#faq-list").innerHTML = FAQ.map(function (f, i) { return "<details" + (i === 0 ? " open" : "") + "><summary>" + esc(f.q[lang === "fa" ? 1 : 0]) + "</summary><p>" + esc(f.a[lang === "fa" ? 1 : 0]) + "</p></details>"; }).join(""); }
+
+  var resizeTimer;
+  window.addEventListener("resize", function () { clearTimeout(resizeTimer); resizeTimer = setTimeout(renderBench, 180); });
 
   /* ------------------------------------------------------------------ boot */
   function renderAll() { renderTape(); renderWorks(); renderPanel(); renderStats(); renderBench(); renderInstall(); renderExamples(); renderTools(); renderTrust(); renderFaq(); typeInto("t-bad", true); typeInto("t-good", true); $("#ver").textContent = "v" + (D.version || "0.1.0"); }

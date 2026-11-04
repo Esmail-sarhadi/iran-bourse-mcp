@@ -86,7 +86,7 @@ def bench_block() -> str:
     ag_path = RESULTS / "agents.json"
     if ag_path.exists():
         ag = json.loads(ag_path.read_text(encoding="utf-8"))
-        rows = ["| Agent | Accuracy | Tokens (mean/task) | Time (mean/task) | Tool calls | Answered |", "|---|---|---|---|---|---|"]
+        rows = ["| Agent | Accuracy | Net tokens (mean/task) | Time (mean/task) | Tool calls | Answered |", "|---|---|---|---|---|---|"]
         for arm in ag["arms"].values():
             runs = list(arm["runs"].values())
             n = len(runs)
@@ -95,7 +95,7 @@ def bench_block() -> str:
                 return sum(r.get(key) or 0 for r in runs) / n
 
             rows.append(
-                f"| {arm['label_en']} | {mean('score') * 100:.0f}% | {fmt_int(mean('tokens'))} | {mean('seconds'):.0f}s | "
+                f"| {arm['label_en']} | {mean('score') * 100:.0f}% | {fmt_int(mean('net_tokens'))} | {mean('seconds'):.0f}s | "
                 f"{mean('tool_uses'):.1f} | {sum(1 for r in runs if r.get('answered'))}/{n} |"
             )
         parts.append(f"**Agent trials** ({ag.get('model', 'one model')}, {ag.get('date', '')}; {len(ag.get('tasks', []))} tasks, graded against independent ground truth):\n\n" + "\n".join(rows) + "\n")

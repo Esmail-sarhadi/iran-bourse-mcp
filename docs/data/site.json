@@ -1,5 +1,5 @@
 {
- "tests": 107,
+ "tests": 132,
  "version": "0.1.0",
  "tools": [
   {
@@ -452,13 +452,13 @@
     {
      "name": "from_date",
      "required": false,
-     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "description": "Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound.",
      "default": null
     },
     {
      "name": "to_date",
      "required": false,
-     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "description": "Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound.",
      "default": null
     },
     {
@@ -600,13 +600,13 @@
     {
      "name": "from_date",
      "required": false,
-     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "description": "Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound.",
      "default": null
     },
     {
      "name": "to_date",
      "required": false,
-     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "description": "Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound.",
      "default": null
     },
     {
@@ -910,17 +910,43 @@
    "auto": false
   }
  ],
+ "frameworks": [
+  {
+   "id": "openai-agents",
+   "label": "OpenAI Agents SDK",
+   "language": "python",
+   "snippet": "from agents import Agent\nfrom agents.mcp import MCPServerStdio\n\nasync with MCPServerStdio(params={\"command\": \"uvx\", \"args\": [\"--from\", \"git+https://github.com/msmahdinejad/iran-bourse-mcp\", \"iran-bourse-mcp\"]}) as bourse:\n    agent = Agent(name=\"Analyst\", instructions=\"Answer with exchange data.\", mcp_servers=[bourse])\n"
+  },
+  {
+   "id": "langchain",
+   "label": "LangChain",
+   "language": "python",
+   "snippet": "from langchain_mcp_adapters.client import MultiServerMCPClient\n\nclient = MultiServerMCPClient({\n    \"iran-bourse\": {\"transport\": \"stdio\", \"command\": \"uvx\", \"args\": [\"--from\", \"git+https://github.com/msmahdinejad/iran-bourse-mcp\", \"iran-bourse-mcp\"]}\n})\ntools = await client.get_tools()\n"
+  },
+  {
+   "id": "claude-agent-sdk",
+   "label": "Claude Agent SDK",
+   "language": "python",
+   "snippet": "from claude_agent_sdk import ClaudeAgentOptions\n\noptions = ClaudeAgentOptions(mcp_servers={\"iran-bourse\": {\"command\": \"uvx\", \"args\": [\"--from\", \"git+https://github.com/msmahdinejad/iran-bourse-mcp\", \"iran-bourse-mcp\"]}})\n"
+  },
+  {
+   "id": "shell",
+   "label": "No MCP support? Use the shell",
+   "language": "bash",
+   "snippet": "# Any agent that can run commands can use every tool:\nuvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp tools\nuvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp call quote symbol=فولاد --compact\nuvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp call top_movers kind=buy_queue limit=5 --compact\n"
+  }
+ ],
  "snapshot": {
-  "captured_at_utc": "2026-11-04 07:35 UTC",
-  "tehran_time": "2026-11-04 11:05:53",
+  "captured_at_utc": "2026-11-04 08:02 UTC",
+  "tehran_time": "2026-11-04 11:32:19",
   "market_state": "باز",
   "index": {
-   "value": 7903510.01,
-   "change": 78906.62,
-   "change_pct": 1.01
+   "value": 7908881.05,
+   "change": 84277.66,
+   "change_pct": 1.08
   },
-  "trades_today": 580491,
-  "value_today": 227119622521265,
+  "trades_today": 645965,
+  "value_today": 248824204911796,
   "tape": [
    {
     "symbol": "فملی",
@@ -929,8 +955,8 @@
    },
    {
     "symbol": "شبندر",
-    "last": 12660.0,
-    "pct": -0.63
+    "last": 12530.0,
+    "pct": -1.65
    },
    {
     "symbol": "فولاد",
@@ -939,13 +965,8 @@
    },
    {
     "symbol": "فکور",
-    "last": 8670.0,
-    "pct": 2.97
-   },
-   {
-    "symbol": "شپنا",
-    "last": 11920.0,
-    "pct": 0.0
+    "last": 8650.0,
+    "pct": 2.73
    },
    {
     "symbol": "شتران",
@@ -953,9 +974,24 @@
     "pct": 2.84
    },
    {
+    "symbol": "شپنا",
+    "last": 11830.0,
+    "pct": -0.76
+   },
+   {
     "symbol": "وبملت",
     "last": 1434.0,
     "pct": 2.94
+   },
+   {
+    "symbol": "وکغدیر",
+    "last": 9220.0,
+    "pct": 2.9
+   },
+   {
+    "symbol": "فزر",
+    "last": 322500.0,
+    "pct": 2.97
    },
    {
     "symbol": "تاصیکو",
@@ -964,13 +1000,8 @@
    },
    {
     "symbol": "فپردیس",
-    "last": 101900.0,
-    "pct": 0.0
-   },
-   {
-    "symbol": "فزر",
-    "last": 322500.0,
-    "pct": 2.97
+    "last": 100800.0,
+    "pct": -1.08
    },
    {
     "symbol": "وبصادر",
@@ -978,43 +1009,70 @@
     "pct": 2.94
    },
    {
-    "symbol": "وکغدیر",
-    "last": 9210.0,
-    "pct": 2.79
+    "symbol": "فنقره",
+    "last": 30180.0,
+    "pct": 2.9
    },
    {
     "symbol": "فارس",
-    "last": 14380.0,
-    "pct": -1.37
+    "last": 14280.0,
+    "pct": -2.06
+   },
+   {
+    "symbol": "شستا",
+    "last": 3270.0,
+    "pct": 1.87
    },
    {
     "symbol": "پکرمان",
     "last": 10880.0,
     "pct": 2.93
-   },
-   {
-    "symbol": "فنقره",
-    "last": 29860.0,
-    "pct": 1.81
-   },
-   {
-    "symbol": "شستا",
-    "last": 3290.0,
-    "pct": 2.49
    }
   ],
   "gainers": [
+   {
+    "symbol": "چاپ",
+    "name": "ص.چاپ وبسته بندی آسان قزوین",
+    "last": 12180.0,
+    "last_pct": 6.56,
+    "close": 12180.0,
+    "close_pct": 6.56,
+    "volume": 5428182,
+    "value": 66115256760,
+    "trades": 115,
+    "pe": 7.55,
+    "market_cap": 121800000000000,
+    "at_upper_limit": false,
+    "at_lower_limit": false,
+    "industry": "محصولات کاغذی"
+   },
+   {
+    "symbol": "شگستر",
+    "name": "گسترش سوخت سبززاگرس(سهامی عام)",
+    "last": 2475.0,
+    "last_pct": 3.0,
+    "close": 2473.0,
+    "close_pct": 2.91,
+    "volume": 493749667,
+    "value": 1220990270815,
+    "trades": 3399,
+    "pe": 21.5,
+    "market_cap": 101436561292275,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی"
+   },
    {
     "symbol": "کخاک",
     "name": "صنایع‌خاک‌چینی‌ایران‌",
     "last": 81430.0,
     "last_pct": 3.0,
-    "close": 80480.0,
-    "close_pct": 1.8,
-    "volume": 13394758,
-    "value": 1077959272590,
-    "trades": 3623,
-    "pe": 16.14,
+    "close": 80540.0,
+    "close_pct": 1.87,
+    "volume": 14332126,
+    "value": 1154288052300,
+    "trades": 3889,
+    "pe": 16.15,
     "market_cap": 285005000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
@@ -1027,9 +1085,9 @@
     "last_pct": 3.0,
     "close": 11650.0,
     "close_pct": 2.73,
-    "volume": 69260180,
-    "value": 806899736430,
-    "trades": 3431,
+    "volume": 74011375,
+    "value": 862393694030,
+    "trades": 3564,
     "pe": 11.66,
     "market_cap": 934400000000000,
     "at_upper_limit": true,
@@ -1037,56 +1095,226 @@
     "industry": "سرمایه گذاریها"
    },
    {
-    "symbol": "ولغدر",
-    "name": "لیزینگ‌خودروغدیر",
-    "last": 4470.0,
+    "symbol": "کپشیر",
+    "name": "پشم‌شیشه‌ایران‌",
+    "last": 42270.0,
     "last_pct": 3.0,
-    "close": 4370.0,
-    "close_pct": 0.69,
-    "volume": 89976106,
-    "value": 393011764450,
-    "trades": 1003,
-    "pe": 52.65,
-    "market_cap": 10728000000000,
+    "close": 42260.0,
+    "close_pct": 2.97,
+    "volume": 12534463,
+    "value": 529737373340,
+    "trades": 1818,
+    "pe": 20.69,
+    "market_cap": 253620000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
-    "industry": "سایر واسطه گریهای مالی"
-   },
-   {
-    "symbol": "سیتا",
-    "name": "سرمایه گذاری سیمان تامین",
-    "last": 42640.0,
-    "last_pct": 3.0,
-    "close": 42610.0,
-    "close_pct": 2.92,
-    "volume": 6946505,
-    "value": 295976032350,
-    "trades": 1057,
-    "pe": 9.97,
-    "market_cap": 938080000000000,
-    "at_upper_limit": true,
-    "at_lower_limit": false,
-    "industry": "سیمان، آهک و گچ"
-   },
-   {
-    "symbol": "فسبزوار",
-    "name": "پارس فولاد سبزوار",
-    "last": 101660.0,
-    "last_pct": 3.0,
-    "close": 101660.0,
-    "close_pct": 3.0,
-    "volume": 2322335,
-    "value": 236088576100,
-    "trades": 374,
-    "pe": 5.81,
-    "market_cap": 406640000000000,
-    "at_upper_limit": true,
-    "at_lower_limit": false,
-    "industry": "فلزات اساسی"
+    "industry": "سایر محصولات کانی غیرفلزی"
    }
   ],
-  "buy_queues": [],
-  "real_inflow": [],
+  "buy_queues": [
+   {
+    "symbol": "شتبریز",
+    "name": "پتروشیمی تبریز",
+    "last": 75330.0,
+    "last_pct": 2.99,
+    "close": 75330.0,
+    "close_pct": 2.99,
+    "volume": 2740943,
+    "value": 206475236190,
+    "trades": 9779,
+    "pe": 5.02,
+    "market_cap": 375294060000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "queue_volume": 281512612,
+    "queue_orders": 9999,
+    "queue_value": 21206345061960
+   },
+   {
+    "symbol": "تابان",
+    "name": "گروه پتروشیمی تابان فردا",
+    "last": 23280.0,
+    "last_pct": 2.96,
+    "close": 23280.0,
+    "close_pct": 2.96,
+    "volume": 76247366,
+    "value": 1775038680480,
+    "trades": 2936,
+    "pe": 25.64,
+    "market_cap": 6984000000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "queue_volume": 487296467,
+    "queue_orders": 6706,
+    "queue_value": 11344261751760
+   },
+   {
+    "symbol": "کرماشا",
+    "name": "صنایع پتروشیمی کرمانشاه",
+    "last": 28380.0,
+    "last_pct": 2.98,
+    "close": 28380.0,
+    "close_pct": 2.98,
+    "volume": 40162071,
+    "value": 1139799574980,
+    "trades": 922,
+    "pe": 6.13,
+    "market_cap": 592937323440000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "queue_volume": 194769424,
+    "queue_orders": 2227,
+    "queue_value": 5527556253120
+   },
+   {
+    "symbol": "خراسان",
+    "name": "پتروشیمی خراسان",
+    "last": 60730.0,
+    "last_pct": 2.98,
+    "close": 60730.0,
+    "close_pct": 2.98,
+    "volume": 15068665,
+    "value": 915120025450,
+    "trades": 1070,
+    "pe": 5.57,
+    "market_cap": 728760000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "queue_volume": 84979016,
+    "queue_orders": 3041,
+    "queue_value": 5160775641680
+   },
+   {
+    "symbol": "شیراز",
+    "name": "پتروشیمی‌شیراز",
+    "last": 67800.0,
+    "last_pct": 2.99,
+    "close": 67800.0,
+    "close_pct": 2.99,
+    "volume": 10502635,
+    "value": 712078653000,
+    "trades": 760,
+    "pe": 6.37,
+    "market_cap": 1037340000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "queue_volume": 61400386,
+    "queue_orders": 2179,
+    "queue_value": 4162946170800
+   }
+  ],
+  "real_inflow": [
+   {
+    "symbol": "تابان",
+    "name": "گروه پتروشیمی تابان فردا",
+    "last": 23280.0,
+    "last_pct": 2.96,
+    "close": 23280.0,
+    "close_pct": 2.96,
+    "volume": 76247366,
+    "value": 1775038680480,
+    "trades": 2936,
+    "pe": 25.64,
+    "market_cap": 6984000000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "real_net_volume": 65007577,
+    "real_net_value_estimated": 1513376392560,
+    "real_buyer_power": 21.98,
+    "real_buyers": 599,
+    "real_sellers": 1502
+   },
+   {
+    "symbol": "تاصیکو",
+    "name": "سرمایه گذاری صدرتامین",
+    "last": 38710.0,
+    "last_pct": 2.98,
+    "close": 38650.0,
+    "close_pct": 2.82,
+    "volume": 78346757,
+    "value": 3027873868970,
+    "trades": 11170,
+    "pe": 69.02,
+    "market_cap": 3696805000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "استخراج کانه های فلزی",
+    "real_net_volume": 34551580,
+    "real_net_value_estimated": 1335318021902,
+    "real_buyer_power": 0.85,
+    "real_buyers": 3917,
+    "real_sellers": 1760
+   },
+   {
+    "symbol": "وغدیر",
+    "name": "سرمایه‌گذاری‌غدیر(هلدینگ‌",
+    "last": 20800.0,
+    "last_pct": 2.97,
+    "close": 20800.0,
+    "close_pct": 2.97,
+    "volume": 90078459,
+    "value": 1873631947200,
+    "trades": 1995,
+    "pe": 10.78,
+    "market_cap": 4492800000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "شرکتهای چند رشته ای صنعتی",
+    "real_net_volume": 57513976,
+    "real_net_value_estimated": 1196290700800,
+    "real_buyer_power": 21.0,
+    "real_buyers": 247,
+    "real_sellers": 228
+   },
+   {
+    "symbol": "پارسان",
+    "name": "گسترش نفت و گاز پارسیان",
+    "last": 34500.0,
+    "last_pct": 2.99,
+    "close": 34500.0,
+    "close_pct": 2.99,
+    "volume": 36499756,
+    "value": 1259241582000,
+    "trades": 2455,
+    "pe": 9.91,
+    "market_cap": 4191750000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "real_net_volume": 28225129,
+    "real_net_value_estimated": 973766950500,
+    "real_buyer_power": 5.45,
+    "real_buyers": 424,
+    "real_sellers": 114
+   },
+   {
+    "symbol": "کرماشا",
+    "name": "صنایع پتروشیمی کرمانشاه",
+    "last": 28380.0,
+    "last_pct": 2.98,
+    "close": 28380.0,
+    "close_pct": 2.98,
+    "volume": 40162071,
+    "value": 1139799574980,
+    "trades": 922,
+    "pe": 6.13,
+    "market_cap": 592937323440000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "real_net_volume": 33892000,
+    "real_net_value_estimated": 961854960000,
+    "real_buyer_power": 8.15,
+    "real_buyers": 297,
+    "real_sellers": 113
+   }
+  ],
   "foolad": {
    "identity": {
     "symbol": "فولاد",
@@ -1105,7 +1333,7 @@
    "quote": {
     "date": "2026-11-04",
     "jdate": "1405/08/13",
-    "last_update": "11:05:42",
+    "last_update": "11:32:07",
     "status": {
      "code": "A",
      "title": "مجاز",
@@ -1117,18 +1345,18 @@
      "change_pct": 2.85
     },
     "close": {
-     "price": 4280.0,
-     "change": 70.0,
-     "change_pct": 1.66
+     "price": 4290.0,
+     "change": 80.0,
+     "change_pct": 1.9
     },
     "yesterday_close": 4210.0,
     "open": 4240.0,
     "high": 4330.0,
     "low": 4140.0,
-    "volume": 1173623959,
-    "value": 5028573575570,
-    "trades": 14340,
-    "vwap": 4284.65,
+    "volume": 1259106402,
+    "value": 5398712553760,
+    "trades": 15249,
+    "vwap": 4287.73,
     "price_limits": {
      "upper": 4330.0,
      "lower": 4090.0
@@ -1146,7 +1374,7 @@
      }
     },
     "avg_volume": 2877533991,
-    "volume_vs_avg": 0.41,
+    "volume_vs_avg": 0.44,
     "fundamentals": {
      "eps": 693.0,
      "pe": 6.25,
@@ -1163,32 +1391,32 @@
      {
       "level": 1,
       "price": 4330.0,
-      "volume": 175683690,
-      "orders": 941
+      "volume": 487348227,
+      "orders": 2033
      },
      {
       "level": 2,
       "price": 4320.0,
-      "volume": 2967375,
-      "orders": 26
+      "volume": 2971985,
+      "orders": 27
      },
      {
       "level": 3,
       "price": 4310.0,
-      "volume": 104688,
-      "orders": 4
+      "volume": 404688,
+      "orders": 5
      },
      {
       "level": 4,
       "price": 4300.0,
-      "volume": 2479929,
-      "orders": 31
+      "volume": 2372979,
+      "orders": 28
      },
      {
       "level": 5,
       "price": 4290.0,
-      "volume": 4075173,
-      "orders": 23
+      "volume": 4084038,
+      "orders": 28
      }
     ],
     "asks": [
@@ -1227,11 +1455,11 @@
     "best_ask": 4340.0,
     "spread": 10.0,
     "spread_pct": 0.23,
-    "total_bid_volume": 185310855,
+    "total_bid_volume": 497181917,
     "total_ask_volume": 1648726,
-    "total_bid_orders": 1025,
+    "total_bid_orders": 2121,
     "total_ask_orders": 21,
-    "imbalance": 0.9824,
+    "imbalance": 0.9934,
     "queue": {
      "state": null,
      "queue_volume": 0,
@@ -1247,47 +1475,47 @@
    "real_legal": {
     "real": {
      "buy": {
-      "volume": 754610196,
-      "count": 2170,
-      "value": 3233240576291,
+      "volume": 808143350,
+      "count": 2264,
+      "value": 3465100486095,
       "value_estimated": true,
-      "avg_per_participant": 1489972615.8,
-      "avg_volume_per_participant": 347746.63
+      "avg_per_participant": 1530521416.12,
+      "avg_volume_per_participant": 356953.78
      },
      "sell": {
-      "volume": 1037435195,
-      "count": 3374,
-      "value": 4445046708256,
+      "volume": 1068372975,
+      "count": 3551,
+      "value": 4580894856096,
       "value_estimated": true,
-      "avg_per_participant": 1317441229.48,
-      "avg_volume_per_participant": 307479.31
+      "avg_per_participant": 1290029528.61,
+      "avg_volume_per_participant": 300865.38
      },
-     "net_volume": -282824999,
-     "net_value": -1211806131965
+     "net_volume": -260229625,
+     "net_value": -1115794370001
     },
     "legal": {
      "buy": {
-      "volume": 418551526,
-      "count": 30,
-      "value": 1793346795875,
+      "volume": 450956152,
+      "count": 33,
+      "value": 1933578221614,
       "value_estimated": true,
-      "avg_per_participant": 59778226529.2,
-      "avg_volume_per_participant": 13951717.53
+      "avg_per_participant": 58593279442.88,
+      "avg_volume_per_participant": 13665337.94
      },
      "sell": {
-      "volume": 135726527,
+      "volume": 190726527,
       "count": 24,
-      "value": 581540663910,
+      "value": 817783851613,
       "value_estimated": true,
-      "avg_per_participant": 24230860996.27,
-      "avg_volume_per_participant": 5655271.96
+      "avg_per_participant": 34074327150.57,
+      "avg_volume_per_participant": 7946938.62
      },
-     "net_volume": 282824999,
-     "net_value": 1211806131965
+     "net_volume": 260229625,
+     "net_value": 1115794370001
     },
-    "real_buyer_power": 1.13,
-    "real_share_of_buy_volume_pct": 64.32,
-    "real_share_of_sell_volume_pct": 88.43,
+    "real_buyer_power": 1.19,
+    "real_share_of_buy_volume_pct": 64.18,
+    "real_share_of_sell_volume_pct": 84.85,
     "reading": "real_buyer_power > 1: the average real-person buyer is larger than the average real-person seller (smart-money accumulation proxy). net_* > 0 on 'real' means money flowed INTO the stock from real persons."
    },
    "holders": {
@@ -1991,47 +2219,47 @@
      "date": "2026-11-04",
      "real": {
       "buy": {
-       "volume": 754610196,
-       "count": 2170,
-       "value": 3233244228155,
+       "volume": 808143350,
+       "count": 2264,
+       "value": 3465103220786,
        "value_estimated": true,
-       "avg_per_participant": 1489974298.69,
-       "avg_volume_per_participant": 347746.63
+       "avg_per_participant": 1530522624.02,
+       "avg_volume_per_participant": 356953.78
       },
       "sell": {
-       "volume": 1037435195,
-       "count": 3374,
-       "value": 4445051728824,
+       "volume": 1068372975,
+       "count": 3551,
+       "value": 4580898471383,
        "value_estimated": true,
-       "avg_per_participant": 1317442717.49,
-       "avg_volume_per_participant": 307479.31
+       "avg_per_participant": 1290030546.71,
+       "avg_volume_per_participant": 300865.38
       },
-      "net_volume": -282824999,
-      "net_value": -1211807500669
+      "net_volume": -260229625,
+      "net_value": -1115795250597
      },
      "legal": {
       "buy": {
-       "volume": 418551526,
-       "count": 30,
-       "value": 1793348821415,
+       "volume": 450956152,
+       "count": 33,
+       "value": 1933579747613,
        "value_estimated": true,
-       "avg_per_participant": 59778294047.2,
-       "avg_volume_per_participant": 13951717.53
+       "avg_per_participant": 58593325685.26,
+       "avg_volume_per_participant": 13665337.94
       },
       "sell": {
-       "volume": 135726527,
+       "volume": 190726527,
        "count": 24,
-       "value": 581541320746,
+       "value": 817784497016,
        "value_estimated": true,
-       "avg_per_participant": 24230888364.42,
-       "avg_volume_per_participant": 5655271.96
+       "avg_per_participant": 34074354042.36,
+       "avg_volume_per_participant": 7946938.62
       },
-      "net_volume": 282824999,
-      "net_value": 1211807500669
+      "net_volume": 260229625,
+      "net_value": 1115795250597
      },
-     "real_buyer_power": 1.13,
-     "real_share_of_buy_volume_pct": 64.32,
-     "real_share_of_sell_volume_pct": 88.43,
+     "real_buyer_power": 1.19,
+     "real_share_of_buy_volume_pct": 64.18,
+     "real_share_of_sell_volume_pct": 84.85,
      "reading": "real_buyer_power > 1: the average real-person buyer is larger than the average real-person seller (smart-money accumulation proxy). net_* > 0 on 'real' means money flowed INTO the stock from real persons."
     },
     "history": [
@@ -2207,6 +2435,420 @@
    }
   }
  },
- "bench_data_plane": null,
- "bench_agents": null
+ "bench_data_plane": {
+  "generated": "2026-11-04 07:36:13 UTC",
+  "tokenizer": "tiktoken o200k_base (proxy)",
+  "repeats": 1,
+  "tasks": [
+   {
+    "id": "quote",
+    "title": "Live quote with correct % change",
+    "raw": {
+     "requests": 3,
+     "seconds": 0.42,
+     "bytes": 17819,
+     "tokens": 6225
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.47,
+     "bytes": 953,
+     "tokens": 337
+    },
+    "token_reduction": 18.5,
+    "byte_reduction": 18.7
+   },
+   {
+    "id": "order_book",
+    "title": "Order book with queue detection",
+    "raw": {
+     "requests": 3,
+     "seconds": 0.33,
+     "bytes": 17917,
+     "tokens": 6298
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.51,
+     "bytes": 1110,
+     "tokens": 390
+    },
+    "token_reduction": 16.1,
+    "byte_reduction": 16.1
+   },
+   {
+    "id": "trade_summary",
+    "title": "One day of ticks: VWAP, biggest trades, bars",
+    "raw": {
+     "requests": 3,
+     "seconds": 0.73,
+     "bytes": 4643639,
+     "tokens": 2142302
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.82,
+     "bytes": 8316,
+     "tokens": 3380
+    },
+    "token_reduction": 633.8,
+    "byte_reduction": 558.4
+   },
+   {
+    "id": "real_legal_10d",
+    "title": "Real vs legal money flow, 10 days",
+    "raw": {
+     "requests": 12,
+     "seconds": 0.87,
+     "bytes": 1522382,
+     "tokens": 612009
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.98,
+     "bytes": 4101,
+     "tokens": 1331
+    },
+    "token_reduction": 459.8,
+    "byte_reduction": 371.2
+   },
+   {
+    "id": "shareholders",
+    "title": "Major shareholders",
+    "raw": {
+     "requests": 3,
+     "seconds": 0.36,
+     "bytes": 20349,
+     "tokens": 7018
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.5,
+     "bytes": 2411,
+     "tokens": 679
+    },
+    "token_reduction": 10.3,
+    "byte_reduction": 8.4
+   },
+   {
+    "id": "buy_queues",
+    "title": "Market-wide ranking of buy queues",
+    "raw": {
+     "requests": 3,
+     "seconds": 0.75,
+     "bytes": 954825,
+     "tokens": 274284
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.88,
+     "bytes": 52,
+     "tokens": 17
+    },
+    "token_reduction": 16134.4,
+    "byte_reduction": 18362.0
+   },
+   {
+    "id": "codal_5",
+    "title": "Latest 5 Codal filings with links",
+    "raw": {
+     "requests": 1,
+     "seconds": 1.05,
+     "bytes": 18274,
+     "tokens": 6489
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 1.84,
+     "bytes": 4194,
+     "tokens": 1539
+    },
+    "token_reduction": 4.2,
+    "byte_reduction": 4.4
+   },
+   {
+    "id": "price_history_1y",
+    "title": "One year of daily prices, adjusted",
+    "raw": {
+     "requests": 2,
+     "seconds": 0.51,
+     "bytes": 1518641,
+     "tokens": 610549
+    },
+    "mcp": {
+     "requests": 1,
+     "seconds": 0.53,
+     "bytes": 46002,
+     "tokens": 20245
+    },
+    "token_reduction": 30.2,
+    "byte_reduction": 33.0
+   }
+  ],
+  "traps": [
+   {
+    "id": "price_change_field",
+    "what": "The exchange's own `priceChange` field in GetClosingPriceInfo",
+    "naive_reading": 0.0,
+    "correct": 120.0,
+    "wrong": true
+   },
+   {
+    "id": "shareholder_rows_doubled",
+    "what": "Counting holders / summing percent from the dated shareholder endpoint",
+    "naive_reading": {
+     "holders": 24,
+     "percent_sum": 92.97
+    },
+    "correct": {
+     "holders": 12,
+     "percent_sum": 46.48
+    },
+    "wrong": true
+   },
+   {
+    "id": "client_type_field_names",
+    "what": "Reading real-buyer count with the key used by the live endpoint (`buy_CountI`) on history rows",
+    "naive_reading": null,
+    "correct": 3790.0,
+    "wrong": true
+   },
+   {
+    "id": "queue_false_positives",
+    "what": "Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone",
+    "naive_reading": 80,
+    "correct": 0,
+    "wrong": true,
+    "note": "Only meaningful when the gateway's top-of-book fields are empty (outside the session)."
+   },
+   {
+    "id": "arabic_letters",
+    "what": "Matching the company name the user types (Persian letters) against the exchange's text (Arabic letters)",
+    "naive_reading": false,
+    "correct": true,
+    "wrong": true
+   }
+  ],
+  "browser_baseline": {
+   "tsetmc symbol page": {
+    "status": 200,
+    "bytes": 868,
+    "tokens": 241,
+    "has_price_data": false,
+    "unrendered_template_markers": 0
+   },
+   "codal report list": {
+    "status": 200,
+    "bytes": 103049,
+    "tokens": 18375,
+    "has_price_data": false,
+    "unrendered_template_markers": 48
+   }
+  }
+ },
+ "bench_agents": {
+  "model": "Claude (one model for every arm)",
+  "date": "2026-11-04",
+  "base_tokens": {
+   "browser": 3157,
+   "shell": 53496,
+   "mcp": 53496
+  },
+  "tasks": [
+   {
+    "id": "T2",
+    "title_en": "Ticks of one day",
+    "title_fa": "ریز معاملات یک روز"
+   },
+   {
+    "id": "T3",
+    "title_en": "Real-person money flow",
+    "title_fa": "پول حقیقی ۳ روز"
+   },
+   {
+    "id": "T5",
+    "title_en": "Codal filings",
+    "title_fa": "اطلاعیه‌های کدال"
+   },
+   {
+    "id": "T6",
+    "title_en": "One-year adjusted return",
+    "title_fa": "بازده تعدیل‌شده یک‌ساله"
+   }
+  ],
+  "arms": {
+   "browser": {
+    "label_en": "Browser-only agent (page fetch)",
+    "label_fa": "ایجنت فقط‌مرورگر",
+    "runs": {
+     "T2": {
+      "score": 0.25,
+      "fields": {
+       "vwap": false,
+       "trades": true,
+       "largest_trade_volume": false,
+       "largest_trade_time": false
+      },
+      "tokens": 97301,
+      "net_tokens": 94144,
+      "seconds": 197.8,
+      "tool_uses": 6,
+      "answered": true
+     },
+     "T3": {
+      "score": 0.0,
+      "fields": {
+       "total": false,
+       "day_20261103": false,
+       "day_20261102": false,
+       "day_20261101": false
+      },
+      "tokens": 84822,
+      "net_tokens": 81665,
+      "seconds": 161.2,
+      "tool_uses": 13,
+      "answered": true
+     },
+     "T5": {
+      "score": 0.0,
+      "fields": {
+       "tracing_numbers": false,
+       "titles": false
+      },
+      "tokens": 48785,
+      "net_tokens": 45628,
+      "seconds": 87.9,
+      "tool_uses": 5,
+      "answered": false
+     },
+     "T6": {
+      "score": 0.0,
+      "fields": {
+       "adjusted_return": false
+      },
+      "tokens": 218110,
+      "net_tokens": 214953,
+      "seconds": 434.9,
+      "tool_uses": 11,
+      "answered": true
+     }
+    }
+   },
+   "shell": {
+    "label_en": "Shell agent (curl/python + web, no MCP)",
+    "label_fa": "ایجنت شل (بدون MCP)",
+    "runs": {
+     "T2": {
+      "score": 1.0,
+      "fields": {
+       "vwap": true,
+       "trades": true,
+       "largest_trade_volume": true,
+       "largest_trade_time": true
+      },
+      "tokens": 66576,
+      "net_tokens": 13080,
+      "seconds": 58.6,
+      "tool_uses": 6,
+      "answered": true
+     },
+     "T3": {
+      "score": 1.0,
+      "fields": {
+       "total": true,
+       "day_20261103": true,
+       "day_20261102": true,
+       "day_20261101": true
+      },
+      "tokens": 58808,
+      "net_tokens": 5312,
+      "seconds": 17.7,
+      "tool_uses": 2,
+      "answered": true
+     },
+     "T5": {
+      "score": 1.0,
+      "fields": {
+       "tracing_numbers": true,
+       "titles": true
+      },
+      "tokens": 73455,
+      "net_tokens": 19959,
+      "seconds": 67.6,
+      "tool_uses": 5,
+      "answered": true
+     },
+     "T6": {
+      "score": 1.0,
+      "fields": {
+       "adjusted_return": true
+      },
+      "tokens": 69255,
+      "net_tokens": 15759,
+      "seconds": 90.0,
+      "tool_uses": 11,
+      "answered": true
+     }
+    }
+   },
+   "mcp": {
+    "label_en": "Agent + iran-bourse-mcp",
+    "label_fa": "ایجنت + iran-bourse-mcp",
+    "runs": {
+     "T2": {
+      "score": 1.0,
+      "fields": {
+       "vwap": true,
+       "trades": true,
+       "largest_trade_volume": true,
+       "largest_trade_time": true
+      },
+      "tokens": 65647,
+      "net_tokens": 12151,
+      "seconds": 31.2,
+      "tool_uses": 2,
+      "answered": true
+     },
+     "T3": {
+      "score": 1.0,
+      "fields": {
+       "total": true,
+       "day_20261103": true,
+       "day_20261102": true,
+       "day_20261101": true
+      },
+      "tokens": 60708,
+      "net_tokens": 7212,
+      "seconds": 16.5,
+      "tool_uses": 1,
+      "answered": true
+     },
+     "T5": {
+      "score": 1.0,
+      "fields": {
+       "tracing_numbers": true,
+       "titles": true
+      },
+      "tokens": 60105,
+      "net_tokens": 6609,
+      "seconds": 12.0,
+      "tool_uses": 1,
+      "answered": true
+     },
+     "T6": {
+      "score": 1.0,
+      "fields": {
+       "adjusted_return": true
+      },
+      "tokens": 69217,
+      "net_tokens": 15721,
+      "seconds": 40.9,
+      "tool_uses": 6,
+      "answered": true
+     }
+    }
+   }
+  },
+  "note": ""
+ }
 }

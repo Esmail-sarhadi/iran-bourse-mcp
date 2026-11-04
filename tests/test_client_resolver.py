@@ -153,3 +153,13 @@ async def test_resolver_rejects_empty():
     with pytest.raises(SymbolError):
         await Resolver(TseApi(http)).resolve("  ")
     await http.aclose()
+
+
+@respx.mock
+async def test_persistent_502_is_reported_as_an_overloaded_server_not_an_ip_problem():
+    respx.get(URL).mock(return_value=httpx.Response(502))
+    http = Http()
+    with pytest.raises(UpstreamError) as err:
+        await http.get_json(URL)
+    assert "overloaded" in str(err.value) and "Iranian" not in str(err.value) and err.value.status == 502
+    await http.aclose()

@@ -1,12 +1,14 @@
 name: Publish to PyPI
 
-# Enable by configuring PyPI "trusted publishing" for this repository, then push a tag like v0.1.0.
+# Enable by configuring PyPI "trusted publishing" for this repository, then set the repository
+# variable PUBLISH_PYPI=true and push a tag like v0.2.0.
 on:
   push:
     tags: ["v*"]
 
 jobs:
   publish:
+    if: ${{ vars.PUBLISH_PYPI == 'true' }}
     runs-on: ubuntu-latest
     environment: pypi
     permissions:

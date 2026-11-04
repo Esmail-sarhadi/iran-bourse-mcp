@@ -1,30 +1,79 @@
 <div dir="rtl">
 
-# iran-bourse-mcp
+<div align="center">
 
-**کل بورس تهران را در اختیار ایجنت هوش مصنوعی‌تان بگذارید.** یک سرور متن‌باز [MCP](https://modelcontextprotocol.io) برای TSETMC (بورس و فرابورس) و کدال: قیمت، عمق بازار، ریز معاملات، ورود و خروج پول حقیقی/حقوقی، سهامداران عمده، اطلاعیه‌های کدال و بیشتر، با داده‌ی تمیز، واحد مشخص و آماده‌ی تحلیل.
+<img src="docs/assets/banner.svg" alt="iran-bourse-mcp: بورس تهران برای ایجنت‌های هوش مصنوعی" width="100%">
 
-[English](README.md) · [مرجع ابزارها](docs/TOOLS.md) · [نکات داده](docs/DATA_SOURCES.md)
+<br>
+
+[![CI](https://github.com/msmahdinejad/iran-bourse-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/msmahdinejad/iran-bourse-mcp/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2EC4B6.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%E2%80%933.13-5B7CFA.svg)](pyproject.toml)
+[![Tools](https://img.shields.io/badge/tools-28%20read--only-2EC4B6.svg)](docs/TOOLS.md)
+[![Stars](https://img.shields.io/github/stars/msmahdinejad/iran-bourse-mcp?style=flat&color=F5B53D)](https://github.com/msmahdinejad/iran-bourse-mcp/stargazers)
+
+**[وب‌سایت](https://msmahdinejad.github.io/iran-bourse-mcp/)** · **[نصب](#نصب)** · **[بنچمارک](#بنچمارک)** · **[مرجع ابزارها](docs/TOOLS.md)** · **[نکات داده](docs/DATA_SOURCES.md)** · **[English](README.md)**
+
+</div>
+
+**کل بورس تهران را در اختیار ایجنت هوش مصنوعی‌تان بگذارید.** یک سرور متن‌باز [MCP](https://modelcontextprotocol.io) برای TSETMC (بورس و فرابورس) و کدال: قیمت، عمق بازار و صف، ریز معاملات، ورود و خروج پول حقیقی/حقوقی، سهامداران عمده، اطلاعیه‌های کدال و بیشتر؛ با واحد مشخص، عددهای محاسبه‌شده‌ی برچسب‌دار، و بدون هیچ ابزاری برای ثبت سفارش.
 
 > غیررسمی است و هیچ ارتباطی با TSETMC، بورس تهران، فرابورس یا کدال ندارد. فقط اطلاعات است و **توصیه سرمایه‌گذاری نیست**.
 
+<div align="center">
+<img src="docs/assets/demo.svg" alt="یک ایجنت فولاد را با iran-bourse-mcp بررسی می‌کند" width="860">
+</div>
+
 ## چرا ساخته شد
 
-ایجنت هوش مصنوعی با مرورگر معمولی نمی‌تواند بازار ایران را درست بخواند:
+ایجنت هوش مصنوعی با مرورگر معمولی نمی‌تواند بازار ایران را درست بخواند. تست کردیم:
 
-- سایت `tsetmc.com` یک پوسته‌ی جاوااسکریپتی است. صفحه‌ی نماد را که می‌گیرید فقط یک عنوان خالی برمی‌گردد (تست کردیم). لیست گزارش‌های کدال هم با قالب‌های رندرنشده‌ی `{{...}}` می‌آید.
-- endpoint های JSON پنهان که داده را دارند نام‌های رمزی دارند (`qTotTran5J`، `pMeDem`، `zOrdMeOf`) و تله دارند. مثلاً فیلد `priceChange` خودِ بورس برای سهمی که ۱۲۰ ریال بالا رفته بود صفر بود، تاریخچه‌ی عمق بازار «تغییرات» است نه عکس کامل و باید بازسازی شود، و ردیف سهامداران دوبار برمی‌گردد.
-- ریز معاملات یک روز حدود ۳ مگابایت JSON است و جایی داخل context ایجنت ندارد.
+- **سایت یک پوسته‌ی خالی است.** صفحه‌ی نماد در `tsetmc.com` فقط یک عنوان برمی‌گرداند و لیست گزارش‌های کدال با قالب‌های رندرنشده‌ی `{{...}}` می‌آید.
+- **API پنهان با کد حرف می‌زند و تله دارد.** فیلدهایی مثل `qTotTran5J` و `pMeDem`؛ فیلد `priceChange` خودِ بورس برای سهمی که ۱۲۰ ریال بالا رفته بود صفر بود؛ تاریخچه‌ی عمق بازار «تغییرات» است نه عکس کامل؛ و ردیف سهامداران دوبار می‌آید.
+- **ریز معاملات یک روز حدود ۳ مگابایت JSON است** و جایی داخل context ایجنت ندارد.
 
 این پروژه داده را پیدا می‌کند، تله‌ها را اصلاح می‌کند، تکه‌ها را بازسازی می‌کند، حجم زیاد را خلاصه می‌کند و هرچه خودش حدس بزند را برچسب می‌زند.
+
+## نصب
+
+با **هر کلاینت MCP** کار می‌کند و برای ایجنت‌های بدون MCP هم دستور شل دارد. به [uv](https://docs.astral.sh/uv/) و سیستمی داخل ایران نیاز دارید ([چرا؟](#محدودیت-ip-ایران)).
+
+```bash
+# ۱. بررسی دسترسی به TSETMC و کدال از همین سیستم
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp doctor
+
+# ۲. مراحل دقیق برای ایجنتتان را چاپ کنید، یا بگذارید خودِ ابزار فایل تنظیمات را ویرایش کند
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp config cursor
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp install cursor
+```
+
+ورودی سرور همیشه یکی است: دستور `uvx`، آرگومان‌های `["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]` و ترنسپورت stdio. دکمه‌های نصب یک‌کلیکی برای Cursor، VS Code و Goose در [وب‌سایت](https://msmahdinejad.github.io/iran-bourse-mcp/#install) هست. یک ایجنت می‌تواند طبق [docs/llms-install.md](docs/llms-install.md) خودش آن را نصب کند.
+
+برای **Claude Code**:
+
+```bash
+claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
+```
+
+برای **Codex CLI**:
+
+```bash
+codex mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
+```
+
+دستور‌های ۱۷ ایجنت و IDE (Claude Desktop، Gemini CLI، Cursor، VS Code، Windsurf، Cline، Roo Code، Zed، Goose، OpenCode، Kiro، Qwen Code، JetBrains، Amp و فریم‌ورک‌های پایتون) در [README انگلیسی](README.md#install) و در وب‌سایت است. برای ایجنت‌های بدون MCP:
+
+```bash
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp call quote symbol=فولاد --compact
+```
 
 ## چه چیزهایی می‌پرسید
 
 > «وضعیت فولاد رو کامل بررسی کن: صف، ورود پول حقیقی، سهامداران عمده و آخرین اطلاعیه‌های کدال»
 > «امروز کدوم سهم‌ها صف خرید قوی دارن و پول حقیقی وارد شده؟»
-> «ریز معاملات فولاد دیروز از ۱۰ تا ۱۱ رو خلاصه کن و بزرگ‌ترین معامله‌ها رو نشون بده»
+> «ریز معاملات فولاد دیروز رو خلاصه کن و بزرگ‌ترین معامله‌ها رو نشون بده»
+> «صف خرید خودرو از چه ساعتی شکل گرفت و چقدر بزرگ شد؟»
 > «سهامدار عمده شستا چه سهم‌های دیگه‌ای داره؟»
-> «تاریخچه قیمت تعدیل‌شده خودرو در یک سال اخیر»
 
 ## پوشش داده
 
@@ -43,42 +92,20 @@
 | پیام ناظر | `supervisor_messages` |
 | واژه‌نامه | `glossary` (اصطلاحات بازار فارسی ↔ انگلیسی) |
 
+## بنچمارک
+
+روی بورس واقعی اندازه‌گیری شده، نه ادعا. «مسیر خام» بهترین حالت ممکن برای ایجنتی است که endpoint های پنهان را از قبل می‌شناسد. اسکریپت‌ها و نتایج خام در پوشه‌ی [`benchmarks/`](benchmarks/README.md) هست و قابل تکرار است. جدول‌ها و نمودارها در [بخش انگلیسی](README.md#benchmarks) و [وب‌سایت](https://msmahdinejad.github.io/iran-bourse-mcp/#benchmarks) آمده‌اند.
+
 ### تست‌شده، نه فرضی
 
-روی سرورهای واقعی در ۱۲ و ۱۳ آبان ۱۴۰۵ اجرا شد:
+- **ریز معاملات کامل است.** برای فولاد، ۶٬۸۱۹ معامله‌ی ۱۲ آبان و ۱۵٬۶۴۳ معامله‌ی ۱۱ آبان با مجموع رسمی بورس در **۱۰۰٪ حجم و تعداد** برابر بود. ابزار `trade_summary` این درصد پوشش را در هر فراخوانی می‌دهد.
+- **دامنه نوسان و صف** از بازه‌ی مجاز همان روز محاسبه می‌شود، و رتبه‌بندی صف‌ها با عمق بازار واقعی تأیید می‌شود.
+- **عددهای محاسبه‌شده برچسب دارند.** هر چیزی که بورس منتشر نمی‌کند (فشار خریدار/فروشنده با tick rule، قیمت تعدیل‌شده، ارزش پول روز جاری) زیر کلید `estimate` یا `estimated` است.
+- **تست‌شده.** تست آفلاین با داده‌ی واقعی ضبط‌شده (CI روی پایتون ۳٫۱۰ تا ۳٫۱۳ و هر دو نسل MCP SDK)، تست زنده‌ی همه‌ی ابزارها و تست کامل پروتکل MCP.
 
-- **ریز معاملات کامل است.** برای فولاد، ۶٬۸۱۹ معامله‌ی روز ۱۲ آبان و ۱۵٬۶۴۳ معامله‌ی روز ۱۱ آبان با مجموع رسمی خودِ بورس در **۱۰۰٪ حجم و تعداد معاملات** برابر بود. ابزار `trade_summary` این درصد پوشش را در هر فراخوانی می‌دهد.
-- **دامنه نوسان و صف** از بازه‌ی مجاز همان روز محاسبه می‌شود، نه حدس.
-- **عددهای محاسبه‌شده برچسب دارند.** هر چیزی که بورس منتشر نمی‌کند (فشار خریدار/فروشنده با tick rule، ارزش ورود پول در روز جاری، قیمت تعدیل‌شده) زیر کلید `estimate` یا `estimated` است.
-- ۹۴ تست آفلاین با داده‌ی واقعی ضبط‌شده روی هر دو نسل SDK ی MCP می‌گذرد، به‌علاوه تست زنده‌ی همه‌ی ابزارها و تست کامل پروتکل MCP.
+## معماری
 
-## نصب
-
-پایتون ۳٫۱۰ به بالا و [uv](https://docs.astral.sh/uv/) لازم است. **باید روی سیستمی داخل ایران اجرا شود** (بخش بعد).
-
-```bash
-# بررسی دسترسی به TSETMC و کدال از همین سیستم
-uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp doctor
-```
-
-### Claude Code
-
-```bash
-claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
-```
-
-### Claude Desktop و Cursor و بقیه‌ی کلاینت‌های MCP
-
-```json
-{
-  "mcpServers": {
-    "iran-bourse": {
-      "command": "uvx",
-      "args": ["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]
-    }
-  }
-}
-```
+<div align="center"><img src="docs/assets/architecture.svg" alt="معماری iran-bourse-mcp" width="860"></div>
 
 ## محدودیت IP ایران
 
@@ -92,14 +119,20 @@ TSETMC و کدال برای کاربر ایرانی ساخته شده‌اند �
 iran-bourse-mcp serve --transport streamable-http --host 127.0.0.1 --port 8000
 ```
 
+دستور `iran-bourse-mcp doctor` می‌گوید کدام منبع در دسترس است.
+
 ## نکات مهم
 
 - همه‌ی قیمت‌ها و ارزش‌ها **ریال** هستند. تاریخ‌ها را میلادی (`2026-11-03`) یا شمسی (`1405/08/12`) بدهید.
 - حروف عربی و فارسی (ی/ي، ک/ك) در ورودی یکسان حساب می‌شوند و خروجی همیشه فارسی است.
 - بازار شنبه تا چهارشنبه ۰۹:۰۰ تا ۱۲:۳۰ باز است. تعطیلات رسمی مدل نشده‌اند.
 - **تاریخچه عمق بازار برای روز جاری ممکن است ناقص باشد.** TSETMC تاریخچه کامل درون‌روزی را بعد از پایان روز منتشر می‌کند. ابزار `order_book_history` در این حالت هشدار می‌دهد؛ برای عمق زنده از `order_book` استفاده کنید.
-- endpoint های غیررسمی ممکن است بدون اطلاع عوض شوند. `scripts/smoke_live.py` همه‌ی ابزارها را روی سرور واقعی دوباره تست می‌کند.
+- endpoint های غیررسمی ممکن است بدون اطلاع عوض شوند. همه‌ی ویژگی‌هایی که پیدا کردیم در [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md) است.
 - ابزاری برای ثبت سفارش **عمداً وجود ندارد**؛ همه‌ی ابزارها فقط‌خواندنی‌اند.
+
+## مشارکت
+
+راهنمای [CONTRIBUTING.md](CONTRIBUTING.md) را بخوانید. قوانین ساده است: منطق خالص همراه تست، تخمین‌ها برچسب‌دار، و همیشه فقط‌خواندنی. اگر چیزی خراب شد، یک issue با خروجی `iran-bourse-mcp doctor` باز کنید.
 
 ## مجوز
 

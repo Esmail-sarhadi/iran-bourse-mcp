@@ -1,0 +1,205 @@
+{
+  "model": "Claude (one model for every arm)",
+  "date": "2026-11-04",
+  "base_tokens": {
+    "browser": 3157,
+    "shell": 53496,
+    "mcp": 53496
+  },
+  "tasks": [
+    {
+      "id": "T2",
+      "title_en": "Ticks of one day",
+      "title_fa": "ریز معاملات یک روز"
+    },
+    {
+      "id": "T3",
+      "title_en": "Real-person money flow",
+      "title_fa": "پول حقیقی ۳ روز"
+    },
+    {
+      "id": "T5",
+      "title_en": "Codal filings",
+      "title_fa": "اطلاعیه‌های کدال"
+    },
+    {
+      "id": "T6",
+      "title_en": "One-year adjusted return",
+      "title_fa": "بازده تعدیل‌شده یک‌ساله"
+    }
+  ],
+  "arms": {
+    "browser": {
+      "label_en": "Browser-only agent (page fetch)",
+      "label_fa": "ایجنت فقط‌مرورگر",
+      "runs": {
+        "T2": {
+          "score": 0.25,
+          "fields": {
+            "vwap": false,
+            "trades": true,
+            "largest_trade_volume": false,
+            "largest_trade_time": false
+          },
+          "tokens": 97301,
+          "net_tokens": 94144,
+          "seconds": 197.8,
+          "tool_uses": 6,
+          "answered": true
+        },
+        "T3": {
+          "score": 0.0,
+          "fields": {
+            "total": false,
+            "day_20261103": false,
+            "day_20261102": false,
+            "day_20261101": false
+          },
+          "tokens": 84822,
+          "net_tokens": 81665,
+          "seconds": 161.2,
+          "tool_uses": 13,
+          "answered": true
+        },
+        "T5": {
+          "score": 0.0,
+          "fields": {
+            "tracing_numbers": false,
+            "titles": false
+          },
+          "tokens": 48785,
+          "net_tokens": 45628,
+          "seconds": 87.9,
+          "tool_uses": 5,
+          "answered": false
+        },
+        "T6": {
+          "score": 0.0,
+          "fields": {
+            "adjusted_return": false
+          },
+          "tokens": 218110,
+          "net_tokens": 214953,
+          "seconds": 434.9,
+          "tool_uses": 11,
+          "answered": true
+        }
+      }
+    },
+    "shell": {
+      "label_en": "Shell agent (curl/python + web, no MCP)",
+      "label_fa": "ایجنت شل (بدون MCP)",
+      "runs": {
+        "T2": {
+          "score": 1.0,
+          "fields": {
+            "vwap": true,
+            "trades": true,
+            "largest_trade_volume": true,
+            "largest_trade_time": true
+          },
+          "tokens": 66576,
+          "net_tokens": 13080,
+          "seconds": 58.6,
+          "tool_uses": 6,
+          "answered": true
+        },
+        "T3": {
+          "score": 1.0,
+          "fields": {
+            "total": true,
+            "day_20261103": true,
+            "day_20261102": true,
+            "day_20261101": true
+          },
+          "tokens": 58808,
+          "net_tokens": 5312,
+          "seconds": 17.7,
+          "tool_uses": 2,
+          "answered": true
+        },
+        "T5": {
+          "score": 1.0,
+          "fields": {
+            "tracing_numbers": true,
+            "titles": true
+          },
+          "tokens": 73455,
+          "net_tokens": 19959,
+          "seconds": 67.6,
+          "tool_uses": 5,
+          "answered": true
+        },
+        "T6": {
+          "score": 1.0,
+          "fields": {
+            "adjusted_return": true
+          },
+          "tokens": 69255,
+          "net_tokens": 15759,
+          "seconds": 90.0,
+          "tool_uses": 11,
+          "answered": true
+        }
+      }
+    },
+    "mcp": {
+      "label_en": "Agent + iran-bourse-mcp",
+      "label_fa": "ایجنت + iran-bourse-mcp",
+      "runs": {
+        "T2": {
+          "score": 1.0,
+          "fields": {
+            "vwap": true,
+            "trades": true,
+            "largest_trade_volume": true,
+            "largest_trade_time": true
+          },
+          "tokens": 65647,
+          "net_tokens": 12151,
+          "seconds": 31.2,
+          "tool_uses": 2,
+          "answered": true
+        },
+        "T3": {
+          "score": 1.0,
+          "fields": {
+            "total": true,
+            "day_20261103": true,
+            "day_20261102": true,
+            "day_20261101": true
+          },
+          "tokens": 60708,
+          "net_tokens": 7212,
+          "seconds": 16.5,
+          "tool_uses": 1,
+          "answered": true
+        },
+        "T5": {
+          "score": 1.0,
+          "fields": {
+            "tracing_numbers": true,
+            "titles": true
+          },
+          "tokens": 60105,
+          "net_tokens": 6609,
+          "seconds": 12.0,
+          "tool_uses": 1,
+          "answered": true
+        },
+        "T6": {
+          "score": 1.0,
+          "fields": {
+            "adjusted_return": true
+          },
+          "tokens": 69217,
+          "net_tokens": 15721,
+          "seconds": 40.9,
+          "tool_uses": 6,
+          "answered": true
+        }
+      }
+    }
+  },
+  "note": ""
+}

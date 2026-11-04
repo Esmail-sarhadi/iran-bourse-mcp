@@ -75,7 +75,11 @@ def grade_t5(ans, t):
     return {"tracing_numbers": got == expected, "titles": all(norm(g.get("title")) == norm(e["title"]) for g, e in zip(ans.get("filings") or [], t["filings"], strict=False)) and len(ans.get("filings") or []) >= 3}
 
 
-GRADERS = {"T1": grade_t1, "T2": grade_t2, "T3": grade_t3, "T4": grade_t4, "T5": grade_t5}
+def grade_t6(ans, t):
+    return {"adjusted_return": close(ans.get("return_pct"), t["adjusted_return_pct"], abs_=1.5)}
+
+
+GRADERS = {"T6": grade_t6, "T1": grade_t1, "T2": grade_t2, "T3": grade_t3, "T4": grade_t4, "T5": grade_t5}
 
 
 def main(path: str) -> None:

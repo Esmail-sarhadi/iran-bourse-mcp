@@ -179,8 +179,8 @@ Daily OHLCV history since listing, optionally adjusted (تاریخچه قیمت)
 | parameter | type | description |
 |---|---|---|
 | `symbol`* | string | Persian symbol such as 'فولاد', or an insCode |
-| `from_date` | string | Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day. |
-| `to_date` | string | Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day. |
+| `from_date` | string | Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound. |
+| `to_date` | string | Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound. |
 | `limit` | integer |  (default `250`) |
 | `adjusted` | boolean | Back-adjust for capital increases/dividends (تعدیل شده) (default `False`) |
 
@@ -251,8 +251,8 @@ Search Codal disclosures (کدال): title, publish time, tracing number and lin
 | parameter | type | description |
 |---|---|---|
 | `symbol` | string | Symbol, or omit for all companies |
-| `from_date` | string | Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day. |
-| `to_date` | string | Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day. |
+| `from_date` | string | Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound. |
+| `to_date` | string | Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound. |
 | `title_contains` | string | Client-side title filter, e.g. 'صورت‌های مالی', 'افزایش سرمایه', 'فعالیت ماهانه' |
 | `category` | integer | Codal category id, -1 for all (default `-1`) |
 | `letter_type` | integer | Codal letter type id, -1 for all (default `-1`) |

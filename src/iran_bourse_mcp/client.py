@@ -102,7 +102,7 @@ class Http:
         while len(self._cache) > self._max_cache:
             self._cache.popitem(last=False)
 
-    async def get(self, url: str, *, ttl: float = 0.0, retries: int = 3, as_json: bool = True) -> Any:
+    async def get(self, url: str, *, ttl: float = 0.0, retries: int = 4, as_json: bool = True) -> Any:
         key = f"{'j' if as_json else 't'}:{url}"
         cached = self._cache_get(key)
         if cached is not None:
@@ -145,6 +145,13 @@ class Http:
 
         if isinstance(last_error, UpstreamError) and last_error.status == 403:
             raise UpstreamError(f"HTTP 403 from {url}. {NETWORK_HINT}", status=403, url=url)
+        if isinstance(last_error, UpstreamError) and last_error.status and last_error.status >= 500:
+            raise UpstreamError(
+                f"The exchange server answered HTTP {last_error.status} for {url} after {retries} tries. "
+                "It is sometimes overloaded; try again in a few seconds.",
+                status=last_error.status,
+                url=url,
+            )
         raise UpstreamError(
             f"Could not reach {url}: {last_error!s}. {NETWORK_HINT}",
             status=getattr(last_error, "status", None),
@@ -163,8 +170,8 @@ class Http:
                 f"Expected JSON from {url} but got: {snippet!r}", status=200, url=url
             ) from exc
 
-    async def get_json(self, url: str, *, ttl: float = 0.0, retries: int = 3) -> Any:
+    async def get_json(self, url: str, *, ttl: float = 0.0, retries: int = 4) -> Any:
         return await self.get(url, ttl=ttl, retries=retries, as_json=True)
 
-    async def get_text(self, url: str, *, ttl: float = 0.0, retries: int = 3) -> str:
+    async def get_text(self, url: str, *, ttl: float = 0.0, retries: int = 4) -> str:
         return await self.get(url, ttl=ttl, retries=retries, as_json=False)

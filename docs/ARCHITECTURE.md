@@ -13,6 +13,8 @@ MCP client (Claude, Cursor, ...)
 │ shape.py       │  PURE functions: raw payload -> clean dict. All maths lives here
 │                │  (queues, book reconstruction, tick aggregation, adjustment, flows).
 ├────────────────┤
+│ clients.py     │  Install recipes for 17 agents (snippets, deep links, safe config merge).
+│ cli.py         │  serve | doctor | tools | call | config | install.
 │ resolver.py    │  symbol / name / insCode -> Instrument (normalised matching).
 │ api.py         │  One method per upstream endpoint; returns raw payloads, sets cache TTLs.
 │ client.py      │  httpx wrapper: browser UA, retries (403/429/5xx), TTL+LRU cache, 6-way limit.

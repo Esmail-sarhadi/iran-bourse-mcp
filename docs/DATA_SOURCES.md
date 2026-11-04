@@ -51,7 +51,10 @@ All requests need a browser-like `User-Agent`; without one TSETMC answers 403.
 11. **Adjusted prices are inferred.** TSETMC's `GetPriceAdjustList` covers dividend adjustments but omits many capital increases (e.g. فولاد 2026-03-30, 1500bn to 1935bn shares, factor 0.775). We infer adjustment events from the series itself: on an ex-date `priceYesterday` no longer equals the previous `pClosing`. Differences under 0.1% are treated as tick rounding. Very old rows (before about 2014) sometimes lack this continuity.
 12. **Dates.** `dEven` is a Gregorian `YYYYMMDD` integer, `hEven` is `HHMMSS` (no leading zero, so `90013` is 09:00:13). `GetChartData` uses a nonstandard timestamp, so we do not use it.
 13. **Text.** TSETMC stores Arabic letters (ي ك). We normalise returned text to Persian letters.
-14. **Payload sizes.** A day of ticks is about 3 MB, order-book history 3 MB, supervisor messages for one symbol 3.5 MB, full daily price history 1.5 MB. Responses are cached for a short time and summarised before they reach the model.
+14. **Today's end-of-day table is empty during the session.** `GetInstrmentsHistoryInDay/{today}` returns nothing until the close, which breaks any join that relies on it (instrumentId to insCode for queues and real-money rankings). We build that mapping from the newest published day instead; the ids are stable.
+15. **Overloaded upstream.** The exchange servers occasionally answer 502/503 under load. Requests are retried with backoff; a persistent failure is reported as an overloaded server, not as an IP problem.
+16. **Codal.** The documented `codal.ir` pages are JavaScript templates; the working source is the public search API (`search.codal.ir/api/search/v2/q`). Its relative PDF link (`DownloadFile.aspx?...`) resolves against the site root, not `/Reports/`.
+17. **Payload sizes.** A day of ticks is about 3 MB, order-book history 3 MB, supervisor messages for one symbol 3.5 MB, full daily price history 1.5 MB. Responses are cached for a short time and summarised before they reach the model.
 
 ## Not covered (yet)
 

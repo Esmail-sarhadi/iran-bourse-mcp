@@ -149,6 +149,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .icon-btn:hover, .pill-btn:hover { background: var(--surface); }
 .star-count { font-family: var(--font-mono); font-size: 12px; color: var(--saffron); }
 @media (max-width: 860px) { .nav-links { display: none; } .nav-tools { margin-inline-start: auto; } }
+.brand { white-space: nowrap; }
+@media (max-width: 520px) { .nav { gap: 10px; } .brand { font-size: 15px; gap: 7px; } .brand svg { width: 26px; height: 26px; } .gh-label { display: none; } .pill-btn { padding: 0 10px; } .nav-tools { gap: 6px; } }
 
 /* ------------------------------------------------------------------ ticker */
 .tape { border-bottom: 1px solid var(--line); background: var(--bg); overflow: hidden; direction: ltr; }
@@ -186,7 +188,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   display: flex; align-items: stretch; margin-top: 26px; max-width: 640px; border: 1px solid var(--line-2); border-radius: 12px;
   background: var(--code-bg); overflow: hidden; direction: ltr;
 }
-.cmd code { flex: 1; min-width: 0; padding: 13px 16px; font-size: 13.5px; color: #dbe6ff; overflow-x: auto; white-space: nowrap; }
+.cmd code { flex: 1; min-width: 0; padding: 13px 16px; font-size: 13.5px; color: #dbe6ff; white-space: pre-wrap; word-break: break-all; line-height: 1.55; }
 .cmd .prompt { color: var(--saffron); user-select: none; margin-right: 8px; }
 .copy {
   appearance: none; border: 0; border-left: 1px solid var(--line-2); background: #0f1a3d; color: #b6c3e0; cursor: pointer;
@@ -267,7 +269,7 @@ html[lang="fa"] .stats { direction: rtl; }
 html[lang="fa"] .chart-card { direction: rtl; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; margin: 0 0 8px; font-size: 13px; color: var(--ink-2); }
 .legend i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-inline-end: 7px; vertical-align: -1px; }
-.chart svg { width: 100%; height: auto; display: block; overflow: visible; }
+.chart svg { width: 100%; height: auto; display: block; overflow: visible; direction: ltr; }
 .chart text { font-family: var(--font-text); fill: var(--ink-2); }
 .chart .val { font-family: var(--font-mono); font-size: 11.5px; fill: var(--ink); }
 .chart .tick { font-family: var(--font-mono); font-size: 10.5px; fill: var(--muted); }
@@ -298,17 +300,18 @@ td.num { font-family: var(--font-mono); text-align: end; }
 .hbar { display: inline-block; height: 10px; border-radius: 3px; vertical-align: middle; margin-inline-end: 8px; }
 
 /* ------------------------------------------------------------------ install */
-.install { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 22px; align-items: start; }
-@media (max-width: 900px) { .install { grid-template-columns: minmax(0, 1fr); } }
-.clients { display: flex; flex-wrap: wrap; gap: 8px; }
-@media (min-width: 901px) { .clients { flex-direction: column; flex-wrap: nowrap; gap: 4px; } }
+.install { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-items: start; }
+.clients { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.clients .group { flex-basis: 100%; margin: 10px 0 0; font: 500 11.5px var(--font-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--saffron); }
+.clients .group:first-child { margin-top: 0; }
+html[lang="fa"] .clients .group { letter-spacing: 0; text-transform: none; font-size: 13px; }
 .client-btn {
-  appearance: none; text-align: start; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); padding: 10px 14px; border-radius: 10px;
-  cursor: pointer; font: 600 14.5px var(--font-text); display: flex; align-items: center; gap: 10px;
+  appearance: none; text-align: start; border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); padding: 9px 14px; border-radius: 999px;
+  cursor: pointer; font: 600 14px var(--font-text); display: inline-flex; align-items: center; gap: 9px;
 }
 .client-btn:hover { border-color: var(--line-2); color: var(--ink); }
 .client-btn[aria-selected="true"] { background: color-mix(in srgb, var(--teal) 14%, var(--surface)); border-color: var(--teal); color: var(--ink); }
-.client-btn small { margin-inline-start: auto; color: var(--muted); font: 500 11px var(--font-mono); }
+.client-btn small { color: var(--teal); font: 600 10.5px var(--font-mono); letter-spacing: 0.04em; }
 .install-pane { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; min-width: 0; }
 .install-pane h3 { margin-bottom: 4px; }
 .install-pane .row { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; }

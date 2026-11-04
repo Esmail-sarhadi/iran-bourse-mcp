@@ -81,6 +81,7 @@ def tool(**kwargs: Any):
 
 Symbol = Annotated[str, Field(description="Persian symbol such as 'فولاد', or an insCode")]
 Date = Annotated[str | None, Field(description="Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.")]
+DateBound = Annotated[str | None, Field(description="Range bound: Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for no bound.")]
 Market = Annotated[str | None, Field(description="'bourse' or 'fara' (Fara Bourse). Omit for both where applicable.")]
 
 # ----------------------------------------------------------------------------- market
@@ -246,8 +247,8 @@ async def trade_summary(
 @tool()
 async def price_history(
     symbol: Symbol,
-    from_date: Date = None,
-    to_date: Date = None,
+    from_date: DateBound = None,
+    to_date: DateBound = None,
     limit: Annotated[int, Field(ge=1, le=5000)] = 250,
     adjusted: Annotated[bool, Field(description="Back-adjust for capital increases/dividends (تعدیل شده)")] = False,
 ) -> dict:
@@ -306,8 +307,8 @@ async def etf_nav(symbol: Symbol) -> dict:
 @tool()
 async def codal_filings(
     symbol: Annotated[str | None, Field(description="Symbol, or omit for all companies")] = None,
-    from_date: Date = None,
-    to_date: Date = None,
+    from_date: DateBound = None,
+    to_date: DateBound = None,
     title_contains: Annotated[str | None, Field(description="Client-side title filter, e.g. 'صورت‌های مالی', 'افزایش سرمایه', 'فعالیت ماهانه'")] = None,
     category: Annotated[int, Field(description="Codal category id, -1 for all")] = -1,
     letter_type: Annotated[int, Field(description="Codal letter type id, -1 for all")] = -1,
