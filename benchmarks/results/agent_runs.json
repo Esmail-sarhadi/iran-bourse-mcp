@@ -1,36 +1,226 @@
 {
   "model": "Claude (one model for every arm)",
   "date": "2026-11-04",
-  "base_tokens": {"browser": 3157, "shell": 53496, "mcp": 53496},
+  "base_tokens": {
+    "browser": 3157,
+    "shell": 53496,
+    "mcp": 53496
+  },
   "arms": {
     "browser": {
       "label_en": "Browser-only agent (page fetch)",
       "label_fa": "ایجنت فقط‌مرورگر",
       "runs": {
-        "T2": {"tokens": 97301, "seconds": 197.8, "tool_uses": 6, "answer": {"vwap": null, "trades": 15643, "largest_trade_volume": null, "largest_trade_time": null}},
-        "T3": {"tokens": 84822, "seconds": 161.2, "tool_uses": 13, "answer": {"days": {"2026-11-01": null, "2026-11-02": null, "2026-11-03": null}, "total_net_real_value_rial": null}},
-        "T5": {"tokens": 48785, "seconds": 87.9, "tool_uses": 5, "answer": {"filings": null}},
-        "T6": {"tokens": 218110, "seconds": 434.9, "tool_uses": 11, "answer": {"return_pct": 73.4}}
+        "T2": {
+          "tokens": 97301,
+          "seconds": 197.8,
+          "tool_uses": 6,
+          "answer": {
+            "vwap": null,
+            "trades": 15643,
+            "largest_trade_volume": null,
+            "largest_trade_time": null
+          }
+        },
+        "T3": {
+          "tokens": 84822,
+          "seconds": 161.2,
+          "tool_uses": 13,
+          "answer": {
+            "days": {
+              "2026-11-01": null,
+              "2026-11-02": null,
+              "2026-11-03": null
+            },
+            "total_net_real_value_rial": null
+          }
+        },
+        "T5": {
+          "tokens": 48785,
+          "seconds": 87.9,
+          "tool_uses": 5,
+          "answer": {
+            "filings": null
+          }
+        },
+        "T6": {
+          "tokens": 218110,
+          "seconds": 434.9,
+          "tool_uses": 11,
+          "answer": {
+            "return_pct": 73.4
+          }
+        }
       }
     },
     "shell": {
       "label_en": "Shell agent (curl/python + web, no MCP)",
       "label_fa": "ایجنت شل (بدون MCP)",
       "runs": {
-        "T2": {"tokens": 66576, "seconds": 58.6, "tool_uses": 6, "answer": {"vwap": 4091.83, "trades": 15643, "largest_trade_volume": 300000, "largest_trade_time": "09:00:12"}},
-        "T3": {"tokens": 58808, "seconds": 17.7, "tool_uses": 2, "answer": {"days": {"2026-11-01": -6393196426360, "2026-11-02": -929876343200, "2026-11-03": -795831735270}, "total_net_real_value_rial": -8118904504830}},
-        "T5": {"tokens": 73455, "seconds": 67.6, "tool_uses": 5, "answer": {"filings": [{"tracing_no": 1621524, "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به  ۱۴۰۵/۰۷/۳۰", "published": "1405/08/06 16:01:48"}, {"tracing_no": 1618277, "title": "توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده", "published": "1405/07/30 14:40:53"}, {"tracing_no": 1612323, "title": "اطلاعات و صورت‌های مالی میاندوره‌ای  دوره ۶ ماهه منتهی به  ۱۴۰۵/۰۶/۳۱ (حسابرسی نشده)", "published": "1405/07/30 14:37:13"}]}},
-        "T6": {"tokens": 69255, "seconds": 90.0, "tool_uses": 11, "answer": {"return_pct": 77.2}}
+        "T2": [
+          {
+            "tokens": 66576,
+            "seconds": 58.6,
+            "tool_uses": 6,
+            "answer": {
+              "vwap": 4091.83,
+              "trades": 15643,
+              "largest_trade_volume": 300000,
+              "largest_trade_time": "09:00:12"
+            }
+          },
+          {
+            "tokens": 64319,
+            "seconds": 77.5,
+            "tool_uses": 6,
+            "answer": {
+              "vwap": 4091.83,
+              "trades": 15643,
+              "largest_trade_volume": 300000,
+              "largest_trade_time": "09:00:12"
+            }
+          }
+        ],
+        "T3": {
+          "tokens": 58808,
+          "seconds": 17.7,
+          "tool_uses": 2,
+          "answer": {
+            "days": {
+              "2026-11-01": -6393196426360,
+              "2026-11-02": -929876343200,
+              "2026-11-03": -795831735270
+            },
+            "total_net_real_value_rial": -8118904504830
+          }
+        },
+        "T5": {
+          "tokens": 73455,
+          "seconds": 67.6,
+          "tool_uses": 5,
+          "answer": {
+            "filings": [
+              {
+                "tracing_no": 1621524,
+                "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به  ۱۴۰۵/۰۷/۳۰",
+                "published": "1405/08/06 16:01:48"
+              },
+              {
+                "tracing_no": 1618277,
+                "title": "توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده",
+                "published": "1405/07/30 14:40:53"
+              },
+              {
+                "tracing_no": 1612323,
+                "title": "اطلاعات و صورت‌های مالی میاندوره‌ای  دوره ۶ ماهه منتهی به  ۱۴۰۵/۰۶/۳۱ (حسابرسی نشده)",
+                "published": "1405/07/30 14:37:13"
+              }
+            ]
+          }
+        },
+        "T6": [
+          {
+            "tokens": 69255,
+            "seconds": 90.0,
+            "tool_uses": 11,
+            "answer": {
+              "return_pct": 77.2
+            }
+          },
+          {
+            "tokens": 68224,
+            "seconds": 74.1,
+            "tool_uses": 8,
+            "answer": {
+              "return_pct": 77.2
+            }
+          }
+        ]
       }
     },
     "mcp": {
       "label_en": "Agent + iran-bourse-mcp",
       "label_fa": "ایجنت + iran-bourse-mcp",
       "runs": {
-        "T2": {"tokens": 65647, "seconds": 31.2, "tool_uses": 2, "answer": {"vwap": 4091.83, "trades": 15643, "largest_trade_volume": 300000, "largest_trade_time": "09:00:12"}},
-        "T3": {"tokens": 60708, "seconds": 16.5, "tool_uses": 1, "answer": {"days": {"2026-11-01": -6393196426360, "2026-11-02": -929876343200, "2026-11-03": -795831735270}, "total_net_real_value_rial": -8118904504830}},
-        "T5": {"tokens": 60105, "seconds": 12.0, "tool_uses": 1, "answer": {"filings": [{"tracing_no": 1621524, "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۳۰", "published": "1405/08/06 16:01:48"}, {"tracing_no": 1618277, "title": "توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده", "published": "1405/07/30 14:40:53"}, {"tracing_no": 1612323, "title": "اطلاعات و صورت‌های مالی میاندوره‌ای دوره ۶ ماهه منتهی به ۱۴۰۵/۰۶/۳۱ (حسابرسی نشده)", "published": "1405/07/30 14:37:13"}]}},
-        "T6": {"tokens": 69217, "seconds": 40.9, "tool_uses": 6, "answer": {"return_pct": 77.2}}
+        "T2": [
+          {
+            "tokens": 65647,
+            "seconds": 31.2,
+            "tool_uses": 2,
+            "answer": {
+              "vwap": 4091.83,
+              "trades": 15643,
+              "largest_trade_volume": 300000,
+              "largest_trade_time": "09:00:12"
+            }
+          },
+          {
+            "tokens": 72341,
+            "seconds": 78.7,
+            "tool_uses": 4,
+            "answer": {
+              "vwap": 4091.83,
+              "trades": 15643,
+              "largest_trade_volume": 300000,
+              "largest_trade_time": "09:00:12"
+            }
+          }
+        ],
+        "T3": {
+          "tokens": 60708,
+          "seconds": 16.5,
+          "tool_uses": 1,
+          "answer": {
+            "days": {
+              "2026-11-01": -6393196426360,
+              "2026-11-02": -929876343200,
+              "2026-11-03": -795831735270
+            },
+            "total_net_real_value_rial": -8118904504830
+          }
+        },
+        "T5": {
+          "tokens": 60105,
+          "seconds": 12.0,
+          "tool_uses": 1,
+          "answer": {
+            "filings": [
+              {
+                "tracing_no": 1621524,
+                "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۳۰",
+                "published": "1405/08/06 16:01:48"
+              },
+              {
+                "tracing_no": 1618277,
+                "title": "توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده",
+                "published": "1405/07/30 14:40:53"
+              },
+              {
+                "tracing_no": 1612323,
+                "title": "اطلاعات و صورت‌های مالی میاندوره‌ای دوره ۶ ماهه منتهی به ۱۴۰۵/۰۶/۳۱ (حسابرسی نشده)",
+                "published": "1405/07/30 14:37:13"
+              }
+            ]
+          }
+        },
+        "T6": [
+          {
+            "tokens": 69217,
+            "seconds": 40.9,
+            "tool_uses": 6,
+            "answer": {
+              "return_pct": 77.2
+            }
+          },
+          {
+            "tokens": 66493,
+            "seconds": 36.0,
+            "tool_uses": 6,
+            "answer": {
+              "return_pct": 77.2
+            }
+          }
+        ]
       }
     }
   }

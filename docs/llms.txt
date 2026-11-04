@@ -6,6 +6,8 @@
 - [Install guide for AI agents](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/llms-install.md): step-by-step setup you can follow
 - [Tool reference](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/TOOLS.md): every tool and parameter
 - [Data sources and quirks](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/DATA_SOURCES.md): endpoints used and traps handled
+- [Real example outputs](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/EXAMPLES.md): one live response per tool
+- [Persian user guide](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/GUIDE.fa.md)
 - [Architecture](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/ARCHITECTURE.md)
 - [Benchmarks](https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/benchmarks/README.md): tokens, requests, time and accuracy with and without the server
 

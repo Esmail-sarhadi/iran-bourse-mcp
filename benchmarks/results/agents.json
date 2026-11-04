@@ -107,14 +107,15 @@
       "label_fa": "ایجنت شل (بدون MCP)",
       "runs": {
         "T2": {
-          "n_runs": 1,
+          "n_runs": 2,
           "score": 1.0,
           "scores": [
+            1.0,
             1.0
           ],
-          "tokens": 66576,
-          "net_tokens": 13080,
-          "seconds": 58.6,
+          "tokens": 65448,
+          "net_tokens": 11952,
+          "seconds": 68.0,
           "tool_uses": 6.0,
           "answered": true,
           "fields": {
@@ -159,15 +160,16 @@
           }
         },
         "T6": {
-          "n_runs": 1,
+          "n_runs": 2,
           "score": 1.0,
           "scores": [
+            1.0,
             1.0
           ],
-          "tokens": 69255,
-          "net_tokens": 15759,
-          "seconds": 90.0,
-          "tool_uses": 11.0,
+          "tokens": 68740,
+          "net_tokens": 15244,
+          "seconds": 82.0,
+          "tool_uses": 9.5,
           "answered": true,
           "fields": {
             "adjusted_return": true
@@ -180,15 +182,16 @@
       "label_fa": "ایجنت + iran-bourse-mcp",
       "runs": {
         "T2": {
-          "n_runs": 1,
+          "n_runs": 2,
           "score": 1.0,
           "scores": [
+            1.0,
             1.0
           ],
-          "tokens": 65647,
-          "net_tokens": 12151,
-          "seconds": 31.2,
-          "tool_uses": 2.0,
+          "tokens": 68994,
+          "net_tokens": 15498,
+          "seconds": 55.0,
+          "tool_uses": 3.0,
           "answered": true,
           "fields": {
             "vwap": true,
@@ -232,14 +235,15 @@
           }
         },
         "T6": {
-          "n_runs": 1,
+          "n_runs": 2,
           "score": 1.0,
           "scores": [
+            1.0,
             1.0
           ],
-          "tokens": 69217,
-          "net_tokens": 15721,
-          "seconds": 40.9,
+          "tokens": 67855,
+          "net_tokens": 14359,
+          "seconds": 38.5,
           "tool_uses": 6.0,
           "answered": true,
           "fields": {

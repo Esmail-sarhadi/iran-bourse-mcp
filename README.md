@@ -11,7 +11,7 @@
 [![Tools](https://img.shields.io/badge/tools-28%20read--only-2EC4B6.svg)](docs/TOOLS.md)
 [![Stars](https://img.shields.io/github/stars/msmahdinejad/iran-bourse-mcp?style=flat&color=F5B53D)](https://github.com/msmahdinejad/iran-bourse-mcp/stargazers)
 
-**[Website](https://msmahdinejad.github.io/iran-bourse-mcp/)** · **[Install](#install)** · **[Benchmarks](#benchmarks)** · **[Tools](docs/TOOLS.md)** · **[Data notes](docs/DATA_SOURCES.md)** · **[فارسی](README.fa.md)**
+**[Website](https://msmahdinejad.github.io/iran-bourse-mcp/)** · **[Install](#install)** · **[Benchmarks](#benchmarks)** · **[Tools](docs/TOOLS.md)** · **[Real examples](docs/EXAMPLES.md)** · **[Data notes](docs/DATA_SOURCES.md)** · **[راهنمای فارسی](docs/GUIDE.fa.md)** · **[فارسی](README.fa.md)**
 
 </div>
 
