@@ -6,9 +6,9 @@
 - **Fix:** gateway failures (HTTP 502/503) are retried more patiently and reported as an overloaded exchange, not as an IP problem.
 - New CLI: `tools`, `call` (every tool from the shell, for agents without MCP), `config <client>` and `install <client>` (safe merge into the client's JSON config, with backup).
 - Install recipes, one-click deep links (Cursor, VS Code, Goose) and framework snippets for 17 agents and IDEs, generated from one table.
-- Website (GitHub Pages), animated README artwork, benchmark harness (`benchmarks/`) with independent ground truth, real example outputs (`docs/EXAMPLES.md`).
+- Website (GitHub Pages) with a promo video, animated README artwork, benchmark harness (`benchmarks/`) with independent ground truth, real example outputs (`docs/EXAMPLES.md`).
 - Container image, AGENTS.md, llms.txt and an install guide written for AI agents, code of conduct, citation file, dependabot.
-- Tests: 133 offline tests, 89% line coverage (service layer 96%).
+- Tests: 142 offline tests, 89% line coverage (service layer 96%).
 
 ## 0.1.0 (2026-11-04)
 
