@@ -1,5 +1,5 @@
 {
-  "model": "Claude (one model for every arm)",
+  "model": "one LLM agent model, identical in every arm",
   "date": "2026-11-04",
   "base_tokens": {
     "browser": 3157,
@@ -11,6 +11,18 @@
       "label_en": "Browser-only agent (page fetch)",
       "label_fa": "ایجنت فقط‌مرورگر",
       "runs": {
+        "T1": {
+          "tokens": 21205,
+          "seconds": 59.6,
+          "tool_uses": 8,
+          "answer": {
+            "last": 4330,
+            "close": 4290,
+            "change_pct": 2.85,
+            "volume": 1397098412,
+            "value_rial": 5996217957060
+          }
+        },
         "T2": {
           "tokens": 97301,
           "seconds": 197.8,
@@ -35,6 +47,14 @@
             "total_net_real_value_rial": null
           }
         },
+        "T4": {
+          "tokens": 149040,
+          "seconds": 197.1,
+          "tool_uses": 12,
+          "answer": {
+            "top5": null
+          }
+        },
         "T5": {
           "tokens": 48785,
           "seconds": 87.9,
@@ -57,6 +77,18 @@
       "label_en": "Shell agent (curl/python + web, no MCP)",
       "label_fa": "ایجنت شل (بدون MCP)",
       "runs": {
+        "T1": {
+          "tokens": 59638,
+          "seconds": 24.9,
+          "tool_uses": 2,
+          "answer": {
+            "last": 4330,
+            "close": 4290,
+            "change_pct": 2.85,
+            "volume": 1397098412,
+            "value_rial": 5996217957060
+          }
+        },
         "T2": [
           {
             "tokens": 66576,
@@ -92,6 +124,35 @@
               "2026-11-03": -795831735270
             },
             "total_net_real_value_rial": -8118904504830
+          }
+        },
+        "T4": {
+          "tokens": 97659,
+          "seconds": 236.3,
+          "tool_uses": 16,
+          "answer": {
+            "top5": [
+              {
+                "symbol": "شتبریز",
+                "queue_volume": 198621787
+              },
+              {
+                "symbol": "تابان",
+                "queue_volume": 272638688
+              },
+              {
+                "symbol": "فولاد3",
+                "queue_volume": 1074252978
+              },
+              {
+                "symbol": "فساپ",
+                "queue_volume": 595628106
+              },
+              {
+                "symbol": "کرماشا",
+                "queue_volume": 126751668
+              }
+            ]
           }
         },
         "T5": {
@@ -142,6 +203,18 @@
       "label_en": "Agent + iran-bourse-mcp",
       "label_fa": "ایجنت + iran-bourse-mcp",
       "runs": {
+        "T1": {
+          "tokens": 59746,
+          "seconds": 23.2,
+          "tool_uses": 2,
+          "answer": {
+            "last": 4330,
+            "close": 4290,
+            "change_pct": 2.85,
+            "volume": 1397098412,
+            "value_rial": 5996217957060
+          }
+        },
         "T2": [
           {
             "tokens": 65647,
@@ -177,6 +250,35 @@
               "2026-11-03": -795831735270
             },
             "total_net_real_value_rial": -8118904504830
+          }
+        },
+        "T4": {
+          "tokens": 72637,
+          "seconds": 72.7,
+          "tool_uses": 5,
+          "answer": {
+            "top5": [
+              {
+                "symbol": "شتبریز",
+                "queue_volume": 202168697
+              },
+              {
+                "symbol": "تابان",
+                "queue_volume": 273871601
+              },
+              {
+                "symbol": "فساپ",
+                "queue_volume": 605929458
+              },
+              {
+                "symbol": "کرماشا",
+                "queue_volume": 128251668
+              },
+              {
+                "symbol": "شیراز",
+                "queue_volume": 33354452
+              }
+            ]
           }
         },
         "T5": {
@@ -223,5 +325,6 @@
         ]
       }
     }
-  }
+  },
+  "note": "Six tasks, one model, runs per task: 1 (2 for T2 and T6 in the shell and MCP arms). The shell agent used its own knowledge of the exchange's endpoints. On T4 it classified a fixed-price symbol (فولاد3) as an ordinary share, a different but defensible reading of 'ordinary shares'; queue sizes also drift by tens of percent within minutes after the close, so T4 is graded on the ranking only."
 }

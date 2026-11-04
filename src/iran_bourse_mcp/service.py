@@ -223,8 +223,8 @@ class Bourse:
     async def _confirm_queues(self, rows: list[dict], side: str) -> list[dict]:
         """Fetch the real order book of limit-locked candidates and keep genuine queues.
 
-        The gateway's top-of-book fields are empty outside the session, so queue size has to come
-        from BestLimits. On a strong day about 200 symbols sit at the upper limit, so this makes up to
+        The gateway's top-of-book fields cannot confirm a queue (and are unreliable outside the session),
+        so queue presence and size come from BestLimits. On a strong day about 200 symbols sit at the upper limit, so this makes up to
         that many calls (cached, six in flight): expect around ten seconds.
         """
         index = await self._instrument_index()

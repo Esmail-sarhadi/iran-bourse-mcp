@@ -1,5 +1,5 @@
 {
-  "model": "Claude (one model for every arm)",
+  "model": "one LLM agent model, identical in every arm",
   "date": "2026-11-04",
   "base_tokens": {
     "browser": 3157,
@@ -7,6 +7,11 @@
     "mcp": 53496
   },
   "tasks": [
+    {
+      "id": "T1",
+      "title_en": "Quote",
+      "title_fa": "قیمت لحظه‌ای"
+    },
     {
       "id": "T2",
       "title_en": "Ticks of one day",
@@ -16,6 +21,11 @@
       "id": "T3",
       "title_en": "Real-person money flow",
       "title_fa": "پول حقیقی ۳ روز"
+    },
+    {
+      "id": "T4",
+      "title_en": "Buy queues, market-wide",
+      "title_fa": "صف خرید کل بازار"
     },
     {
       "id": "T5",
@@ -33,6 +43,25 @@
       "label_en": "Browser-only agent (page fetch)",
       "label_fa": "ایجنت فقط‌مرورگر",
       "runs": {
+        "T1": {
+          "n_runs": 1,
+          "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 21205,
+          "net_tokens": 18048,
+          "seconds": 59.6,
+          "tool_uses": 8.0,
+          "answered": true,
+          "fields": {
+            "last": true,
+            "close": true,
+            "change_pct": true,
+            "volume": true,
+            "value_rial": true
+          }
+        },
         "T2": {
           "n_runs": 1,
           "score": 0.25,
@@ -67,6 +96,23 @@
             "day_20261103": false,
             "day_20261102": false,
             "day_20261101": false
+          }
+        },
+        "T4": {
+          "n_runs": 1,
+          "score": 0.0,
+          "scores": [
+            0.0
+          ],
+          "tokens": 149040,
+          "net_tokens": 145883,
+          "seconds": 197.1,
+          "tool_uses": 12.0,
+          "answered": false,
+          "fields": {
+            "top1": false,
+            "at_least_4_of_5_symbols": false,
+            "order_exact": false
           }
         },
         "T5": {
@@ -106,6 +152,25 @@
       "label_en": "Shell agent (curl/python + web, no MCP)",
       "label_fa": "ایجنت شل (بدون MCP)",
       "runs": {
+        "T1": {
+          "n_runs": 1,
+          "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 59638,
+          "net_tokens": 6142,
+          "seconds": 24.9,
+          "tool_uses": 2.0,
+          "answered": true,
+          "fields": {
+            "last": true,
+            "close": true,
+            "change_pct": true,
+            "volume": true,
+            "value_rial": true
+          }
+        },
         "T2": {
           "n_runs": 2,
           "score": 1.0,
@@ -141,6 +206,23 @@
             "day_20261103": true,
             "day_20261102": true,
             "day_20261101": true
+          }
+        },
+        "T4": {
+          "n_runs": 1,
+          "score": 0.667,
+          "scores": [
+            0.667
+          ],
+          "tokens": 97659,
+          "net_tokens": 44163,
+          "seconds": 236.3,
+          "tool_uses": 16.0,
+          "answered": true,
+          "fields": {
+            "top1": true,
+            "at_least_4_of_5_symbols": true,
+            "order_exact": false
           }
         },
         "T5": {
@@ -181,6 +263,25 @@
       "label_en": "Agent + iran-bourse-mcp",
       "label_fa": "ایجنت + iran-bourse-mcp",
       "runs": {
+        "T1": {
+          "n_runs": 1,
+          "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 59746,
+          "net_tokens": 6250,
+          "seconds": 23.2,
+          "tool_uses": 2.0,
+          "answered": true,
+          "fields": {
+            "last": true,
+            "close": true,
+            "change_pct": true,
+            "volume": true,
+            "value_rial": true
+          }
+        },
         "T2": {
           "n_runs": 2,
           "score": 1.0,
@@ -218,6 +319,23 @@
             "day_20261101": true
           }
         },
+        "T4": {
+          "n_runs": 1,
+          "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 72637,
+          "net_tokens": 19141,
+          "seconds": 72.7,
+          "tool_uses": 5.0,
+          "answered": true,
+          "fields": {
+            "top1": true,
+            "at_least_4_of_5_symbols": true,
+            "order_exact": true
+          }
+        },
         "T5": {
           "n_runs": 1,
           "score": 1.0,
@@ -253,5 +371,5 @@
       }
     }
   },
-  "note": ""
+  "note": "Six tasks, one model, runs per task: 1 (2 for T2 and T6 in the shell and MCP arms). The shell agent used its own knowledge of the exchange's endpoints. On T4 it classified a fixed-price symbol (فولاد3) as an ordinary share, a different but defensible reading of 'ordinary shares'; queue sizes also drift by tens of percent within minutes after the close, so T4 is graded on the ranking only."
 }

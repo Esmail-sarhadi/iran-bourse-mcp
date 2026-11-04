@@ -60,13 +60,15 @@ def grade_t3(ans, t):
 
 
 def grade_t4(ans, t):
-    expected = [q["symbol"] for q in t["top10"][:5]]
-    got = [norm(x.get("symbol")) for x in (ans.get("top5") or [])][:5]
-    exp_n = [norm(s) for s in expected]
-    out = {"symbol_overlap_5": sum(1 for s in got if s in exp_n) == 5, "order_exact": got == exp_n}
-    volumes = {norm(q["symbol"]): q["queue_volume"] for q in t["top10"]}
-    out["volumes_ok"] = all(close(x.get("queue_volume"), volumes.get(norm(x.get("symbol"))), rel=0.02) for x in (ans.get("top5") or [])[:5]) and bool(got)
-    return out
+    """Ranking only. Queue sizes keep changing after the close (next-day order entry cancels and adds orders),
+    so volumes drift by tens of percent within minutes and are not graded."""
+    expected = [norm(q["symbol"]) for q in t["top10"][:5]]
+    got = [norm(x.get("symbol")) for x in (ans.get("top5") or [])[:5]]
+    return {
+        "top1": bool(got) and got[0] == expected[0],
+        "at_least_4_of_5_symbols": sum(1 for g in got if g in expected) >= 4,
+        "order_exact": got == expected,
+    }
 
 
 def grade_t5(ans, t):

@@ -414,15 +414,15 @@ Measured against the live exchange, not claimed. The raw route is the **best cas
 | Task | Raw route | iran-bourse-mcp | Tokens saved |
 |---|---|---|---|
 | Live quote with correct % change | 3 req · 0.4s · 6,225 tok | 1 call · 0.5s · 337 tok | **18x** |
-| Order book with queue detection | 3 req · 0.3s · 6,298 tok | 1 call · 0.5s · 390 tok | **16x** |
-| One day of ticks: VWAP, biggest trades, bars | 3 req · 0.7s · 2,142,302 tok | 1 call · 0.8s · 3,380 tok | **634x** |
-| Real vs legal money flow, 10 days | 12 req · 0.9s · 612,009 tok | 1 call · 1.0s · 1,331 tok | **460x** |
-| Major shareholders | 3 req · 0.4s · 7,018 tok | 1 call · 0.5s · 679 tok | **10x** |
-| Market-wide ranking of buy queues | 3 req · 0.8s · 274,284 tok | 1 call · 0.9s · 17 tok | **16,134x** |
-| Latest 5 Codal filings with links | 1 req · 1.1s · 6,489 tok | 1 call · 1.8s · 1,539 tok | **4x** |
-| One year of daily prices, adjusted | 2 req · 0.5s · 610,549 tok | 1 call · 0.5s · 20,245 tok | **30x** |
+| Order book with queue detection | 3 req · 0.3s · 6,298 tok | 1 call · 0.6s · 388 tok | **16x** |
+| One day of ticks: VWAP, biggest trades, bars | 3 req · 0.7s · 2,142,302 tok | 1 call · 1.1s · 3,380 tok | **634x** |
+| Real vs legal money flow, 10 days | 12 req · 0.9s · 612,009 tok | 1 call · 1.2s · 1,332 tok | **460x** |
+| Major shareholders | 3 req · 0.4s · 7,018 tok | 1 call · 0.7s · 686 tok | **10x** |
+| Market-wide ranking of buy queues | 222 req · 15.0s · 695,971 tok | 1 call · 9.4s · 1,241 tok | **561x** |
+| Latest 5 Codal filings with links | 1 req · 1.6s · 6,489 tok | 1 call · 1.6s · 1,539 tok | **4x** |
+| One year of daily prices, adjusted | 2 req · 0.4s · 610,549 tok | 1 call · 0.8s · 19,517 tok | **31x** |
 
-_Data-plane benchmark, 2026-11-04 07:36:13 UTC. Tokens are a tiktoken `o200k_base` proxy; the ratios matter more than the absolute numbers. A single-endpoint task takes about as long either way; the server wins where the raw route needs many sequential requests, and on tokens everywhere._
+_Data-plane benchmark, 2026-11-04 09:16:52 UTC. Tokens are a tiktoken `o200k_base` proxy; the ratios matter more than the absolute numbers. A single-endpoint task takes about as long either way; the server wins where the raw route needs many sequential requests, and on tokens everywhere._
 
 **Traps in the raw data** (each found on the live endpoints and handled by the server):
 
@@ -431,16 +431,18 @@ _Data-plane benchmark, 2026-11-04 07:36:13 UTC. Tokens are a tiktoken `o200k_bas
 | The exchange's own `priceChange` field in GetClosingPriceInfo | `0.0` | `120.0` |
 | Counting holders / summing percent from the dated shareholder endpoint | `{"holders": 24, "percent_sum": 92.97}` | `{"holders": 12, "percent_sum": 46.48}` |
 | Reading real-buyer count with the key used by the live endpoint (`buy_CountI`) on history rows | `null` | `3790.0` |
-| Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone | `80` | `0` |
+| Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone | `85` | `83` |
 | Matching the company name the user types (Persian letters) against the exchange's text (Arabic letters) | `false` | `true` |
 
-**Agent trials** (Claude (one model for every arm), 2026-11-04; 4 tasks, graded against independent ground truth):
+**Agent trials** (one LLM agent model, identical in every arm, 2026-11-04; 6 tasks, graded against independent ground truth):
 
 | Agent | Accuracy | Net tokens (mean/task) | Time (mean/task) | Tool calls | Answered |
 |---|---|---|---|---|---|
-| Browser-only agent (page fetch) | 6% | 109,098 | 220s | 8.8 | 3/4 |
-| Shell agent (curl/python + web, no MCP) | 100% | 13,117 | 59s | 5.6 | 4/4 |
-| Agent + iran-bourse-mcp | 100% | 10,920 | 30s | 2.8 | 4/4 |
+| Browser-only agent (page fetch) | 21% | 100,054 | 190s | 9.2 | 4/6 |
+| Shell agent (curl/python + web, no MCP) | 94% | 17,129 | 83s | 6.8 | 6/6 |
+| Agent + iran-bourse-mcp | 100% | 11,512 | 36s | 3.0 | 6/6 |
+
+_Six tasks, one model, runs per task: 1 (2 for T2 and T6 in the shell and MCP arms). The shell agent used its own knowledge of the exchange's endpoints. On T4 it classified a fixed-price symbol (فولاد3) as an ordinary share, a different but defensible reading of 'ordinary shares'; queue sizes also drift by tens of percent within minutes after the close, so T4 is graded on the ranking only._
 
 <!-- BENCH:END -->
 

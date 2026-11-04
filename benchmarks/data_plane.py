@@ -49,22 +49,25 @@ class Raw:
 
     async def get(self, url: str) -> object:
         # a raw-HTTP agent has to retry timeouts and 403s itself; every attempt counts as a request
+        last = "?"
         for attempt in range(4):
             started = time.perf_counter()
             self.requests += 1
             try:
                 response = await self.client.get(url)
-            except httpx.TransportError:
+            except httpx.TransportError as exc:
                 self.seconds += time.perf_counter() - started
+                last = f"{type(exc).__name__}: {exc}"
                 await asyncio.sleep(1 + attempt)
                 continue
             self.seconds += time.perf_counter() - started
             if response.status_code in (403, 429, 502, 503, 504):
+                last = f"HTTP {response.status_code}"
                 await asyncio.sleep(1 + attempt)
                 continue
             break
         else:
-            raise RuntimeError(f"giving up on {url}")
+            raise RuntimeError(f"giving up on {url} ({last})")
         self.bytes += len(response.content)
         self.text_parts.append(response.text)
         return response.json() if "json" in response.headers.get("content-type", "") else response.text
@@ -249,9 +252,18 @@ async def run(repeats: int) -> dict:
     for key, title, raw_route, tool, args in TASKS:
         raw_runs, mcp_runs = [], []
         for _ in range(repeats):
+            await asyncio.sleep(3)  # be polite: the exchange throttles bursts
             raw = Raw()
             try:
-                await raw_route(raw)
+                for attempt in range(3):
+                    try:
+                        await raw_route(raw)
+                        break
+                    except RuntimeError:
+                        if attempt == 2:
+                            raise
+                        raw = Raw()  # fresh connection pool, then retry the whole route
+                        await asyncio.sleep(5)
                 raw_runs.append(raw.summary())
                 prev = await prev_trading_day(raw, await find(raw, SYMBOL)) if args.get("date") == "PREV" else None
             finally:

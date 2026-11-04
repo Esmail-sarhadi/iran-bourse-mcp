@@ -44,7 +44,7 @@ Whole-market screen (دیده‌بان بازار) of ordinary shares on Bourse 
 
 ### `top_movers`
 
-Ranked lists: top gainers/losers, most traded, buy/sell queues (صف خرید/فروش), real-person money inflow/outflow (ورود/خروج پول حقیقی), buyer power.
+Ranked lists: top gainers/losers, most traded, buy/sell queues (صف خرید/فروش, confirmed against each symbol's real order book; about 10 s on a strong day), real-person money inflow/outflow (ورود/خروج پول حقیقی), buyer power.
 
 | parameter | type | description |
 |---|---|---|

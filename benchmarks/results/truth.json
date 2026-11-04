@@ -1,7 +1,14 @@
 {
-  "generated": "2026-11-04 07:50:31 UTC",
+  "generated": "2026-11-04 09:03:13 UTC",
   "ins_code": "46348559193224090",
-  "T1": null,
+  "T1": {
+    "date": 20261104,
+    "last": 4330.0,
+    "close": 4290.0,
+    "change_pct": 2.85,
+    "volume": 1397098412,
+    "value_rial": 5996217957060
+  },
   "T2": {
     "date": 20261102,
     "vwap": 4091.83,
@@ -45,7 +52,74 @@
     },
     "total_net_real_value_rial": -8118904504830
   },
-  "T4": null,
+  "T4": {
+    "security_kinds_seen": [
+      "سهام عادی"
+    ],
+    "total_buy_queues": 83,
+    "top10": [
+      {
+        "symbol": "شتبریز",
+        "queue_volume": 218771558,
+        "price": 75330.0,
+        "queue_value": 16480061464140
+      },
+      {
+        "symbol": "تابان",
+        "queue_volume": 349487896,
+        "price": 23280.0,
+        "queue_value": 8136078218880
+      },
+      {
+        "symbol": "فساپ",
+        "queue_volume": 655714236,
+        "price": 6620.0,
+        "queue_value": 4340828242320
+      },
+      {
+        "symbol": "کرماشا",
+        "queue_volume": 129647865,
+        "price": 28380.0,
+        "queue_value": 3679406408700
+      },
+      {
+        "symbol": "شیراز",
+        "queue_volume": 34305698,
+        "price": 67800.0,
+        "queue_value": 2325926324400
+      },
+      {
+        "symbol": "سیمکات",
+        "queue_volume": 35454707,
+        "price": 61560.0,
+        "queue_value": 2182591762920
+      },
+      {
+        "symbol": "غزر",
+        "queue_volume": 331703364,
+        "price": 6220.0,
+        "queue_value": 2063194924080
+      },
+      {
+        "symbol": "فاراک",
+        "queue_volume": 450435237,
+        "price": 4420.0,
+        "queue_value": 1990923747540
+      },
+      {
+        "symbol": "خراسان",
+        "queue_volume": 31709904,
+        "price": 60730.0,
+        "queue_value": 1925742469920
+      },
+      {
+        "symbol": "شپدیس",
+        "queue_volume": 153463992,
+        "price": 12070.0,
+        "queue_value": 1852310383440
+      }
+    ]
+  },
   "T5": {
     "filings": [
       {

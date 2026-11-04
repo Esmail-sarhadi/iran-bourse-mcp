@@ -1,21 +1,21 @@
 {
-  "generated": "2026-11-04 07:36:13 UTC",
+  "generated": "2026-11-04 09:16:52 UTC",
   "tokenizer": "tiktoken o200k_base (proxy)",
-  "repeats": 1,
+  "repeats": 3,
   "tasks": [
     {
       "id": "quote",
       "title": "Live quote with correct % change",
       "raw": {
         "requests": 3,
-        "seconds": 0.42,
+        "seconds": 0.38,
         "bytes": 17819,
         "tokens": 6225
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.47,
-        "bytes": 953,
+        "seconds": 0.52,
+        "bytes": 952,
         "tokens": 337
       },
       "token_reduction": 18.5,
@@ -26,31 +26,31 @@
       "title": "Order book with queue detection",
       "raw": {
         "requests": 3,
-        "seconds": 0.33,
+        "seconds": 0.32,
         "bytes": 17917,
         "tokens": 6298
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.51,
-        "bytes": 1110,
-        "tokens": 390
+        "seconds": 0.55,
+        "bytes": 1108,
+        "tokens": 388
       },
-      "token_reduction": 16.1,
-      "byte_reduction": 16.1
+      "token_reduction": 16.2,
+      "byte_reduction": 16.2
     },
     {
       "id": "trade_summary",
       "title": "One day of ticks: VWAP, biggest trades, bars",
       "raw": {
         "requests": 3,
-        "seconds": 0.73,
+        "seconds": 0.68,
         "bytes": 4643639,
         "tokens": 2142302
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.82,
+        "seconds": 1.07,
         "bytes": 8316,
         "tokens": 3380
       },
@@ -62,67 +62,67 @@
       "title": "Real vs legal money flow, 10 days",
       "raw": {
         "requests": 12,
-        "seconds": 0.87,
+        "seconds": 0.89,
         "bytes": 1522382,
         "tokens": 612009
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.98,
-        "bytes": 4101,
-        "tokens": 1331
+        "seconds": 1.18,
+        "bytes": 4103,
+        "tokens": 1332
       },
-      "token_reduction": 459.8,
-      "byte_reduction": 371.2
+      "token_reduction": 459.5,
+      "byte_reduction": 371.0
     },
     {
       "id": "shareholders",
       "title": "Major shareholders",
       "raw": {
         "requests": 3,
-        "seconds": 0.36,
+        "seconds": 0.39,
         "bytes": 20349,
         "tokens": 7018
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.5,
-        "bytes": 2411,
-        "tokens": 679
+        "seconds": 0.7,
+        "bytes": 2442,
+        "tokens": 686
       },
-      "token_reduction": 10.3,
-      "byte_reduction": 8.4
+      "token_reduction": 10.2,
+      "byte_reduction": 8.3
     },
     {
       "id": "buy_queues",
       "title": "Market-wide ranking of buy queues",
       "raw": {
-        "requests": 3,
-        "seconds": 0.75,
-        "bytes": 954825,
-        "tokens": 274284
+        "requests": 222,
+        "seconds": 14.96,
+        "bytes": 2010485,
+        "tokens": 695971
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.88,
-        "bytes": 52,
-        "tokens": 17
+        "seconds": 9.37,
+        "bytes": 3958,
+        "tokens": 1241
       },
-      "token_reduction": 16134.4,
-      "byte_reduction": 18362.0
+      "token_reduction": 560.8,
+      "byte_reduction": 508.0
     },
     {
       "id": "codal_5",
       "title": "Latest 5 Codal filings with links",
       "raw": {
         "requests": 1,
-        "seconds": 1.05,
+        "seconds": 1.61,
         "bytes": 18274,
         "tokens": 6489
       },
       "mcp": {
         "requests": 1,
-        "seconds": 1.84,
+        "seconds": 1.64,
         "bytes": 4194,
         "tokens": 1539
       },
@@ -134,18 +134,18 @@
       "title": "One year of daily prices, adjusted",
       "raw": {
         "requests": 2,
-        "seconds": 0.51,
+        "seconds": 0.43,
         "bytes": 1518641,
         "tokens": 610549
       },
       "mcp": {
         "requests": 1,
-        "seconds": 0.53,
-        "bytes": 46002,
-        "tokens": 20245
+        "seconds": 0.84,
+        "bytes": 44297,
+        "tokens": 19517
       },
-      "token_reduction": 30.2,
-      "byte_reduction": 33.0
+      "token_reduction": 31.3,
+      "byte_reduction": 34.3
     }
   ],
   "traps": [
@@ -179,8 +179,8 @@
     {
       "id": "queue_false_positives",
       "what": "Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone",
-      "naive_reading": 80,
-      "correct": 0,
+      "naive_reading": 85,
+      "correct": 83,
       "wrong": true,
       "note": "Only meaningful when the gateway's top-of-book fields are empty (outside the session)."
     },
@@ -196,14 +196,14 @@
     "tsetmc symbol page": {
       "status": 200,
       "bytes": 868,
-      "tokens": 241,
+      "tokens": 239,
       "has_price_data": false,
       "unrendered_template_markers": 0
     },
     "codal report list": {
       "status": 200,
       "bytes": 103049,
-      "tokens": 18375,
+      "tokens": 18372,
       "has_price_data": false,
       "unrendered_template_markers": 48
     }
