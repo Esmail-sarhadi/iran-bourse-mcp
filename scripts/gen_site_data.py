@@ -149,6 +149,7 @@ async def main() -> None:
         "version": __version__,
         "tools": await tools_data(),
         "clients": clients_data(),
+        "frameworks": clients.frameworks(),
         "snapshot": await snapshot(),
     }
     for name in ("data_plane", "agents"):

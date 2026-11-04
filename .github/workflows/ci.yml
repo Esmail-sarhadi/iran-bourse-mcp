@@ -22,5 +22,30 @@ jobs:
         run: uv pip install "${{ matrix.mcp }}"
       - name: Lint
         run: uv run --no-sync ruff check .
-      - name: Offline tests
-        run: uv run --no-sync pytest -q
+      - name: Offline tests with coverage
+        run: uv run --no-sync pytest -q --cov=iran_bourse_mcp --cov-report=term-missing
+      - name: CLI smoke
+        run: |
+          uv run --no-sync iran-bourse-mcp tools | head -3
+          uv run --no-sync iran-bourse-mcp config cursor | head -5
+          uv run --no-sync iran-bourse-mcp call glossary term=صف --compact | head -c 200
+
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t iran-bourse-mcp:ci .
+      - name: Smoke test the image
+        run: docker run --rm iran-bourse-mcp:ci --version
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync
+      - name: Tool reference is up to date
+        run: |
+          uv run python scripts/gen_tools_doc.py
+          git diff --exit-code docs/TOOLS.md

@@ -303,3 +303,46 @@ def install(client_id: str, *, src: str | None = None, dry_run: bool = False, pa
         backup = f" (backup: {backup_path.name})"
     target.write_text(rendered, encoding="utf-8")
     return f"{'Updated' if already else 'Added'} '{SERVER_NAME}' in {target}{backup}. Restart {client.label} to load it."
+
+
+# --------------------------------------------------------------------------- frameworks & shell
+def frameworks(src: str | None = None) -> list[dict[str, str]]:
+    """Ready-to-paste snippets for Python agent frameworks and for agents that have no MCP support."""
+    cmd, args = launch(src)
+    arg_list = json.dumps(args)
+    runner = shell_command(src)
+    return [
+        {
+            "id": "openai-agents", "label": "OpenAI Agents SDK", "language": "python",
+            "snippet": (
+                "from agents import Agent\nfrom agents.mcp import MCPServerStdio\n\n"
+                f'async with MCPServerStdio(params={{"command": "{cmd}", "args": {arg_list}}}) as bourse:\n'
+                '    agent = Agent(name="Analyst", instructions="Answer with exchange data.", mcp_servers=[bourse])\n'
+            ),
+        },
+        {
+            "id": "langchain", "label": "LangChain", "language": "python",
+            "snippet": (
+                "from langchain_mcp_adapters.client import MultiServerMCPClient\n\n"
+                "client = MultiServerMCPClient({\n"
+                f'    "{SERVER_NAME}": {{"transport": "stdio", "command": "{cmd}", "args": {arg_list}}}\n'
+                "})\ntools = await client.get_tools()\n"
+            ),
+        },
+        {
+            "id": "claude-agent-sdk", "label": "Claude Agent SDK", "language": "python",
+            "snippet": (
+                "from claude_agent_sdk import ClaudeAgentOptions\n\n"
+                f'options = ClaudeAgentOptions(mcp_servers={{"{SERVER_NAME}": {{"command": "{cmd}", "args": {arg_list}}}}})\n'
+            ),
+        },
+        {
+            "id": "shell", "label": "No MCP support? Use the shell", "language": "bash",
+            "snippet": (
+                "# Any agent that can run commands can use every tool:\n"
+                f"{runner} tools\n"
+                f"{runner} call quote symbol=فولاد --compact\n"
+                f"{runner} call top_movers kind=buy_queue limit=5 --compact\n"
+            ),
+        },
+    ]

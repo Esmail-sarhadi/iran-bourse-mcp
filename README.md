@@ -1,37 +1,389 @@
-# iran-bourse-mcp
+<div align="center">
 
-**Give your AI agent the whole Tehran Stock Exchange.** An open-source [Model Context Protocol](https://modelcontextprotocol.io) server for TSETMC (بورس تهران و فرابورس) and Codal: quotes, order book, tick-by-tick trades, real-vs-legal money flow, major shareholders, filings and more. Clean, unit-explicit and analysis-ready.
+<img src="docs/assets/banner.svg" alt="iran-bourse-mcp: the Tehran Stock Exchange for AI agents" width="100%">
 
-[فارسی](README.fa.md) · [Tool reference](docs/TOOLS.md) · [Data notes](docs/DATA_SOURCES.md)
+<br>
 
-![license](https://img.shields.io/badge/license-MIT-blue) ![python](https://img.shields.io/badge/python-3.10%2B-blue) ![mcp](https://img.shields.io/badge/MCP-SDK%201.x%20%26%202.x-8A2BE2) ![tools](https://img.shields.io/badge/tools-28%20read--only-green)
+[![CI](https://github.com/msmahdinejad/iran-bourse-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/msmahdinejad/iran-bourse-mcp/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-2EC4B6.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10%E2%80%933.13-5B7CFA.svg)](pyproject.toml)
+[![MCP SDK 1.x and 2.x](https://img.shields.io/badge/MCP%20SDK-1.x%20%7C%202.x-F5B53D.svg)](https://modelcontextprotocol.io)
+[![Tools](https://img.shields.io/badge/tools-28%20read--only-2EC4B6.svg)](docs/TOOLS.md)
+[![Stars](https://img.shields.io/github/stars/msmahdinejad/iran-bourse-mcp?style=flat&color=F5B53D)](https://github.com/msmahdinejad/iran-bourse-mcp/stargazers)
+
+**[Website](https://msmahdinejad.github.io/iran-bourse-mcp/)** · **[Install](#install)** · **[Benchmarks](#benchmarks)** · **[Tools](docs/TOOLS.md)** · **[Data notes](docs/DATA_SOURCES.md)** · **[فارسی](README.fa.md)**
+
+</div>
+
+**An open-source [MCP](https://modelcontextprotocol.io) server that gives any AI agent complete, clean Tehran Stock Exchange (TSETMC / بورس تهران و فرابورس) and Codal data**: quotes, order book and queues, tick-by-tick trades, real-vs-legal money flow, major shareholders, filings and more. Units are explicit, derived numbers are labelled, and nothing can place an order.
 
 > Unofficial. Not affiliated with TSETMC, the Tehran Stock Exchange, Fara Bourse or Codal. Information only, **not investment advice**.
 
-## Why this exists
+<div align="center">
+<img src="docs/assets/demo.svg" alt="An agent reviewing Foolad through iran-bourse-mcp" width="860">
+</div>
 
-An AI agent with a web browser cannot really read the Iranian market:
+## Why it exists
 
-- `tsetmc.com` is a JavaScript shell. Fetching a symbol page returns an empty title (we tested it). Codal's report list comes back as unrendered `{{template}}` placeholders.
-- The hidden JSON endpoints that do hold the data use cryptic names (`qTotTran5J`, `pMeDem`, `zOrdMeOf`) and have traps. For example the exchange's own `priceChange` field was `0.0` for a stock that rose 120 rial, the order-book history is a *delta feed* that must be reassembled, and shareholder rows are returned twice.
-- A single day of ticks is 3 MB of JSON. Nobody should paste that into a context window.
+An agent with a web browser cannot really read the Iranian market. We tested it:
+
+- **The site is an empty shell.** Fetching a symbol page from `tsetmc.com` returns a title and nothing else. Codal's report list comes back as unrendered `{{template}}` placeholders.
+- **The hidden JSON API speaks in codes and has traps.** Fields like `qTotTran5J`, `pMeDem`, `zOrdMeOf`; the exchange's own `priceChange` was `0.0` for a stock that rose 120 rial; order-book history is a delta feed; shareholder rows come back twice.
+- **A day of ticks is 3 MB of JSON.** Nobody should paste that into a context window.
 
 `iran-bourse-mcp` finds the data, fixes the traps, reassembles what is fragmented, summarises what is huge and labels everything it infers.
+
+## Install
+
+Works with **every MCP client**, and with agents that have none. You need [uv](https://docs.astral.sh/uv/) (`powershell -c "irm https://astral.sh/uv/install.ps1 | iex"` or `curl -LsSf https://astral.sh/uv/install.sh | sh`) and a machine in Iran ([why](#the-iranian-ip-requirement)).
+
+```bash
+# 1. check that TSETMC and Codal are reachable from here
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp doctor
+
+# 2. print the exact steps for your agent, or let the tool edit the config for you
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp config cursor
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp install cursor
+```
+
+The server entry is always the same: command `uvx`, args `["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]`, stdio transport. One-click install buttons for Cursor, VS Code and Goose are on the [website](https://msmahdinejad.github.io/iran-bourse-mcp/#install). An AI agent can set it up from [docs/llms-install.md](docs/llms-install.md).
+
+<!-- INSTALL:START -->
+<details>
+<summary><b>All agents and IDEs: copy-paste recipes (17)</b></summary>
+
+#### Claude Code
+```bash
+claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
+```
+> Add `--scope user` to make it available in every project.
+
+#### Claude Desktop
+Add to windows: `%APPDATA%/Claude/claude_desktop_config.json`; macos: `~/Library/Application Support/Claude/claude_desktop_config.json`; linux: `~/.config/Claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+Or automatically (makes a backup first): `iran-bourse-mcp install claude-desktop`
+> Restart Claude Desktop after editing the file.
+
+#### OpenAI Codex CLI
+```bash
+codex mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
+```
+or in `~/.codex/config.toml`:
+
+```toml
+[mcp_servers.iran-bourse]
+command = "uvx"
+args = ["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]
+```
+
+#### Gemini CLI
+Add to `~/.gemini/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+Or automatically (makes a backup first): `iran-bourse-mcp install gemini-cli`
+
+#### Cursor
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+Or automatically (makes a backup first): `iran-bourse-mcp install cursor`
+> Restart Cursor after editing. A one-click install link is available (see `config cursor`).
+
+#### VS Code (GitHub Copilot)
+Add to `.vscode/mcp.json`:
+
+```json
+{
+  "servers": {
+    "iran-bourse": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+> Project-level file. Top-level key is `servers`, not `mcpServers`.
+
+#### Windsurf
+Add to `~/.codeium/windsurf/mcp_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+Or automatically (makes a backup first): `iran-bourse-mcp install windsurf`
+> Newer releases may relocate the file; open it from Cascade's MCP panel if this path is missing.
+
+#### Cline
+Add this entry in the client's MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+> Open the MCP Servers panel, choose *Configure MCP Servers*, and paste the entry into the JSON it opens.
+
+#### Roo Code
+Add to `.roo/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+> Project file shown; the global file is opened from the MCP settings view.
+
+#### Kiro
+Add to `~/.kiro/settings/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+Or automatically (makes a backup first): `iran-bourse-mcp install kiro`
+
+#### Qwen Code
+Add to `~/.qwen/settings.json`:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+Or automatically (makes a backup first): `iran-bourse-mcp install qwen-code`
+
+#### JetBrains AI Assistant
+Add this entry in the client's MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+> Settings > Tools > AI Assistant > Model Context Protocol (MCP) > Add, then paste the JSON.
+
+#### Zed
+Add to `~/.config/zed/settings.json`:
+
+```json
+{
+  "context_servers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+> Older Zed versions expect `command` as an object: {"path": ..., "args": [...]}.
+
+#### OpenCode
+Add to `~/.config/opencode/opencode.json`:
+
+```json
+{
+  "mcp": {
+    "iran-bourse": {
+      "type": "local",
+      "command": [
+        "uvx",
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+> OpenCode uses `command` as one array and `type: local`.
+
+#### Goose
+```bash
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
+```
+
+Paste that into `goose configure` > Add Extension > Command-line Extension, or open the one-click link on the website.
+> Or run `goose configure` > Add Extension > Command-line Extension and enter the command below.
+
+#### Amp
+Add to `~/.config/amp/settings.json`:
+
+```json
+{
+  "amp.mcpServers": {
+    "iran-bourse": {
+      "command": "uvx",
+      "args": [
+        "--from",
+        "git+https://github.com/msmahdinejad/iran-bourse-mcp",
+        "iran-bourse-mcp"
+      ]
+    }
+  }
+}
+```
+
+#### Python agent frameworks and plain shell
+**OpenAI Agents SDK**
+
+```python
+from agents import Agent
+from agents.mcp import MCPServerStdio
+
+async with MCPServerStdio(params={"command": "uvx", "args": ["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]}) as bourse:
+    agent = Agent(name="Analyst", instructions="Answer with exchange data.", mcp_servers=[bourse])
+```
+**LangChain**
+
+```python
+from langchain_mcp_adapters.client import MultiServerMCPClient
+
+client = MultiServerMCPClient({
+    "iran-bourse": {"transport": "stdio", "command": "uvx", "args": ["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]}
+})
+tools = await client.get_tools()
+```
+**Claude Agent SDK**
+
+```python
+from claude_agent_sdk import ClaudeAgentOptions
+
+options = ClaudeAgentOptions(mcp_servers={"iran-bourse": {"command": "uvx", "args": ["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]}})
+```
+**No MCP support? Use the shell**
+
+```bash
+# Any agent that can run commands can use every tool:
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp tools
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp call quote symbol=فولاد --compact
+uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp call top_movers kind=buy_queue limit=5 --compact
+```
+
+</details>
+
+<!-- INSTALL:END -->
 
 ## What you can ask
 
 > «وضعیت فولاد رو کامل بررسی کن: صف، ورود پول حقیقی، سهامداران عمده و آخرین اطلاعیه‌های کدال»
 > «امروز کدوم سهم‌ها صف خرید قوی دارن و پول حقیقی وارد شده؟»
-> «ریز معاملات فولاد دیروز از ۱۰ تا ۱۱ رو خلاصه کن و بزرگ‌ترین معامله‌ها رو نشون بده»
+> «ریز معاملات فولاد دیروز رو خلاصه کن و بزرگ‌ترین معامله‌ها رو نشون بده»
+> «صف خرید خودرو از چه ساعتی شکل گرفت و چقدر بزرگ شد؟»
 > «سهامدار عمده شستا چه سهم‌های دیگه‌ای داره؟»
-> «تاریخچه قیمت تعدیل‌شده خودرو در یک سال اخیر»
 
 ## Coverage
 
 | Data | Tools |
 |---|---|
 | Market state, indices, industry indices | `market_status` `market_overview` `indices` `industry_summary` `index_contributors` |
-| Whole-market screens (filter/sort ~590 instruments) | `market_watch` `top_movers` (gainers, losers, buy/sell queues, real-money inflow/outflow, buyer power) `market_snapshot` |
+| Whole-market screens (~590 instruments) | `market_watch` `top_movers` (gainers, losers, buy/sell queues, real-money inflow/outflow, buyer power) `market_snapshot` |
 | One-call symbol dossier | `symbol_overview` |
 | Price, limits, VWAP, P/E, market cap | `quote` `price_history` (optionally **back-adjusted**) `symbol_statistics` `corporate_actions` |
 | Order book and queues (صف خرید/فروش) | `order_book` `order_book_history` (rebuilt from every event, with queue episodes) |
@@ -43,53 +395,50 @@ An AI agent with a web browser cannot really read the Iranian market:
 | Supervisor notices | `supervisor_messages` |
 | Vocabulary | `glossary` (Persian ↔ English market terms) |
 
-Also ships three prompts (`analyze_symbol`, `daily_market_report`, `smart_money_scan`) and a glossary resource.
+Also three prompts (`analyze_symbol`, `daily_market_report`, `smart_money_scan`) and a glossary resource. Full parameters: [docs/TOOLS.md](docs/TOOLS.md).
+
+## Benchmarks
+
+Measured against the live exchange, not claimed. The raw route is the **best case** for an agent that already knows the hidden endpoints. Scripts, ground truth and raw results live in [`benchmarks/`](benchmarks/README.md) and can be re-run.
+
+<!-- BENCH:START -->
+| Task | Raw route | iran-bourse-mcp | Tokens saved |
+|---|---|---|---|
+| Live quote with correct % change | 3 req · 0.4s · 6,225 tok | 1 call · 0.5s · 337 tok | **18x** |
+| Order book with queue detection | 3 req · 0.3s · 6,298 tok | 1 call · 0.5s · 390 tok | **16x** |
+| One day of ticks: VWAP, biggest trades, bars | 3 req · 0.7s · 2,142,302 tok | 1 call · 0.8s · 3,380 tok | **634x** |
+| Real vs legal money flow, 10 days | 12 req · 0.9s · 612,009 tok | 1 call · 1.0s · 1,331 tok | **460x** |
+| Major shareholders | 3 req · 0.4s · 7,018 tok | 1 call · 0.5s · 679 tok | **10x** |
+| Market-wide ranking of buy queues | 3 req · 0.8s · 274,284 tok | 1 call · 0.9s · 17 tok | **16,134x** |
+| Latest 5 Codal filings with links | 1 req · 1.1s · 6,489 tok | 1 call · 1.8s · 1,539 tok | **4x** |
+| One year of daily prices, adjusted | 2 req · 0.5s · 610,549 tok | 1 call · 0.5s · 20,245 tok | **30x** |
+
+_Data-plane benchmark, 2026-11-04 07:36:13 UTC. Tokens are a tiktoken `o200k_base` proxy; the ratios matter more than the absolute numbers. A single-endpoint task takes about as long either way; the server wins where the raw route needs many sequential requests, and on tokens everywhere._
+
+**Traps in the raw data** (each found on the live endpoints and handled by the server):
+
+| Trap | Naive reading | Correct |
+|---|---|---|
+| The exchange's own `priceChange` field in GetClosingPriceInfo | `0.0` | `120.0` |
+| Counting holders / summing percent from the dated shareholder endpoint | `{"holders": 24, "percent_sum": 92.97}` | `{"holders": 12, "percent_sum": 46.48}` |
+| Reading real-buyer count with the key used by the live endpoint (`buy_CountI`) on history rows | `null` | `3790.0` |
+| Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone | `80` | `0` |
+| Matching the company name the user types (Persian letters) against the exchange's text (Arabic letters) | `false` | `true` |
+
+<!-- BENCH:END -->
 
 ### Verified, not assumed
 
-Run against the live servers on 2026-11-03/04:
-
 - **Ticks are complete.** For فولاد the 6,819 ticks of 3 Nov and the 15,643 ticks of 2 Nov matched the exchange's own daily totals at **100.0% of volume and trade count**. `trade_summary` reports this coverage on every call so you do not have to trust us. (A community reference claimed a 36-38% shortfall; we could not reproduce that.)
-- **Price limits and queues** come from the day's actual allowed price range, not a guess.
-- **Derived numbers are labelled.** Anything the exchange does not publish (tick-rule pressure, value of real flow outside history, adjusted prices) sits under an `estimate`/`estimated` key.
-- 94 offline tests (recorded real fixtures) pass on both MCP SDK 1.x and 2.x, plus a live smoke test of every tool and an end-to-end stdio test: `scripts/smoke_live.py`, `scripts/e2e_stdio.py`.
+- **Price limits and queues** come from the day's actual allowed price range, not a guess, and queue rankings are confirmed against the real order book.
+- **Derived numbers are labelled.** Anything the exchange does not publish (tick-rule pressure, adjusted prices, same-day value of real money flow) sits under an `estimate`/`estimated` key.
+- **Tested.** Offline tests on recorded real fixtures (CI: Python 3.10 to 3.13 on both MCP SDK generations), a live smoke test of every tool (`scripts/smoke_live.py`) and an end-to-end stdio test (`scripts/e2e_stdio.py`).
 
-## Install
+## Architecture
 
-Requires Python 3.10+ and [uv](https://docs.astral.sh/uv/). **Run it from a machine in Iran** (see below).
+<div align="center"><img src="docs/assets/architecture.svg" alt="Architecture of iran-bourse-mcp" width="860"></div>
 
-```bash
-# check that TSETMC / Codal are reachable from here
-uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp doctor
-```
-
-### Claude Code
-
-```bash
-claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp
-```
-
-### Claude Desktop / Cursor / any MCP client
-
-```json
-{
-  "mcpServers": {
-    "iran-bourse": {
-      "command": "uvx",
-      "args": ["--from", "git+https://github.com/msmahdinejad/iran-bourse-mcp", "iran-bourse-mcp"]
-    }
-  }
-}
-```
-
-### From a clone
-
-```bash
-git clone https://github.com/msmahdinejad/iran-bourse-mcp && cd iran-bourse-mcp
-uv sync
-uv run iran-bourse-mcp doctor
-uv run iran-bourse-mcp            # stdio server
-```
+Pure transformation logic (`shape.py`) is separated from I/O so every number can be tested offline. Details: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## The Iranian IP requirement
 
@@ -103,7 +452,7 @@ TSETMC and Codal are built for Iranian users. Their servers often reject foreign
 iran-bourse-mcp serve --transport streamable-http --host 127.0.0.1 --port 8000
 ```
 
-`iran-bourse-mcp doctor` tells you which sources are reachable.
+`iran-bourse-mcp doctor` tells you which sources are reachable. A `Dockerfile` is included (`docker build -t iran-bourse-mcp . && docker run -i --rm iran-bourse-mcp`); images are pushed to `ghcr.io` on tagged releases.
 
 ## Configuration
 
@@ -111,6 +460,7 @@ iran-bourse-mcp serve --transport streamable-http --host 127.0.0.1 --port 8000
 |---|---|---|
 | `IRAN_BOURSE_PROXY` | HTTP(S) proxy for all requests | none (system proxy variables are honoured) |
 | `IRAN_BOURSE_TIMEOUT` | Request timeout, seconds | `45` |
+| `IRAN_BOURSE_SOURCE` | Package source used in generated install snippets (`pypi` once published) | the GitHub repository |
 | `IRAN_BOURSE_CDN_URL` | Override the TSETMC API base | `https://cdn.tsetmc.com/api` |
 | `IRAN_BOURSE_WEBGW_URL` | Override the TSE gateway base | `https://webgw.tse.ir` |
 | `IRAN_BOURSE_CODAL_URL` | Override the Codal search API | `https://search.codal.ir/api/search/v2/q` |
@@ -121,7 +471,7 @@ iran-bourse-mcp serve --transport streamable-http --host 127.0.0.1 --port 8000
 - Persian/Arabic letter variants are interchangeable on input (`کگل` = `كگل`) and normalised on output.
 - The market trades Saturday-Wednesday 09:00-12:30 Tehran time. Public holidays are not modelled. Outside the session you get the last session's data.
 - **Order-book history for the current trading day may be partial.** TSETMC publishes the full intraday book history only after the day ends. `order_book_history` tells you when it is cut short (`events_span`, `warning`). Use `order_book` for the live book.
-- The unofficial endpoints can change without notice. The test-suite uses recorded fixtures, and `scripts/smoke_live.py` re-checks every tool against the real servers.
+- The unofficial endpoints can change without notice. Every quirk we found is in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
 - Requests are cached briefly (seconds for live data, hours for history) and limited to 6 in flight. Please be gentle: this is somebody else's server.
 
 ## Safety
@@ -132,22 +482,21 @@ All tools are read-only (`readOnlyHint`). There is deliberately **no order place
 
 ```bash
 uv sync
-uv run pytest                      # offline, ~3 s
+uv run pytest                           # offline, a few seconds
 uv run ruff check .
 uv run python scripts/smoke_live.py     # needs access to TSETMC
-uv run python scripts/e2e_stdio.py      # real MCP handshake against the live data
-uv run python scripts/gen_tools_doc.py  # regenerate docs/TOOLS.md
+uv run python scripts/e2e_stdio.py      # real MCP handshake against live data
+uv run python benchmarks/data_plane.py  # re-measure tokens, requests, time
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md), [AGENTS.md](AGENTS.md) and [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Roadmap
 
 - Options chain and Greeks (derivatives board), IME commodity and energy bourse data
 - Persian holidays calendar
-- Portfolio and watchlist helpers
 - Published PyPI release (`uvx iran-bourse-mcp`)
 
-## License
+## Citing
 
-[MIT](LICENSE). Market data belongs to its respective owners; check the exchange's terms before redistributing it.
+See [CITATION.cff](CITATION.cff). Licensed under [MIT](LICENSE). Market data belongs to its respective owners; check the exchange's terms before redistributing it.

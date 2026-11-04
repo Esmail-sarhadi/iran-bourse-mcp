@@ -125,3 +125,50 @@ def test_parser_has_all_subcommands():
     parser = build_parser()
     for argv in (["doctor"], ["tools", "--json"], ["call", "quote", "symbol=فولاد", "--compact"], ["config", "cursor"], ["install", "cursor", "--dry-run"], ["serve"]):
         assert parser.parse_args(argv).command == argv[0]
+
+
+# ---------------------------------------------------------------- end-to-end through main()
+def run_main(argv, capsys):
+    from iran_bourse_mcp.cli import main
+
+    try:
+        main(argv)
+        code = 0
+    except SystemExit as exc:
+        code = exc.code or 0
+    captured = capsys.readouterr()
+    return code, captured.out, captured.err
+
+
+def test_main_tools_lists_everything(capsys):
+    code, out, _ = run_main(["tools", "--json"], capsys)
+    names = {t["name"] for t in json.loads(out)}
+    assert code == 0 and {"quote", "trade_summary", "codal_filings"} <= names and len(names) == 28
+
+
+def test_main_call_runs_a_tool_without_network(capsys):
+    code, out, _ = run_main(["call", "glossary", "term=صف خرید", "--compact"], capsys)
+    assert code == 0 and "buy queue" in json.loads(out)["matches"]["صف خرید"]["en"]
+    code, out, _ = run_main(["call", "glossary", "--json", '{"term": "حقیقی"}'], capsys)
+    assert code == 0 and "matches" in json.loads(out)
+
+
+def test_main_call_reports_bad_input(capsys):
+    code, _, err = run_main(["call", "glossary", "term"], capsys)
+    assert code == 2 and "key=value" in err
+    code, _, err = run_main(["call", "no_such_tool"], capsys)
+    assert code == 1 and "error" in err
+
+
+def test_main_config_and_install_messages(capsys, tmp_path, monkeypatch):
+    code, out, _ = run_main(["config"], capsys)
+    assert code == 0 and "claude-code" in out and "cursor" in out
+    code, out, _ = run_main(["config", "codex"], capsys)
+    assert code == 0 and "codex mcp add" in out
+    code, _, err = run_main(["config", "nope"], capsys)
+    assert code == 2 and "Unknown client" in err
+    code, _, err = run_main(["install", "zed"], capsys)
+    assert code == 1 and "config zed" in err
+    monkeypatch.setattr(clients.Client, "config_path", lambda self: tmp_path / "mcp.json")
+    code, out, _ = run_main(["install", "cursor"], capsys)
+    assert code == 0 and "Added" in out and (tmp_path / "mcp.json").exists()

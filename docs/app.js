@@ -312,12 +312,7 @@
   }
 
   /* ------------------------------------------------------------------ install */
-  var FRAMEWORKS = [
-    { id: "openai-agents", label: "OpenAI Agents SDK", group: "framework", snippet: "from agents import Agent\nfrom agents.mcp import MCPServerStdio\n\nasync with MCPServerStdio(params={\n    \"command\": \"uvx\",\n    \"args\": [\"--from\", \"" + GIT + "\", \"iran-bourse-mcp\"],\n}) as bourse:\n    agent = Agent(name=\"Analyst\", instructions=\"Answer with exchange data.\", mcp_servers=[bourse])" },
-    { id: "langchain", label: "LangChain", group: "framework", snippet: "from langchain_mcp_adapters.client import MultiServerMCPClient\n\nclient = MultiServerMCPClient({\n    \"iran-bourse\": {\n        \"transport\": \"stdio\",\n        \"command\": \"uvx\",\n        \"args\": [\"--from\", \"" + GIT + "\", \"iran-bourse-mcp\"],\n    }\n})\ntools = await client.get_tools()" },
-    { id: "claude-sdk", label: "Claude Agent SDK", group: "framework", snippet: "from claude_agent_sdk import ClaudeAgentOptions\n\noptions = ClaudeAgentOptions(mcp_servers={\n    \"iran-bourse\": {\"command\": \"uvx\", \"args\": [\"--from\", \"" + GIT + "\", \"iran-bourse-mcp\"]}\n})" },
-    { id: "shell", label: lang === "fa" ? "بدون MCP (شل)" : "No MCP? Shell", group: "framework", snippet: "# Any agent that can run commands can use every tool:\nuvx --from " + GIT + " iran-bourse-mcp tools\nuvx --from " + GIT + " iran-bourse-mcp call quote symbol=فولاد --compact\nuvx --from " + GIT + " iran-bourse-mcp call top_movers kind=buy_queue limit=5 --compact" }
-  ];
+  var FRAMEWORKS = (D.frameworks || []).map(function (f) { return { id: f.id, label: f.label, group: "framework", snippet: f.snippet }; });
   var selectedClient = "claude-code";
   var GROUP_LABEL = { cli: ["Terminal agents", "ایجنت‌های ترمینال"], ide: ["IDEs and editors", "IDE و ویرایشگرها"], desktop: ["Desktop apps", "اپ‌های دسکتاپ"], framework: ["Frameworks and shell", "فریم‌ورک و شل"] };
   function allClients() { return (D.clients || []).filter(function (c) { return c.id !== "generic"; }).concat(FRAMEWORKS, (D.clients || []).filter(function (c) { return c.id === "generic"; })); }

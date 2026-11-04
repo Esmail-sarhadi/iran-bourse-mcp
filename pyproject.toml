@@ -45,6 +45,7 @@ packages = ["src/iran_bourse_mcp"]
 dev = [
   "pytest>=8",
   "pytest-asyncio>=0.23",
+  "pytest-cov>=7.1.0",
   "respx>=0.21",
   "ruff>=0.5",
   "tiktoken>=0.14.0",
