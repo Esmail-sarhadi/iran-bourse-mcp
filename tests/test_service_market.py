@@ -170,6 +170,7 @@ async def test_overview_and_indices_split_headline_from_industries(bourse):
     out = await bourse.indices("bourse")
     assert [r["name"] for r in out["headline_indices"]] == ["شاخص کل"]
     assert [r["code"] for r in out["industry_indices"]] == ["27", "57"]  # best change first
+    assert all(r["headline"] for r in out["headline_indices"])
     assert (await bourse.indices("bourse", only_selected=True))["industry_indices"] == []
 
 
@@ -214,7 +215,9 @@ async def test_real_money_rankings_use_client_type_join(bourse):
 
 
 async def test_industry_summary_and_index_contributors(bourse):
-    out = await bourse.industry_summary()
+    out = await bourse.industry_summary(limit=50)
+    assert out["total_industries"] == 2
+    assert len((await bourse.industry_summary(limit=1))["industries"]) == 1
     names = {r["industry"]: r for r in out["industries"]}
     assert names["فلزات اساسی"]["symbols"] == 2 and names["فلزات اساسی"]["in_buy_queue"] == 1
     assert names["بانکها"]["in_sell_queue"] == 1
@@ -301,3 +304,22 @@ async def test_etf_nav_reports_non_funds_gracefully():
     b.resolver._api = api
     out = await b.etf_nav("فولاد")
     assert out["available"] is False
+
+
+async def test_price_history_only_reports_adjustments_that_affect_the_returned_rows():
+    class Split(MarketApi):
+        async def daily_prices(self, ins):
+            def day(d, close, yesterday):
+                return {"dEven": d, "pClosing": close, "pDrCotVal": close, "priceYesterday": yesterday, "priceFirst": close,
+                        "priceMax": close, "priceMin": close, "qTotTran5J": 1.0, "qTotCap": 1.0, "zTotTran": 1.0}
+
+            return [day(20260101, 100, 100), day(20260102, 102, 100), day(20260103, 51, 51), day(20260104, 52, 51)]
+
+    b = Bourse()
+    api = Split()
+    b.api = api
+    b.resolver._api = api
+    everything = await b.price_history("فولاد", adjusted=True)
+    assert len(everything["adjustment_events"]) == 1
+    recent = await b.price_history("فولاد", adjusted=True, limit=2)  # rows after the split
+    assert recent["adjustment_events"] == []

@@ -143,9 +143,8 @@ class Bourse:
     async def indices(self, market: str = "bourse", only_selected: bool = False) -> dict:
         flow = _flow(market)
         rows = [shape.shape_index_row(r) for r in await self.api.indices(flow)]
-        # The headline indices have no numeric industry code prefix.
-        headline = [r for r in rows if r["code"] is None]
-        industries = [r for r in rows if r["code"] is not None]
+        headline = [r for r in rows if r["headline"]]
+        industries = [r for r in rows if not r["headline"]]
         industries.sort(key=lambda r: r["change_pct"] if r["change_pct"] is not None else -999, reverse=True)
         return {
             "market": "bourse" if flow == 1 else "fara-bourse",
@@ -297,7 +296,7 @@ class Bourse:
         ]
         return {"kind": kind, "count": len(out), "rows": out, "note": "real_* values are estimates: net real volume x symbol VWAP." if kind.startswith("real") else None}
 
-    async def industry_summary(self, market: str | None = None) -> dict:
+    async def industry_summary(self, market: str | None = None, limit: int = 15) -> dict:
         watch = await self.market_watch(market=market, security_type="سهام", only_traded=True, limit=700, detail="full")
         groups: dict[str, list[dict]] = {}
         for r in watch["rows"]:
@@ -327,7 +326,7 @@ class Bourse:
                 }
             )
         out.sort(key=lambda r: r["value"], reverse=True)
-        return {"industries": out, "units": "rial"}
+        return {"total_industries": len(out), "industries": out[: _clamp(limit, 1, 80)], "units": "rial"}
 
     async def index_contributors(self, limit: int = 15) -> dict:
         watch = await self.market_watch(security_type="سهام", only_traded=False, limit=700, detail="full")
@@ -561,6 +560,8 @@ class Bourse:
             series = [r for r in series if int(r["date"].replace("-", "")) <= end]
         total = len(series)
         series = series[-_clamp(limit, 1, MAX_ROWS):]
+        if events and series:  # only events after the first returned row change the values shown
+            events = [e for e in events if e["date"] > series[0]["date"]]
         return {
             "instrument": inst.brief(),
             "adjusted": adjusted,
@@ -611,10 +612,10 @@ class Bourse:
             "shares_outstanding": shape._i(shares_out),
             "listed_holders": len(holders),
             "listed_percent_total": shape._r(listed_pct),
-            "unlisted_percent": shape._r(100 - listed_pct),
+            "other_holders_percent": shape._r(100 - listed_pct),
             "top5_percent": shape._r(sum(h["percent"] or 0 for h in holders[:5])),
             "holders": holders,
-            "note": "TSETMC lists holders above ~1% (major shareholders / سهامداران عمده). holder_id can be passed to shareholder_portfolio.",
+            "note": "TSETMC lists holders above ~1% (major shareholders / سهامداران عمده). holder_id (valid for this snapshot) can be passed to shareholder_portfolio.",
         }
 
     async def shareholder_history(self, symbol: str, date: str | None = None) -> dict:

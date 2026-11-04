@@ -42,6 +42,7 @@
       "inst.s3": "3 · Connect", "inst.s3p": "Choose your agent. Some have a one-click link or an auto-installer.",
       "ex.eyebrow": "Ask in Persian", "ex.h2": "Questions that used to take an analyst an hour.",
       "tools.eyebrow": "28 tools", "tools.h2": "Everything TSETMC shows, and what it hides.", "tools.lead": "Every tool is read-only, returns units explicitly, and labels anything it derives.",
+      "how.eyebrow": "How it works", "how.h2": "One pure core, three public sources.", "how.lead": "Transformation logic is separate from I/O, so every number can be tested offline against recorded real data. Facts are returned as published; derived numbers are labelled.",
       "trust.eyebrow": "Built to be trusted", "trust.h2": "Correctness first, then convenience.",
       "faq.h2": "Questions, answered.", "final.h2": "Give your agent the market.", "final.lead": "Free, open source, read-only. Star it if it saves you an afternoon.", "final.issue": "Report an issue",
       "foot.tools": "Tool reference", "foot.data": "Data notes", "foot.contrib": "Contributing",
@@ -77,6 +78,7 @@
       "inst.s3": "۳ · اتصال", "inst.s3p": "ایجنتتان را انتخاب کنید. بعضی لینک یک‌کلیکی یا نصب‌کننده‌ی خودکار دارند.",
       "ex.eyebrow": "فارسی بپرسید", "ex.h2": "سؤال‌هایی که قبلاً یک ساعت از وقت تحلیلگر می‌گرفت.",
       "tools.eyebrow": "۲۸ ابزار", "tools.h2": "هرچه TSETMC نشان می‌دهد، و هرچه پنهان می‌کند.", "tools.lead": "همه‌ی ابزارها فقط‌خواندنی‌اند، واحد را صریح می‌گویند و هر چیز محاسبه‌شده را برچسب می‌زنند.",
+      "how.eyebrow": "چطور کار می‌کند", "how.h2": "یک هسته‌ی خالص، سه منبع عمومی.", "how.lead": "منطق تبدیل داده از I/O جداست، پس هر عدد را می‌شود آفلاین روی داده‌ی واقعی ضبط‌شده تست کرد. واقعیت‌ها همان‌طور که منتشر شده‌اند برمی‌گردند و عددهای محاسبه‌شده برچسب دارند.",
       "trust.eyebrow": "ساخته‌شده برای اعتماد", "trust.h2": "اول درستی، بعد راحتی.",
       "faq.h2": "پرسش‌ها و پاسخ‌ها.", "final.h2": "بازار را به ایجنتتان بدهید.", "final.lead": "رایگان، متن‌باز، فقط‌خواندنی. اگر یک بعدازظهر از وقتتان را نجات داد، ستاره بدهید.", "final.issue": "گزارش مشکل",
       "foot.tools": "مرجع ابزارها", "foot.data": "نکات داده", "foot.contrib": "مشارکت",
@@ -94,7 +96,7 @@
     $$("[data-i18n]").forEach(function (el) { el.textContent = t(el.getAttribute("data-i18n")); });
     $$("[data-i18n-html]").forEach(function (el) { el.innerHTML = t(el.getAttribute("data-i18n-html")); });
     $("#lang").textContent = lang === "fa" ? "English" : "فارسی";
-    var s = $("#tool-search"); if (s) s.placeholder = lang === "fa" ? "جستجوی ابزار: عمق بازار، صف، کدال…" : "Search tools: order book, صف, کدال…";
+    var s = $("#tool-search"); if (s) s.placeholder = lang === "fa" ? "جستجوی ابزار: عمق بازار، صف، کدال…" : "Search tools: order book, queue, codal…";
     renderAll();
   }
 
@@ -175,7 +177,7 @@
       ["no", "→ {{::letter.Title}}   {{::letter.PublishDateTime}}\n\n"],
       ["p", "$ "], ["", "curl cdn.tsetmc.com/api/ClosingPrice/GetClosingPriceInfo/4634…\n"],
       ["", "→ \"priceChange\": "], ["no", "0.0"], ["", ", \"pClosing\": 4210.0, \"priceYesterday\": 4090.0\n\n"],
-      ["", "agent: \"Foolad did not move today.\"  "], ["no", "✗ wrong (+120 rial, +2.93%)"]
+      ["", "taking the field at face value: \"Foolad did not move today.\"  "], ["no", "✗ wrong (+120 rial, +2.93%)"]
     ],
     "t-good": [
       ["p", "> "], ["", "quote(symbol=\"فولاد\")\n"],
@@ -184,7 +186,7 @@
       ["ok", "→ 15,643 ticks · coverage 100.0% of official volume\n"], ["dim", "  biggest trade 09:11:28 · 299,880 sh · point of control 4,210\n\n"],
       ["p", "> "], ["", "order_book(symbol=\"فولاد\")\n"],
       ["ok", "→ buy queue 189,651,617 sh · 1,345 orders\n\n"],
-      ["", "agent: \"Foolad is up 2.93% and locked at its price ceiling.\"  "], ["ok", "✓"]
+      ["", "reading: \"Foolad is up 2.93% and locked at its price ceiling.\"  "], ["ok", "✓"]
     ]
   };
   var typing = {};

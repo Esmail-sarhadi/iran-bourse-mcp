@@ -140,9 +140,9 @@ async def top_movers(
 
 
 @tool()
-async def industry_summary(market: Market = None) -> dict:
+async def industry_summary(market: Market = None, limit: Annotated[int, Field(ge=1, le=80, description="How many industries to return, largest traded value first")] = 15) -> dict:
     """Per-industry breakdown: traded value, average and cap-weighted change, index effect, queue counts (گروه‌های صنعتی)."""
-    return await svc().industry_summary(market)
+    return await svc().industry_summary(market, limit)
 
 
 @tool()

@@ -402,6 +402,13 @@ Also three prompts (`analyze_symbol`, `daily_market_report`, `smart_money_scan`)
 Measured against the live exchange, not claimed. The raw route is the **best case** for an agent that already knows the hidden endpoints. Scripts, ground truth and raw results live in [`benchmarks/`](benchmarks/README.md) and can be re-run.
 
 <!-- BENCH:START -->
+<div align="center">
+<img src="docs/assets/bench-tokens.svg" alt="Benchmark: tokens" width="49%">
+<img src="docs/assets/bench-time.svg" alt="Benchmark: time" width="49%">
+<img src="docs/assets/bench-requests.svg" alt="Benchmark: requests" width="49%">
+<img src="docs/assets/bench-accuracy.svg" alt="Benchmark: accuracy" width="49%">
+</div>
+
 | Task | Raw route | iran-bourse-mcp | Tokens saved |
 |---|---|---|---|
 | Live quote with correct % change | 3 req · 0.4s · 6,225 tok | 1 call · 0.5s · 337 tok | **18x** |
@@ -424,6 +431,14 @@ _Data-plane benchmark, 2026-11-04 07:36:13 UTC. Tokens are a tiktoken `o200k_bas
 | Reading real-buyer count with the key used by the live endpoint (`buy_CountI`) on history rows | `null` | `3790.0` |
 | Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone | `80` | `0` |
 | Matching the company name the user types (Persian letters) against the exchange's text (Arabic letters) | `false` | `true` |
+
+**Agent trials** (Claude (one model for every arm), 2026-11-04; 4 tasks, graded against independent ground truth):
+
+| Agent | Accuracy | Net tokens (mean/task) | Time (mean/task) | Tool calls | Answered |
+|---|---|---|---|---|---|
+| Browser-only agent (page fetch) | 6% | 109,098 | 220s | 8.8 | 3/4 |
+| Shell agent (curl/python + web, no MCP) | 100% | 13,528 | 58s | 6.0 | 4/4 |
+| Agent + iran-bourse-mcp | 100% | 10,423 | 25s | 2.5 | 4/4 |
 
 <!-- BENCH:END -->
 

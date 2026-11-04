@@ -11,6 +11,7 @@ Conventions
 
 from __future__ import annotations
 
+import re
 from collections import defaultdict
 from collections.abc import Iterable
 from typing import Any
@@ -695,12 +696,28 @@ WATCH_SORT_KEYS = {
 }
 
 
+_LEADING_CODE = re.compile(r"^(\d{1,3})\s*[-–]?\s*(.+)$")
+_TRAILING_CODE = re.compile(r"^(.+?)\s*[-–]?\s*(\d{2,3})$")
+
+
 def shape_index_row(row: dict) -> dict:
+    """Index row. Industry indices carry a numeric code that TSETMC writes as ``01-name``, ``26name`` or ``name11``."""
     name = clean(row.get("lVal30")) or ""
-    code, _, title = name.partition("-")
+    headline = name.startswith("شاخص")
+    code: str | None = None
+    title = name
+    if not headline:
+        match = _LEADING_CODE.match(name)
+        if match:
+            code, title = match.group(1), match.group(2)
+        else:
+            match = _TRAILING_CODE.match(name)
+            if match:
+                title, code = match.group(1), match.group(2)
     return {
-        "name": title.strip() if title and code.strip().isdigit() else name,
-        "code": code.strip() if title and code.strip().isdigit() else None,
+        "name": title.strip(),
+        "code": code,
+        "headline": headline,
         "ins_code": str(row.get("insCode")),
         "value": _f(row.get("xDrNivJIdx004")),
         "change": _f(row.get("indexChange")),

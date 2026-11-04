@@ -1,6 +1,6 @@
 # Real examples
 
-_Captured live on 2026-11-04 08:06 UTC. Long responses are trimmed to 46 lines. Latest session in these samples: 2026-11-04. Prices and values are in Rial._
+_Captured live on 2026-11-04 08:11 UTC. Long responses are trimmed to 46 lines. Latest session in these samples: 2026-11-04. Prices and values are in Rial._
 
 Every response is plain JSON. Keys named `estimate`/`estimated` are derived by the server; everything else is exchange data. Parameter details are in [TOOLS.md](TOOLS.md).
 
@@ -14,7 +14,7 @@ market_status()
 
 ```json
 {
-  "tehran_time": "2026-11-04 11:36:37",
+  "tehran_time": "2026-11-04 11:41:57",
   "tehran_jdate": "1405/08/13",
   "weekday": "Wednesday",
   "is_trading_weekday": true,
@@ -25,21 +25,21 @@ market_status()
     "market_state_code": "S",
     "as_of": {
       "date": "2026-11-04",
-      "time": "11:36:17"
+      "time": "11:41:35"
     },
     "index": {
-      "value": 7909456.58,
-      "change": 84853.19,
-      "change_pct": 1.08
+      "value": 7909908.72,
+      "change": 85305.33,
+      "change_pct": 1.09
     },
     "equal_weight_index": {
-      "value": 2228946.82,
-      "change": 14111.01
+      "value": 2229084.61,
+      "change": 14248.8
     },
-    "trades": 655522,
-    "volume": 30190351613,
-    "value": 254887389027435,
-    "market_cap": 229094593236963296,
+    "trades": 668149,
+    "volume": 30787104981,
+    "value": 260869327593060,
+    "market_cap": 229121842260007232,
     "units": "rial"
   },
   "gateway": [
@@ -56,7 +56,7 @@ market_status()
       "is_open": true
     }
   ],
-  "exchange_server_time": "11/04/2026 08:06:39"
+  "exchange_server_time": "11/04/2026 08:11:59"
 }
 ```
 
@@ -73,21 +73,21 @@ market_overview(market="bourse")
   "market_state_code": "S",
   "as_of": {
     "date": "2026-11-04",
-    "time": "11:36:17"
+    "time": "11:41:35"
   },
   "index": {
-    "value": 7909456.58,
-    "change": 84853.19,
-    "change_pct": 1.08
+    "value": 7909908.72,
+    "change": 85305.33,
+    "change_pct": 1.09
   },
   "equal_weight_index": {
-    "value": 2228946.82,
-    "change": 14111.01
+    "value": 2229084.61,
+    "change": 14248.8
   },
-  "trades": 655522,
-  "volume": 30190351613,
-  "value": 254887389027435,
-  "market_cap": 229094593236963296,
+  "trades": 668149,
+  "volume": 30787104981,
+  "value": 260869327593060,
+  "market_cap": 229121842260007232,
   "units": "rial"
 }
 ```
@@ -103,49 +103,49 @@ indices(market="bourse", only_headline=True)
   "market": "bourse",
   "headline_indices": [
     {
-      "name": "26محصولات کامپیوتری الکترونیکی",
+      "name": "شاخص 30 شرکت بزرگ",
       "code": null,
-      "ins_code": "47946228513774508",
-      "value": 1407.64,
-      "change": 29.52,
-      "change_pct": 2.142,
-      "high": 1407.62,
-      "low": 1392.01,
-      "time": "11:30:00"
+      "headline": true,
+      "ins_code": "10523825119011581",
+      "value": 552293.58,
+      "change": 5626.93,
+      "change_pct": 1.0293,
+      "high": 555087.12,
+      "low": 549850.6,
+      "time": "11:41:00"
     },
     {
-      "name": "47خرده فروشی به جز وسایل نقلیه",
+      "name": "شاخص آزاد شناور",
       "code": null,
-      "ins_code": "65986638607018835",
-      "value": 21222.1,
-      "change": -630.86,
-      "change_pct": -2.8868,
-      "high": 21619.73,
-      "low": 21222.15,
-      "time": "11:30:00"
+      "headline": true,
+      "ins_code": "49579049405614711",
+      "value": 9856631.19,
+      "change": 92850.96,
+      "change_pct": 0.951,
+      "high": 9880959.95,
+      "low": 9817377.24,
+      "time": "11:40:00"
     },
     {
-      "name": "استخراج نفت جزکشف11",
+      "name": "شاخص بازار اول",
       "code": null,
-      "ins_code": "65675836323214668",
-      "value": 10893.72,
-      "change": 308.42,
-      "change_pct": 2.9137,
-      "high": 10893.67,
-      "low": 10880.03,
-      "time": "11:30:00"
+      "headline": true,
+      "ins_code": "62752761908615603",
+      "value": 6471900.08,
+      "change": 65613.92,
+      "change_pct": 1.0242,
+      "high": 6486312.13,
+      "low": 6444105.49,
+      "time": "11:40:00"
     },
     {
-      "name": "بیمه و بازنشسته66",
+      "name": "شاخص بازار دوم",
       "code": null,
-      "ins_code": "59105676994811497",
-      "value": 310154.23,
-      "change": 4606.92,
-      "change_pct": 1.5078,
-      "high": 312016.3,
-      "low": 310127.31,
-      "time": "11:30:00"
-  … (125 more lines)
+      "headline": true,
+      "ins_code": "71704845530629737",
+      "value": 13815637.3,
+      "change": 173670.9,
+  … (92 more lines)
 ```
 
 ### `market_watch`
@@ -156,8 +156,8 @@ market_watch(sort_by="value", limit=3)
 
 ```json
 {
-  "total_instruments": 597,
-  "matched": 597,
+  "total_instruments": 596,
+  "matched": 596,
   "returned": 3,
   "sorted_by": "value",
   "rows": [
@@ -168,9 +168,9 @@ market_watch(sort_by="value", limit=3)
       "last_pct": 2.97,
       "close": 29080.0,
       "close_pct": 2.65,
-      "volume": 890904988,
-      "value": 25909313760080,
-      "trades": 48284,
+      "volume": 898017266,
+      "value": 26116778909340,
+      "trades": 48553,
       "pe": 14.03,
       "market_cap": 42004800000000000,
       "at_upper_limit": true,
@@ -180,15 +180,15 @@ market_watch(sort_by="value", limit=3)
     {
       "symbol": "شبندر",
       "name": "پالایش نفت بندرعباس",
-      "last": 12500.0,
-      "last_pct": -1.88,
+      "last": 12470.0,
+      "last_pct": -2.12,
       "close": 12390.0,
       "close_pct": -2.75,
-      "volume": 861833964,
-      "value": 10680832376810,
-      "trades": 31653,
+      "volume": 867171693,
+      "value": 10747483599480,
+      "trades": 32007,
       "pe": 2.88,
-      "market_cap": 5121785776250000,
+      "market_cap": 5109493490387000,
       "at_upper_limit": false,
       "at_lower_limit": false,
       "industry": "فراورده های نفتی، کک و سوخت هسته ای"
@@ -200,7 +200,7 @@ market_watch(sort_by="value", limit=3)
       "last_pct": 2.85,
       "close": 4290.0,
       "close_pct": 1.9,
-      "volume": 1259347173,
+      "volume": 1261872847,
   … (11 more lines)
 ```
 
@@ -222,17 +222,17 @@ top_movers(kind="buy_queue", limit=3)
       "last_pct": 2.96,
       "close": 23280.0,
       "close_pct": 2.96,
-      "volume": 76634300,
-      "value": 1784046504000,
-      "trades": 3019,
+      "volume": 77064494,
+      "value": 1794061420320,
+      "trades": 3097,
       "pe": 25.64,
       "market_cap": 6984000000000000,
       "at_upper_limit": true,
       "at_lower_limit": false,
       "industry": "محصولات شیمیایی",
-      "queue_volume": 486874643,
-      "queue_orders": 6729,
-      "queue_value": 11334441689040
+      "queue_volume": 482963107,
+      "queue_orders": 6716,
+      "queue_value": 11243381130960
     },
     {
       "symbol": "کرماشا",
@@ -241,17 +241,17 @@ top_movers(kind="buy_queue", limit=3)
       "last_pct": 2.98,
       "close": 28380.0,
       "close_pct": 2.98,
-      "volume": 40167071,
-      "value": 1139941474980,
-      "trades": 924,
+      "volume": 40174094,
+      "value": 1140140787720,
+      "trades": 928,
       "pe": 6.13,
       "market_cap": 592937323440000,
       "at_upper_limit": true,
       "at_lower_limit": false,
       "industry": "محصولات شیمیایی",
-      "queue_volume": 194719999,
-      "queue_orders": 2225,
-      "queue_value": 5526153571620
+      "queue_volume": 194540434,
+      "queue_orders": 2220,
+      "queue_value": 5521057516920
     },
     {
       "symbol": "خراسان",
@@ -268,22 +268,23 @@ industry_summary()
 
 ```json
 {
+  "total_industries": 43,
   "industries": [
     {
       "industry": "فلزات اساسی",
       "symbols": 48,
-      "value": 49651586580924,
-      "volume": 4981212489,
-      "market_cap": 63373385937196900,
-      "avg_change_pct": 0.99,
-      "cap_weighted_change_pct": 2.66,
-      "index_effect": 48274.12,
+      "value": 50248172933253,
+      "volume": 5124025678,
+      "market_cap": 63363042201882731,
+      "avg_change_pct": 1.03,
+      "cap_weighted_change_pct": 2.64,
+      "index_effect": 48386.61,
       "top_gainer": {
         "symbol": "فسبزوار",
         "pct": 3.0
       },
       "top_loser": {
-        "symbol": "فنورد",
+        "symbol": "فغدیر",
         "pct": -2.97
       },
       "in_buy_queue": 4,
@@ -292,19 +293,19 @@ industry_summary()
     {
       "industry": "فراورده های نفتی، کک و سوخت هسته ای",
       "symbols": 12,
-      "value": 23474248728170,
-      "volume": 2044387712,
-      "market_cap": 24442852016040000,
-      "avg_change_pct": 1.21,
-      "cap_weighted_change_pct": 0.48,
-      "index_effect": -3357.41,
+      "value": 23680073069390,
+      "volume": 2055950551,
+      "market_cap": 24421775730177000,
+      "avg_change_pct": 1.1,
+      "cap_weighted_change_pct": 0.4,
+      "index_effect": -3340.18,
       "top_gainer": {
         "symbol": "شبهرن",
         "pct": 3.0
       },
       "top_loser": {
         "symbol": "شپاس",
-        "pct": -2.54
+        "pct": -2.56
       },
       "in_buy_queue": 2,
       "in_sell_queue": 0
@@ -312,8 +313,7 @@ industry_summary()
     {
       "industry": "محصولات شیمیایی",
       "symbols": 55,
-      "value": 20322946839515,
-  … (819 more lines)
+  … (260 more lines)
 ```
 
 ### `index_contributors`
@@ -348,7 +348,7 @@ index_contributors(limit=3)
     {
       "symbol": "فارس",
       "effect_on_index": -16790.27,
-      "last_pct": -2.13,
+      "last_pct": -2.06,
       "industry": "محصولات شیمیایی"
     },
     {
@@ -360,7 +360,7 @@ index_contributors(limit=3)
     {
       "symbol": "شبندر",
       "effect_on_index": -4939.27,
-      "last_pct": -1.88,
+      "last_pct": -2.12,
       "industry": "فراورده های نفتی، کک و سوخت هسته ای"
     }
   ],
@@ -565,7 +565,7 @@ symbol_overview(symbol="فولاد")
   "quote": {
     "date": "2026-11-04",
     "jdate": "1405/08/13",
-    "last_update": "11:36:35",
+    "last_update": "11:41:46",
     "status": {
       "code": "A",
       "title": "مجاز",
@@ -585,10 +585,10 @@ symbol_overview(symbol="فولاد")
     "open": 4240.0,
     "high": 4330.0,
     "low": 4140.0,
-    "volume": 1261089071,
-    "value": 5407297510530,
-    "trades": 15291,
-    "vwap": 4287.8,
+    "volume": 1263190160,
+    "value": 5416395225900,
+    "trades": 15336,
+    "vwap": 4287.87,
     "price_limits": {
       "upper": 4330.0,
       "lower": 4090.0
@@ -612,7 +612,7 @@ quote(symbol="فولاد")
   },
   "date": "2026-11-04",
   "jdate": "1405/08/13",
-  "last_update": "11:36:35",
+  "last_update": "11:41:46",
   "status": {
     "code": "A",
     "title": "مجاز",
@@ -632,10 +632,10 @@ quote(symbol="فولاد")
   "open": 4240.0,
   "high": 4330.0,
   "low": 4140.0,
-  "volume": 1261089071,
-  "value": 5407297510530,
-  "trades": 15291,
-  "vwap": 4287.8,
+  "volume": 1263190160,
+  "value": 5416395225900,
+  "trades": 15336,
+  "vwap": 4287.87,
   "price_limits": {
     "upper": 4330.0,
     "lower": 4090.0
@@ -668,14 +668,14 @@ order_book(symbol="فولاد")
   },
   "as_of": {
     "date": "2026-11-04",
-    "last_trade_time": "11:36:35"
+    "last_trade_time": "11:41:46"
   },
   "bids": [
     {
       "level": 1,
       "price": 4330.0,
-      "volume": 489844241,
-      "orders": 2049
+      "volume": 595743071,
+      "orders": 2428
     },
     {
       "level": 2,
@@ -692,13 +692,13 @@ order_book(symbol="فولاد")
     {
       "level": 4,
       "price": 4300.0,
-      "volume": 2372979,
-      "orders": 28
+      "volume": 2382979,
+      "orders": 29
     },
     {
       "level": 5,
       "price": 4290.0,
-      "volume": 4074038,
+      "volume": 4071788,
       "orders": 27
     }
   ],
@@ -940,39 +940,39 @@ real_legal_flow(symbol="فولاد", days=3)
     "date": "2026-11-04",
     "real": {
       "buy": {
-        "volume": 810081187,
-        "count": 2269,
-        "value": 3473465979939,
+        "volume": 812229008,
+        "count": 2272,
+        "value": 3482732418742,
         "value_estimated": true,
-        "avg_per_participant": 1530835601.56,
-        "avg_volume_per_participant": 357021.24
+        "avg_per_participant": 1532892789.94,
+        "avg_volume_per_participant": 357495.16
       },
       "sell": {
-        "volume": 1070310812,
-        "count": 3570,
-        "value": 4589278523071,
+        "volume": 1072458633,
+        "count": 3596,
+        "value": 4598563228007,
         "value_estimated": true,
-        "avg_per_participant": 1285512191.34,
-        "avg_volume_per_participant": 299806.95
+        "avg_per_participant": 1278799562.85,
+        "avg_volume_per_participant": 298236.55
       },
       "net_volume": -260229625,
-      "net_value": -1115812543132
+      "net_value": -1115830809265
     },
     "legal": {
       "buy": {
         "volume": 450956152,
         "count": 33,
-        "value": 1933609714129,
+        "value": 1933641367807,
         "value_estimated": true,
-        "avg_per_participant": 58594233761.49,
+        "avg_per_participant": 58595192963.86,
         "avg_volume_per_participant": 13665337.94
       },
       "sell": {
         "volume": 190726527,
         "count": 24,
-        "value": 817797170997,
+        "value": 817810558542,
         "value_estimated": true,
-        "avg_per_participant": 34074882124.88,
+        "avg_per_participant": 34075439939.28,
         "avg_volume_per_participant": 7946938.62
       },
   … (54 more lines)
@@ -1268,12 +1268,12 @@ etf_nav(symbol="اهرم")
   },
   "available": true,
   "date": "2026-11-04",
-  "time": "11:35:15",
+  "time": "11:41:01",
   "last_price": 74063.0,
-  "nav_redemption": 91738.0,
-  "nav_issue": 93036.0,
-  "premium_to_redemption_nav_pct": -19.27,
-  "premium_to_issue_nav_pct": -20.39,
+  "nav_redemption": 91661.0,
+  "nav_issue": 92958.0,
+  "premium_to_redemption_nav_pct": -19.2,
+  "premium_to_issue_nav_pct": -20.33,
   "note": "pRedTran / pSubTran are the exchange's redemption (ابطال) and issue (صدور) NAV figures."
 }
 ```

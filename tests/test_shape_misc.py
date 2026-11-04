@@ -137,8 +137,18 @@ def test_codal_letter_links_are_absolute(fx):
     assert "ي" not in letter["title"]
 
 
-def test_index_row_splits_code_and_name():
-    row = shape.shape_index_row({"lVal30": "01-زراعت", "insCode": 1, "xDrNivJIdx004": 100.0, "xVarIdxJRfV": 1.5, "indexChange": 1.5})
-    assert (row["code"], row["name"]) == ("01", "زراعت")
-    headline = shape.shape_index_row({"lVal30": "شاخص كل", "insCode": 2})
-    assert headline["code"] is None and headline["name"] == "شاخص کل"
+@pytest.mark.parametrize(
+    ("raw", "code", "name", "headline"),
+    [
+        ("01-زراعت", "01", "زراعت", False),
+        ("26محصولات کامپیوتری الکترونیکی", "26", "محصولات کامپیوتری الکترونیکی", False),
+        ("بیمه و بازنشسته66", "66", "بیمه و بازنشسته", False),
+        ("استخراج نفت جزکشف11", "11", "استخراج نفت جزکشف", False),
+        ("شاخص كل", None, "شاخص کل", True),
+        ("شاخص50شركت فعالتر", None, "شاخص50شرکت فعالتر", True),
+        ("شاخص قيمت(وزني-ارزشي)", None, "شاخص قیمت(وزنی-ارزشی)", True),
+    ],
+)
+def test_index_row_classification_and_codes(raw, code, name, headline):
+    row = shape.shape_index_row({"lVal30": raw, "insCode": 1, "xDrNivJIdx004": 100.0, "xVarIdxJRfV": 1.5, "indexChange": 1.5})
+    assert (row["code"], row["name"], row["headline"]) == (code, name, headline)

@@ -60,6 +60,7 @@ Per-industry breakdown: traded value, average and cap-weighted change, index eff
 | parameter | type | description |
 |---|---|---|
 | `market` | string | 'bourse' or 'fara' (Fara Bourse). Omit for both where applicable. |
+| `limit` | integer | How many industries to return, largest traded value first (default `15`) |
 
 ### `index_contributors`
 

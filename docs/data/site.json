@@ -1,6 +1,6 @@
 {
- "tests": 132,
- "version": "0.1.0",
+ "tests": 140,
+ "version": "0.2.0",
  "tools": [
   {
    "name": "market_status",
@@ -154,6 +154,12 @@
      "required": false,
      "description": "'bourse' or 'fara' (Fara Bourse). Omit for both where applicable.",
      "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "How many industries to return, largest traded value first",
+     "default": 15
     }
    ]
   },
@@ -937,16 +943,16 @@
   }
  ],
  "snapshot": {
-  "captured_at_utc": "2026-11-04 08:02 UTC",
-  "tehran_time": "2026-11-04 11:32:19",
+  "captured_at_utc": "2026-11-04 08:15 UTC",
+  "tehran_time": "2026-11-04 11:45:23",
   "market_state": "باز",
   "index": {
-   "value": 7908881.05,
-   "change": 84277.66,
-   "change_pct": 1.08
+   "value": 7910222.19,
+   "change": 85618.8,
+   "change_pct": 1.09
   },
-  "trades_today": 645965,
-  "value_today": 248824204911796,
+  "trades_today": 676840,
+  "value_today": 264320513746089,
   "tape": [
    {
     "symbol": "فملی",
@@ -955,8 +961,8 @@
    },
    {
     "symbol": "شبندر",
-    "last": 12530.0,
-    "pct": -1.65
+    "last": 12470.0,
+    "pct": -2.12
    },
    {
     "symbol": "فولاد",
@@ -965,13 +971,8 @@
    },
    {
     "symbol": "فکور",
-    "last": 8650.0,
-    "pct": 2.73
-   },
-   {
-    "symbol": "شتران",
-    "last": 6150.0,
-    "pct": 2.84
+    "last": 8670.0,
+    "pct": 2.97
    },
    {
     "symbol": "شپنا",
@@ -979,14 +980,14 @@
     "pct": -0.76
    },
    {
+    "symbol": "شتران",
+    "last": 6150.0,
+    "pct": 2.84
+   },
+   {
     "symbol": "وبملت",
     "last": 1434.0,
     "pct": 2.94
-   },
-   {
-    "symbol": "وکغدیر",
-    "last": 9220.0,
-    "pct": 2.9
    },
    {
     "symbol": "فزر",
@@ -999,9 +1000,14 @@
     "pct": 2.98
    },
    {
+    "symbol": "وکغدیر",
+    "last": 9220.0,
+    "pct": 2.9
+   },
+   {
     "symbol": "فپردیس",
-    "last": 100800.0,
-    "pct": -1.08
+    "last": 100500.0,
+    "pct": -1.37
    },
    {
     "symbol": "وبصادر",
@@ -1010,42 +1016,26 @@
    },
    {
     "symbol": "فنقره",
-    "last": 30180.0,
-    "pct": 2.9
+    "last": 30170.0,
+    "pct": 2.86
+   },
+   {
+    "symbol": "شستا",
+    "last": 3300.0,
+    "pct": 2.8
+   },
+   {
+    "symbol": "وغدیر",
+    "last": 20800.0,
+    "pct": 2.97
    },
    {
     "symbol": "فارس",
     "last": 14280.0,
     "pct": -2.06
-   },
-   {
-    "symbol": "شستا",
-    "last": 3270.0,
-    "pct": 1.87
-   },
-   {
-    "symbol": "پکرمان",
-    "last": 10880.0,
-    "pct": 2.93
    }
   ],
   "gainers": [
-   {
-    "symbol": "چاپ",
-    "name": "ص.چاپ وبسته بندی آسان قزوین",
-    "last": 12180.0,
-    "last_pct": 6.56,
-    "close": 12180.0,
-    "close_pct": 6.56,
-    "volume": 5428182,
-    "value": 66115256760,
-    "trades": 115,
-    "pe": 7.55,
-    "market_cap": 121800000000000,
-    "at_upper_limit": false,
-    "at_lower_limit": false,
-    "industry": "محصولات کاغذی"
-   },
    {
     "symbol": "شگستر",
     "name": "گسترش سوخت سبززاگرس(سهامی عام)",
@@ -1053,9 +1043,9 @@
     "last_pct": 3.0,
     "close": 2473.0,
     "close_pct": 2.91,
-    "volume": 493749667,
-    "value": 1220990270815,
-    "trades": 3399,
+    "volume": 495472719,
+    "value": 1225254824515,
+    "trades": 3423,
     "pe": 21.5,
     "market_cap": 101436561292275,
     "at_upper_limit": true,
@@ -1067,12 +1057,12 @@
     "name": "صنایع‌خاک‌چینی‌ایران‌",
     "last": 81430.0,
     "last_pct": 3.0,
-    "close": 80540.0,
-    "close_pct": 1.87,
-    "volume": 14332126,
-    "value": 1154288052300,
-    "trades": 3889,
-    "pe": 16.15,
+    "close": 80560.0,
+    "close_pct": 1.9,
+    "volume": 14679466,
+    "value": 1182571948500,
+    "trades": 3959,
+    "pe": 16.16,
     "market_cap": 285005000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
@@ -1085,9 +1075,9 @@
     "last_pct": 3.0,
     "close": 11650.0,
     "close_pct": 2.73,
-    "volume": 74011375,
-    "value": 862393694030,
-    "trades": 3564,
+    "volume": 74206811,
+    "value": 864676386510,
+    "trades": 3583,
     "pe": 11.66,
     "market_cap": 934400000000000,
     "at_upper_limit": true,
@@ -1101,36 +1091,33 @@
     "last_pct": 3.0,
     "close": 42260.0,
     "close_pct": 2.97,
-    "volume": 12534463,
-    "value": 529737373340,
-    "trades": 1818,
+    "volume": 12810435,
+    "value": 541400851060,
+    "trades": 1874,
     "pe": 20.69,
     "market_cap": 253620000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "سایر محصولات کانی غیرفلزی"
+   },
+   {
+    "symbol": "ولغدر",
+    "name": "لیزینگ‌خودروغدیر",
+    "last": 4470.0,
+    "last_pct": 3.0,
+    "close": 4370.0,
+    "close_pct": 0.69,
+    "volume": 90034842,
+    "value": 393274314370,
+    "trades": 1010,
+    "pe": 52.65,
+    "market_cap": 10728000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "سایر واسطه گریهای مالی"
    }
   ],
   "buy_queues": [
-   {
-    "symbol": "شتبریز",
-    "name": "پتروشیمی تبریز",
-    "last": 75330.0,
-    "last_pct": 2.99,
-    "close": 75330.0,
-    "close_pct": 2.99,
-    "volume": 2740943,
-    "value": 206475236190,
-    "trades": 9779,
-    "pe": 5.02,
-    "market_cap": 375294060000000,
-    "at_upper_limit": true,
-    "at_lower_limit": false,
-    "industry": "محصولات شیمیایی",
-    "queue_volume": 281512612,
-    "queue_orders": 9999,
-    "queue_value": 21206345061960
-   },
    {
     "symbol": "تابان",
     "name": "گروه پتروشیمی تابان فردا",
@@ -1138,17 +1125,17 @@
     "last_pct": 2.96,
     "close": 23280.0,
     "close_pct": 2.96,
-    "volume": 76247366,
-    "value": 1775038680480,
-    "trades": 2936,
+    "volume": 77064494,
+    "value": 1794061420320,
+    "trades": 3097,
     "pe": 25.64,
     "market_cap": 6984000000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "محصولات شیمیایی",
-    "queue_volume": 487296467,
-    "queue_orders": 6706,
-    "queue_value": 11344261751760
+    "queue_volume": 461916741,
+    "queue_orders": 6520,
+    "queue_value": 10753421730480
    },
    {
     "symbol": "کرماشا",
@@ -1157,17 +1144,17 @@
     "last_pct": 2.98,
     "close": 28380.0,
     "close_pct": 2.98,
-    "volume": 40162071,
-    "value": 1139799574980,
-    "trades": 922,
+    "volume": 40174094,
+    "value": 1140140787720,
+    "trades": 928,
     "pe": 6.13,
     "market_cap": 592937323440000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "محصولات شیمیایی",
-    "queue_volume": 194769424,
-    "queue_orders": 2227,
-    "queue_value": 5527556253120
+    "queue_volume": 173431049,
+    "queue_orders": 1998,
+    "queue_value": 4921973170620
    },
    {
     "symbol": "خراسان",
@@ -1176,17 +1163,17 @@
     "last_pct": 2.98,
     "close": 60730.0,
     "close_pct": 2.98,
-    "volume": 15068665,
-    "value": 915120025450,
-    "trades": 1070,
+    "volume": 19472299,
+    "value": 1182552718270,
+    "trades": 1372,
     "pe": 5.57,
     "market_cap": 728760000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "محصولات شیمیایی",
-    "queue_volume": 84979016,
-    "queue_orders": 3041,
-    "queue_value": 5160775641680
+    "queue_volume": 80838810,
+    "queue_orders": 2899,
+    "queue_value": 4909340931300
    },
    {
     "symbol": "شیراز",
@@ -1195,17 +1182,36 @@
     "last_pct": 2.99,
     "close": 67800.0,
     "close_pct": 2.99,
-    "volume": 10502635,
-    "value": 712078653000,
-    "trades": 760,
+    "volume": 11402635,
+    "value": 773098653000,
+    "trades": 821,
     "pe": 6.37,
     "market_cap": 1037340000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "محصولات شیمیایی",
-    "queue_volume": 61400386,
-    "queue_orders": 2179,
-    "queue_value": 4162946170800
+    "queue_volume": 59878616,
+    "queue_orders": 2130,
+    "queue_value": 4059770164800
+   },
+   {
+    "symbol": "شپدیس",
+    "name": "پتروشیمی پردیس",
+    "last": 12070.0,
+    "last_pct": 2.99,
+    "close": 12070.0,
+    "close_pct": 2.99,
+    "volume": 59547031,
+    "value": 718732664170,
+    "trades": 1330,
+    "pe": 6.42,
+    "market_cap": 2819223358040000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "queue_volume": 302452818,
+    "queue_orders": 3455,
+    "queue_value": 3650605513260
    }
   ],
   "real_inflow": [
@@ -1216,82 +1222,19 @@
     "last_pct": 2.96,
     "close": 23280.0,
     "close_pct": 2.96,
-    "volume": 76247366,
-    "value": 1775038680480,
-    "trades": 2936,
+    "volume": 77064494,
+    "value": 1794061420320,
+    "trades": 3097,
     "pe": 25.64,
     "market_cap": 6984000000000000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "محصولات شیمیایی",
-    "real_net_volume": 65007577,
-    "real_net_value_estimated": 1513376392560,
-    "real_buyer_power": 21.98,
-    "real_buyers": 599,
-    "real_sellers": 1502
-   },
-   {
-    "symbol": "تاصیکو",
-    "name": "سرمایه گذاری صدرتامین",
-    "last": 38710.0,
-    "last_pct": 2.98,
-    "close": 38650.0,
-    "close_pct": 2.82,
-    "volume": 78346757,
-    "value": 3027873868970,
-    "trades": 11170,
-    "pe": 69.02,
-    "market_cap": 3696805000000000,
-    "at_upper_limit": true,
-    "at_lower_limit": false,
-    "industry": "استخراج کانه های فلزی",
-    "real_net_volume": 34551580,
-    "real_net_value_estimated": 1335318021902,
-    "real_buyer_power": 0.85,
-    "real_buyers": 3917,
-    "real_sellers": 1760
-   },
-   {
-    "symbol": "وغدیر",
-    "name": "سرمایه‌گذاری‌غدیر(هلدینگ‌",
-    "last": 20800.0,
-    "last_pct": 2.97,
-    "close": 20800.0,
-    "close_pct": 2.97,
-    "volume": 90078459,
-    "value": 1873631947200,
-    "trades": 1995,
-    "pe": 10.78,
-    "market_cap": 4492800000000000,
-    "at_upper_limit": true,
-    "at_lower_limit": false,
-    "industry": "شرکتهای چند رشته ای صنعتی",
-    "real_net_volume": 57513976,
-    "real_net_value_estimated": 1196290700800,
-    "real_buyer_power": 21.0,
-    "real_buyers": 247,
-    "real_sellers": 228
-   },
-   {
-    "symbol": "پارسان",
-    "name": "گسترش نفت و گاز پارسیان",
-    "last": 34500.0,
-    "last_pct": 2.99,
-    "close": 34500.0,
-    "close_pct": 2.99,
-    "volume": 36499756,
-    "value": 1259241582000,
-    "trades": 2455,
-    "pe": 9.91,
-    "market_cap": 4191750000000000,
-    "at_upper_limit": true,
-    "at_lower_limit": false,
-    "industry": "محصولات شیمیایی",
-    "real_net_volume": 28225129,
-    "real_net_value_estimated": 973766950500,
-    "real_buyer_power": 5.45,
-    "real_buyers": 424,
-    "real_sellers": 114
+    "real_net_volume": 83707577,
+    "real_net_value_estimated": 1948712392560,
+    "real_buyer_power": 24.84,
+    "real_buyers": 662,
+    "real_sellers": 1666
    },
    {
     "symbol": "کرماشا",
@@ -1300,19 +1243,82 @@
     "last_pct": 2.98,
     "close": 28380.0,
     "close_pct": 2.98,
-    "volume": 40162071,
-    "value": 1139799574980,
-    "trades": 922,
+    "volume": 40174094,
+    "value": 1140140787720,
+    "trades": 928,
     "pe": 6.13,
     "market_cap": 592937323440000,
     "at_upper_limit": true,
     "at_lower_limit": false,
     "industry": "محصولات شیمیایی",
-    "real_net_volume": 33892000,
-    "real_net_value_estimated": 961854960000,
-    "real_buyer_power": 8.15,
-    "real_buyers": 297,
-    "real_sellers": 113
+    "real_net_volume": 52792000,
+    "real_net_value_estimated": 1498236960000,
+    "real_buyer_power": 8.91,
+    "real_buyers": 420,
+    "real_sellers": 119
+   },
+   {
+    "symbol": "تاصیکو",
+    "name": "سرمایه گذاری صدرتامین",
+    "last": 38710.0,
+    "last_pct": 2.98,
+    "close": 38650.0,
+    "close_pct": 2.82,
+    "volume": 81816961,
+    "value": 3162205465810,
+    "trades": 11420,
+    "pe": 69.02,
+    "market_cap": 3696805000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "استخراج کانه های فلزی",
+    "real_net_volume": 36741580,
+    "real_net_value_estimated": 1420052881605,
+    "real_buyer_power": 0.88,
+    "real_buyers": 3927,
+    "real_sellers": 1779
+   },
+   {
+    "symbol": "وغدیر",
+    "name": "سرمایه‌گذاری‌غدیر(هلدینگ‌",
+    "last": 20800.0,
+    "last_pct": 2.97,
+    "close": 20800.0,
+    "close_pct": 2.97,
+    "volume": 109201009,
+    "value": 2271380987200,
+    "trades": 2391,
+    "pe": 10.78,
+    "market_cap": 4492800000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "شرکتهای چند رشته ای صنعتی",
+    "real_net_volume": 66015401,
+    "real_net_value_estimated": 1373120340800,
+    "real_buyer_power": 22.82,
+    "real_buyers": 252,
+    "real_sellers": 234
+   },
+   {
+    "symbol": "خراسان",
+    "name": "پتروشیمی خراسان",
+    "last": 60730.0,
+    "last_pct": 2.98,
+    "close": 60730.0,
+    "close_pct": 2.98,
+    "volume": 19472299,
+    "value": 1182552718270,
+    "trades": 1372,
+    "pe": 5.57,
+    "market_cap": 728760000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "محصولات شیمیایی",
+    "real_net_volume": 19085000,
+    "real_net_value_estimated": 1159032050000,
+    "real_buyer_power": 27.8,
+    "real_buyers": 503,
+    "real_sellers": 42
    }
   ],
   "foolad": {
@@ -1333,7 +1339,7 @@
    "quote": {
     "date": "2026-11-04",
     "jdate": "1405/08/13",
-    "last_update": "11:32:07",
+    "last_update": "11:44:55",
     "status": {
      "code": "A",
      "title": "مجاز",
@@ -1353,10 +1359,10 @@
     "open": 4240.0,
     "high": 4330.0,
     "low": 4140.0,
-    "volume": 1259106402,
-    "value": 5398712553760,
-    "trades": 15249,
-    "vwap": 4287.73,
+    "volume": 1263290992,
+    "value": 5416831828460,
+    "trades": 15349,
+    "vwap": 4287.87,
     "price_limits": {
      "upper": 4330.0,
      "lower": 4090.0
@@ -1391,8 +1397,8 @@
      {
       "level": 1,
       "price": 4330.0,
-      "volume": 487348227,
-      "orders": 2033
+      "volume": 663561720,
+      "orders": 2716
      },
      {
       "level": 2,
@@ -1403,20 +1409,20 @@
      {
       "level": 3,
       "price": 4310.0,
-      "volume": 404688,
-      "orders": 5
+      "volume": 381569,
+      "orders": 4
      },
      {
       "level": 4,
       "price": 4300.0,
-      "volume": 2372979,
-      "orders": 28
+      "volume": 2072979,
+      "orders": 27
      },
      {
       "level": 5,
       "price": 4290.0,
-      "volume": 4084038,
-      "orders": 28
+      "volume": 3770238,
+      "orders": 25
      }
     ],
     "asks": [
@@ -1455,11 +1461,11 @@
     "best_ask": 4340.0,
     "spread": 10.0,
     "spread_pct": 0.23,
-    "total_bid_volume": 497181917,
+    "total_bid_volume": 672758491,
     "total_ask_volume": 1648726,
-    "total_bid_orders": 2121,
+    "total_bid_orders": 2799,
     "total_ask_orders": 21,
-    "imbalance": 0.9934,
+    "imbalance": 0.9951,
     "queue": {
      "state": null,
      "queue_volume": 0,
@@ -1475,47 +1481,47 @@
    "real_legal": {
     "real": {
      "buy": {
-      "volume": 808143350,
-      "count": 2264,
-      "value": 3465100486095,
+      "volume": 812256717,
+      "count": 2272,
+      "value": 3482851209122,
       "value_estimated": true,
-      "avg_per_participant": 1530521416.12,
-      "avg_volume_per_participant": 356953.78
+      "avg_per_participant": 1532945074.44,
+      "avg_volume_per_participant": 357507.36
      },
      "sell": {
-      "volume": 1068372975,
-      "count": 3551,
-      "value": 4580894856096,
+      "volume": 1072486342,
+      "count": 3600,
+      "value": 4598682011271,
       "value_estimated": true,
-      "avg_per_participant": 1290029528.61,
-      "avg_volume_per_participant": 300865.38
+      "avg_per_participant": 1277411669.8,
+      "avg_volume_per_participant": 297912.87
      },
      "net_volume": -260229625,
-     "net_value": -1115794370001
+     "net_value": -1115830802149
     },
     "legal": {
      "buy": {
       "volume": 450956152,
       "count": 33,
-      "value": 1933578221614,
+      "value": 1933641355476,
       "value_estimated": true,
-      "avg_per_participant": 58593279442.88,
+      "avg_per_participant": 58595192590.19,
       "avg_volume_per_participant": 13665337.94
      },
      "sell": {
       "volume": 190726527,
       "count": 24,
-      "value": 817783851613,
+      "value": 817810553327,
       "value_estimated": true,
-      "avg_per_participant": 34074327150.57,
+      "avg_per_participant": 34075439721.98,
       "avg_volume_per_participant": 7946938.62
      },
      "net_volume": 260229625,
-     "net_value": 1115794370001
+     "net_value": 1115830802149
     },
-    "real_buyer_power": 1.19,
-    "real_share_of_buy_volume_pct": 64.18,
-    "real_share_of_sell_volume_pct": 84.85,
+    "real_buyer_power": 1.2,
+    "real_share_of_buy_volume_pct": 64.3,
+    "real_share_of_sell_volume_pct": 84.9,
     "reading": "real_buyer_power > 1: the average real-person buyer is larger than the average real-person seller (smart-money accumulation proxy). net_* > 0 on 'real' means money flowed INTO the stock from real persons."
    },
    "holders": {
@@ -2219,47 +2225,47 @@
      "date": "2026-11-04",
      "real": {
       "buy": {
-       "volume": 808143350,
-       "count": 2264,
-       "value": 3465103220786,
+       "volume": 812292303,
+       "count": 2272,
+       "value": 3483031610001,
        "value_estimated": true,
-       "avg_per_participant": 1530522624.02,
-       "avg_volume_per_participant": 356953.78
+       "avg_per_participant": 1533024476.23,
+       "avg_volume_per_participant": 357523.02
       },
       "sell": {
-       "volume": 1068372975,
-       "count": 3551,
-       "value": 4580898471383,
+       "volume": 1072521928,
+       "count": 3606,
+       "value": 4598871322363,
        "value_estimated": true,
-       "avg_per_participant": 1290030546.71,
-       "avg_volume_per_participant": 300865.38
+       "avg_per_participant": 1275338691.73,
+       "avg_volume_per_participant": 297427.05
       },
       "net_volume": -260229625,
-      "net_value": -1115795250597
+      "net_value": -1115839712362
      },
      "legal": {
       "buy": {
        "volume": 450956152,
        "count": 33,
-       "value": 1933579747613,
+       "value": 1933656796130,
        "value_estimated": true,
-       "avg_per_participant": 58593325685.26,
+       "avg_per_participant": 58595660488.81,
        "avg_volume_per_participant": 13665337.94
       },
       "sell": {
        "volume": 190726527,
        "count": 24,
-       "value": 817784497016,
+       "value": 817817083768,
        "value_estimated": true,
-       "avg_per_participant": 34074354042.36,
+       "avg_per_participant": 34075711823.67,
        "avg_volume_per_participant": 7946938.62
       },
       "net_volume": 260229625,
-      "net_value": 1115795250597
+      "net_value": 1115839712362
      },
-     "real_buyer_power": 1.19,
-     "real_share_of_buy_volume_pct": 64.18,
-     "real_share_of_sell_volume_pct": 84.85,
+     "real_buyer_power": 1.2,
+     "real_share_of_buy_volume_pct": 64.3,
+     "real_share_of_sell_volume_pct": 84.9,
      "reading": "real_buyer_power > 1: the average real-person buyer is larger than the average real-person seller (smart-money accumulation proxy). net_* > 0 on 'real' means money flowed INTO the stock from real persons."
     },
     "history": [

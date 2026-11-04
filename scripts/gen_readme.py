@@ -56,7 +56,7 @@ def fmt_int(n: float) -> str:
     return f"{int(round(n)):,}"
 
 
-def bench_block() -> str:
+def bench_block(img_prefix: str = "docs/assets") -> str:
     parts: list[str] = []
     dp_path = RESULTS / "data_plane.json"
     if dp_path.exists():
@@ -64,7 +64,7 @@ def bench_block() -> str:
         for name in ("tokens", "time", "requests", "accuracy"):
             path = ROOT / "docs" / "assets" / f"bench-{name}.svg"
             if path.exists():
-                parts.append(f'<img src="docs/assets/bench-{name}.svg" alt="Benchmark: {name}" width="49%">')
+                parts.append(f'<img src="{img_prefix}/bench-{name}.svg" alt="Benchmark: {name}" width="49%">')
         if parts:
             parts = ['<div align="center">\n' + "\n".join(parts) + "\n</div>\n"]
         rows = ["| Task | Raw route | iran-bourse-mcp | Tokens saved |", "|---|---|---|---|"]
@@ -116,7 +116,9 @@ def main() -> None:
     text = replace(text, "INSTALL", install_block())
     text = replace(text, "BENCH", bench_block())
     README.write_text(text, encoding="utf-8")
-    print("README.md updated")
+    bench_readme = ROOT / "benchmarks" / "README.md"
+    bench_readme.write_text(replace(bench_readme.read_text(encoding="utf-8"), "BENCH", bench_block("../docs/assets")), encoding="utf-8")
+    print("README.md and benchmarks/README.md updated")
 
 
 if __name__ == "__main__":
