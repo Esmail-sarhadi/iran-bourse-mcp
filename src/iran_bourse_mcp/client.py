@@ -4,12 +4,17 @@ from __future__ import annotations
 
 import asyncio
 import json
+import logging
 import os
 import time
 from collections import OrderedDict
 from typing import Any
 
 import httpx
+
+# httpx logs every request at INFO, which would drown MCP/stdio and CLI output.
+for _name in ("httpx", "httpcore"):
+    logging.getLogger(_name).setLevel(logging.WARNING)
 
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
