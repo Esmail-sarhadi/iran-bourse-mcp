@@ -1,4 +1,4 @@
-"""Screenshot the website for the README (desktop hero and a Persian phone view).
+"""Screenshots for the README and link previews: website hero and the social card.
 
     uv run python scripts/gen_site_preview.py       (needs Microsoft Edge or Chrome)
 """
@@ -47,6 +47,11 @@ def main() -> None:
         threading.Thread(target=server.serve_forever, daemon=True).start()
         shot(port, "site-preview.png", 1280, 800, "", 1.0)
         server.shutdown()
+    # social card (GitHub "Social preview", link unfurls) rendered from the SVG
+    cmd = [browser(), "--headless=new", "--disable-gpu", "--hide-scrollbars", "--window-size=1280,640",
+           f"--screenshot={DOCS / 'assets' / 'social-preview.png'}", (DOCS / "assets" / "social-preview.svg").as_uri()]
+    subprocess.run(cmd, check=True, capture_output=True)
+    print("wrote social-preview.png")
 
 
 if __name__ == "__main__":

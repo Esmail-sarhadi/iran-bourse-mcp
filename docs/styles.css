@@ -377,6 +377,7 @@ footer { border-top: 1px solid var(--line); padding-block: 44px 56px; color: var
 .foot ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; } .foot a { text-decoration: none; } .foot a:hover { color: var(--ink); }
 .disclaimer { margin-top: 28px; max-width: 90ch; font-size: 13.5px; }
 .cta-final { text-align: center; }
+.tour { display: block; width: 100%; max-width: 880px; margin: 30px auto 6px; border-radius: 16px; border: 1px solid var(--line-2); background: #000; aspect-ratio: 16 / 9; }
 .cta-final .cmd { margin-inline: auto; } .cta-final .cta-row { justify-content: center; }
 
 @media (prefers-reduced-motion: reduce) {

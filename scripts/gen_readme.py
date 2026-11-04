@@ -36,7 +36,8 @@ def install_block() -> str:
             if "all" in c.paths:
                 where = f"`{c.paths['all']}`"
             elif c.paths:
-                where = "; ".join(f"{os_name}: `{path}`" for os_name, path in c.paths.items())
+                names = {"windows": "Windows", "macos": "macOS", "linux": "Linux"}
+                where = "the config file (" + "; ".join(f"{names.get(os_name, os_name)}: `{path}`" for os_name, path in c.paths.items()) + ")"
             else:
                 where = ""
             intro = f"Add to {where}:" if where else "Add this entry in the client's MCP settings:"

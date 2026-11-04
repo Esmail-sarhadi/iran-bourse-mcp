@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>iran-bourse-mcp promo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--
+  A 1280x720 motion-graphics scene driven by a single function render(t).
+  scripts/render_promo.py screenshots it at t = 0, 0.05, ... and ffmpeg stitches the frames into docs/assets/promo.mp4.
+  Open promo.html?play=1 in a browser to watch it live. Numbers come from data.js (live snapshot and benchmarks).
+-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=JetBrains+Mono:wght@400;600;700&family=Vazirmatn:wght@400;600;800&display=swap">
+<style>
+  :root { --bg:#0a1020; --bg2:#101c3f; --line:#22305a; --ink:#e8eef9; --muted:#8fa1c7; --teal:#2ec4b6; --saffron:#f5b53d; --red:#f0556a; --lapis:#5b7cfa; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: #000; }
+  #stage { position: relative; width: 1280px; height: 720px; overflow: hidden; color: var(--ink);
+    font-family: "Vazirmatn", "Segoe UI", Tahoma, sans-serif; background: radial-gradient(1200px 700px at 78% 12%, #16275a 0%, var(--bg) 62%); }
+  .tiles { position: absolute; inset: -96px; background-image: url("assets/tiles.svg"); background-size: 96px 96px; opacity: .55;
+    -webkit-mask-image: radial-gradient(ellipse 80% 90% at 80% 10%, #000 0%, transparent 72%); mask-image: radial-gradient(ellipse 80% 90% at 80% 10%, #000 0%, transparent 72%); }
+  .scene { position: absolute; inset: 0; opacity: 0; }
+  #tape { position: absolute; left: 0; right: 0; bottom: 0; height: 52px; border-top: 1px solid var(--line); background: rgba(10,16,32,.92); overflow: hidden; direction: ltr; }
+  #tape-track { position: absolute; top: 14px; white-space: nowrap; font: 600 20px "JetBrains Mono", Consolas, monospace; }
+  #tape-track > span { margin-right: 44px; display: inline-block; direction: ltr; unicode-bidi: isolate; } #tape-track b { font-family: "Vazirmatn", Tahoma, sans-serif; margin-right: 14px; color: var(--ink); display: inline-block; direction: rtl; unicode-bidi: isolate; }
+  .up { color: var(--teal); } .down { color: var(--red); }
+  /* scene 1 */
+  .logo { position: absolute; left: 96px; top: 150px; width: 120px; height: 120px; }
+  .eyebrow { position: absolute; left: 248px; top: 160px; font: 700 20px "JetBrains Mono", Consolas, monospace; letter-spacing: .22em; color: var(--saffron); }
+  .title { position: absolute; left: 244px; top: 196px; font: 800 96px "Bricolage Grotesque", "Segoe UI", sans-serif; letter-spacing: -3px; white-space: nowrap; }
+  .tag { position: absolute; left: 100px; top: 330px; font: 600 40px "Segoe UI", sans-serif; }
+  .tag-fa { position: absolute; left: 100px; top: 396px; font: 600 38px "Vazirmatn", Tahoma, sans-serif; color: var(--muted); direction: rtl; }
+  .pills { position: absolute; left: 100px; top: 480px; display: flex; gap: 14px; }
+  .pill { border: 2px solid var(--teal); border-radius: 999px; padding: 8px 22px; font: 700 22px "Segoe UI", sans-serif; }
+  /* scene 2 */
+  .term { position: absolute; left: 70px; top: 78px; width: 760px; height: 540px; border-radius: 18px; background: #0a1230; border: 1px solid var(--line); overflow: hidden; direction: ltr; }
+  .term header { height: 48px; background: var(--bg2); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 9px; padding: 0 18px; color: var(--muted); font: 600 15px "Segoe UI", sans-serif; }
+  .term header i { width: 12px; height: 12px; border-radius: 50%; display: inline-block; background: var(--red); } .term header i:nth-child(2){background:var(--saffron)} .term header i:nth-child(3){background:var(--teal)}
+  .term .body { padding: 22px 26px; font: 500 21px/1.7 "JetBrains Mono", Consolas, monospace; }
+  .prompt { color: var(--ink); direction: rtl; text-align: right; font: 700 24px/1.5 "Vazirmatn", Tahoma, sans-serif; min-height: 78px; }
+  .call { color: var(--muted); font-size: 19px; } .ans { color: var(--ink); font-size: 21px; } .ans b { color: var(--teal); }
+  .ladder { position: absolute; right: 70px; top: 120px; width: 330px; direction: ltr; }
+  .ladder .hd { font: 800 34px "Vazirmatn", Tahoma, sans-serif; } .ladder .px { font: 700 50px "JetBrains Mono", Consolas, monospace; margin: 4px 0 14px; }
+  .ladder .px span { font-size: 22px; color: var(--teal); margin-left: 12px; }
+  .lvl { height: 25px; margin: 7px 0; display: flex; align-items: center; gap: 12px; font: 500 15px "JetBrains Mono", Consolas, monospace; color: var(--muted); }
+  .lvl i { display: block; height: 17px; border-radius: 4px; } .lvl.a i { background: var(--red); } .lvl.b i { background: var(--teal); }
+  /* scene 3 */
+  .stat { position: absolute; top: 170px; width: 340px; text-align: center; direction: ltr; }
+  .stat .n { font: 800 118px "Bricolage Grotesque", "Segoe UI", sans-serif; letter-spacing: -4px; line-height: 1; }
+  .stat .l { margin-top: 18px; font: 500 25px/1.4 "Segoe UI", sans-serif; color: var(--ink); } .stat .s { margin-top: 10px; font: 500 17px "JetBrains Mono", Consolas, monospace; color: var(--muted); }
+  .head3 { position: absolute; left: 0; right: 0; top: 70px; text-align: center; font: 700 22px "JetBrains Mono", Consolas, monospace; letter-spacing: .2em; color: var(--saffron); }
+  /* scene 4 */
+  .head4 { position: absolute; left: 0; right: 0; top: 74px; text-align: center; font: 800 62px "Bricolage Grotesque", "Segoe UI", sans-serif; letter-spacing: -2px; }
+  .chips { position: absolute; left: 110px; right: 110px; top: 190px; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+  .chip { border: 1.5px solid #2c3d70; border-radius: 999px; padding: 9px 22px; font: 600 23px "Segoe UI", sans-serif; background: rgba(17,28,58,.7); }
+  .cmd { position: absolute; left: 150px; right: 150px; top: 430px; border: 1px solid #2c3d70; border-radius: 16px; background: #0a1230; padding: 22px 28px; font: 600 23px "JetBrains Mono", Consolas, monospace; direction: ltr; }
+  .cmd .p { color: var(--saffron); margin-right: 14px; }
+  .url { position: absolute; left: 0; right: 0; top: 548px; text-align: center; font: 700 34px "Segoe UI", sans-serif; color: var(--teal); }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div class="tiles" id="tiles"></div>
+
+  <div class="scene" id="s1">
+    <svg class="logo" id="logo" viewBox="-34 -34 68 68"><rect x="-30" y="-30" width="60" height="60" rx="14" fill="#101c3f" stroke="#2ec4b6" stroke-width="2.5"/><g fill="none" stroke="#2ec4b6" stroke-width="3"><rect x="-15" y="-15" width="30" height="30"/><rect x="-15" y="-15" width="30" height="30" transform="rotate(45)"/></g><g fill="none" stroke="#f5b53d" stroke-width="2.4"><rect x="-8" y="-8" width="16" height="16"/><rect x="-8" y="-8" width="16" height="16" transform="rotate(45)"/></g><circle r="3.2" fill="#f5b53d"/></svg>
+    <div class="eyebrow">MODEL CONTEXT PROTOCOL SERVER</div>
+    <div class="title" id="title"></div>
+    <div class="tag" id="tag">The Tehran Stock Exchange, for AI agents.</div>
+    <div class="tag-fa" id="tagfa">بورس تهران، برای ایجنت‌های هوش مصنوعی</div>
+    <div class="pills" id="pills"></div>
+  </div>
+
+  <div class="scene" id="s2">
+    <div class="term"><header><i></i><i></i><i></i><span style="margin-left:10px">agent · iran-bourse-mcp</span></header><div class="body">
+      <div class="prompt" id="prompt"></div>
+      <div id="calls"></div><div id="answers" style="margin-top:14px"></div>
+    </div></div>
+    <div class="ladder" id="ladder"></div>
+  </div>
+
+  <div class="scene" id="s3">
+    <div class="head3">MEASURED ON THE LIVE EXCHANGE</div>
+    <div id="stats"></div>
+  </div>
+
+  <div class="scene" id="s4">
+    <div class="head4">Works with every agent</div>
+    <div class="chips" id="chips"></div>
+    <div class="cmd" id="cmd"><span class="p">$</span>claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp</div>
+    <div class="url">github.com/msmahdinejad/iran-bourse-mcp&nbsp; ★</div>
+  </div>
+
+  <div id="tape"><div id="tape-track"></div></div>
+</div>
+<script src="data.js"></script>
+<script>
+(function () {
+  var D = window.SITE_DATA || {}, S = D.snapshot || {}, F = (S.foolad || {}), Q = F.quote || {}, B = D.bench_data_plane, A = D.bench_agents;
+  var clamp = function (x, a, b) { return Math.max(a, Math.min(b, x)); };
+  var ease = function (x) { x = clamp(x, 0, 1); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+  var seg = function (t, a, b) { return clamp((t - a) / (b - a), 0, 1); };
+  var typed = function (s, t, start, cps) { return s.slice(0, Math.max(0, Math.floor((t - start) * cps))); };
+  var $ = function (id) { return document.getElementById(id); };
+  var nf = function (n, d) { return Number(n).toLocaleString("en-US", { maximumFractionDigits: d || 0 }); };
+
+  // ---- static content
+  var tape = (S.tape || []).map(function (r) { return '<span><b>' + r.symbol + '</b>' + nf(r.last) + ' <span class="' + (r.pct >= 0 ? "up" : "down") + '">' + (r.pct >= 0 ? "+" : "") + r.pct.toFixed(2) + '%</span></span>'; }).join("");
+  $("tape-track").innerHTML = tape + tape + tape;
+  $("pills").innerHTML = ["28 tools", "read-only", "100% tick coverage", "MIT"].map(function (x, i) { return '<div class="pill" style="border-color:' + ["#2ec4b6", "#5b7cfa", "#f5b53d", "#8fa1c7"][i] + '">' + x + '</div>'; }).join("");
+  var chips = ["Claude Code", "Claude Desktop", "Codex", "Gemini CLI", "Cursor", "VS Code", "Windsurf", "Cline", "Zed", "Goose", "OpenCode", "Kiro", "Qwen Code", "JetBrains", "Amp", "any MCP client"];
+  $("chips").innerHTML = chips.map(function (c) { return '<div class="chip">' + c + '</div>'; }).join("");
+
+  var ob = F.order_book || { asks: [], bids: [] };
+  var asks = (ob.asks || []).slice(0, 5).reverse(), bids = (ob.bids || []).slice(0, 5);
+  var maxv = Math.log10(Math.max.apply(null, asks.concat(bids).map(function (x) { return x.volume; }).concat([100])) + 10);
+  var lvl = function (x, k) { return '<div class="lvl ' + k + '"><span style="width:62px;text-align:right">' + nf(x.price) + '</span><i style="width:' + Math.max(6, Math.log10(x.volume + 10) / maxv * 190) + 'px"></i></div>'; };
+  $("ladder").innerHTML = '<div class="hd">' + ((F.identity || {}).symbol || "فولاد") + '</div><div class="px">' + nf((Q.last || {}).price || 0) + '<span>' + (((Q.last || {}).change_pct || 0) >= 0 ? "+" : "") + (((Q.last || {}).change_pct || 0)).toFixed(2) + '%</span></div>' +
+    asks.map(function (x) { return lvl(x, "a"); }).join("") + '<div style="height:8px"></div>' + bids.map(function (x) { return lvl(x, "b"); }).join("");
+
+  var rl = F.real_legal || {}, real = rl.real || {}, comp = ((F.trade_summary || {}).completeness) || {}, holders = ((F.holders || {}).top) || [];
+  var net = real.net_value;
+  var prompt = "فولاد رو کامل بررسی کن: صف، پول حقیقی، سهامداران، کدال";
+  var calls = ['● symbol_overview(symbol="فولاد")', '● real_legal_flow(symbol="فولاد", days=5)', '● trade_summary(symbol="فولاد")', '● codal_filings(symbol="فولاد", limit=3)'];
+  var answers = [
+    '<b>Foolad</b> ' + nf((Q.last || {}).price || 0) + ' Rial (' + ((Q.last || {}).change_pct >= 0 ? "+" : "") + (((Q.last || {}).change_pct) || 0).toFixed(2) + '%)' + (Q.at_upper_limit ? ', at the <b>upper limit</b>' : ''),
+    'Real persons net <b>' + (net == null ? "n/a" : (Math.abs(net) / 1e9).toFixed(0) + 'bn Rial ' + (net > 0 ? "in" : "out")) + '</b>, buyer power <b>' + (rl.real_buyer_power || "n/a") + '</b>',
+    '<b>' + nf(comp.ticks_count || 0) + '</b> ticks = <b>' + (comp.volume_coverage_pct || 100) + '%</b> of official volume',
+    'Largest holder <b>' + (holders[0] ? holders[0].percent + '%' : "") + '</b>, top five <b>' + ((F.holders || {}).top5_percent || "") + '%</b>'
+  ];
+
+  // stats scene
+  var stats = [];
+  if (B) {
+    var byId = {}; B.tasks.forEach(function (t) { byId[t.id] = t; });
+    var tk = byId.trade_summary, bq = byId.buy_queues;
+    if (tk) stats.push({ n: tk.token_reduction, fmt: function (v) { return "÷" + nf(v); }, l: "fewer tokens to read a day of ticks", s: nf(tk.raw.tokens) + " → " + nf(tk.mcp.tokens) + " tokens", c: "#2ec4b6" });
+    if (bq) stats.push({ n: bq.raw.requests, fmt: function (v) { return nf(v) + " → 1"; }, l: "requests for a market-wide buy-queue ranking", s: "one tool call", c: "#f5b53d" });
+  }
+  if (A) {
+    var acc = function (arm) { var rs = Object.keys(A.arms[arm].runs).map(function (k) { return A.arms[arm].runs[k].score; }); return rs.reduce(function (a, b) { return a + b; }, 0) / rs.length * 100; };
+    stats.push({ n: acc("mcp"), fmt: function (v) { return Math.round(v) + "%"; }, l: "answers correct with the server (browser-only agent: " + Math.round(acc("browser")) + "%)", s: "graded against independent ground truth", c: "#5b7cfa" });
+  }
+  $("stats").innerHTML = stats.map(function (st, i) { var x = 640 - (stats.length * 380) / 2 + i * 380 + 20; return '<div class="stat" id="st' + i + '" style="left:' + x + 'px"><div class="n" id="stn' + i + '" style="color:' + st.c + '">0</div><div class="l">' + st.l + '</div><div class="s">' + st.s + '</div></div>'; }).join("");
+
+  // ---- timeline
+  var TOTAL = 15.5;
+  var TITLE = "iran-bourse-mcp";
+  function scene(el, t, a, b, fade) { fade = fade || .45; var v = Math.min(seg(t, a, a + fade), 1 - seg(t, b - fade, b)); el.style.opacity = ease(v); return v; }
+  function render(t) {
+    // tiles drift and ticker scroll
+    $("tiles").style.transform = "translate(" + (-t * 9 % 96) + "px," + (t * 5 % 96) + "px)";
+    $("tape-track").style.transform = "translateX(" + (-t * 120) + "px)";
+    // scene 1: 0 - 3.6
+    var v1 = scene($("s1"), t, -1, 3.6, .5);
+    $("logo").style.transform = "scale(" + (.6 + .4 * ease(seg(t, 0, .9))) + ") rotate(" + ((1 - ease(seg(t, 0, 1.1))) * -90) + "deg)";
+    $("logo").style.opacity = ease(seg(t, 0, .6));
+    $("title").textContent = typed(TITLE, t, .35, 16);
+    $("tag").style.opacity = ease(seg(t, 1.1, 1.6)); $("tag").style.transform = "translateY(" + (1 - ease(seg(t, 1.1, 1.6))) * 16 + "px)";
+    $("tagfa").style.opacity = ease(seg(t, 1.5, 2.0)); $("tagfa").style.transform = "translateY(" + (1 - ease(seg(t, 1.5, 2.0))) * 16 + "px)";
+    $("pills").style.opacity = ease(seg(t, 2.0, 2.5));
+    $("s1").style.transform = "translateY(" + (-ease(seg(t, 3.1, 3.6)) * 40) + "px)";
+    // scene 2: 3.4 - 9.4
+    scene($("s2"), t, 3.4, 9.6, .5);
+    $("prompt").textContent = typed(prompt, t, 4.0, 22);
+    $("calls").innerHTML = calls.map(function (c, i) { var a = 6.0 + i * .5; return '<div class="call" style="opacity:' + ease(seg(t, a, a + .25)) + '">' + c + '</div>'; }).join("");
+    $("answers").innerHTML = answers.map(function (c, i) { var a = 8.0 + i * .45; return '<div class="ans" style="opacity:' + ease(seg(t, a, a + .3)) + ';transform:translateX(' + (1 - ease(seg(t, a, a + .3))) * 16 + 'px)">• ' + c + '</div>'; }).join("");
+    $("ladder").style.transform = "translateX(" + (1 - ease(seg(t, 4.2, 4.9))) * 60 + "px)";
+    $("ladder").style.opacity = ease(seg(t, 4.2, 4.9));
+    // scene 3: 9.2 - 12.8
+    scene($("s3"), t, 9.2, 12.9, .5);
+    stats.forEach(function (st, i) { var p = ease(seg(t, 9.7 + i * .35, 11.4 + i * .35)); $("stn" + i).textContent = st.fmt(st.n * p); $("st" + i).style.opacity = ease(seg(t, 9.6 + i * .35, 10.0 + i * .35)); });
+    // scene 4: 12.6 - 15.5
+    scene($("s4"), t, 12.7, TOTAL + 1, .5);
+    $("chips").style.opacity = 1;
+    Array.prototype.forEach.call($("chips").children, function (c, i) { var a = 13.0 + i * .06; c.style.opacity = ease(seg(t, a, a + .3)); c.style.transform = "translateY(" + (1 - ease(seg(t, a, a + .3))) * 14 + "px)"; });
+    $("cmd").style.opacity = ease(seg(t, 14.0, 14.4));
+    document.querySelector(".url").style.opacity = ease(seg(t, 14.4, 14.9));
+  }
+  window.render = render; window.PROMO_TOTAL = TOTAL;
+  var q = new URLSearchParams(location.search);
+  if (q.has("t")) render(parseFloat(q.get("t")));
+  else if (q.has("play")) { var t0 = performance.now(); (function loop(now) { var t = ((now - t0) / 1000) % (TOTAL + .8); render(t); requestAnimationFrame(loop); })(t0); }
+  else render(10.4);
+})();
+</script>
+</body>
+</html>

@@ -21,6 +21,8 @@
 
 <div align="center">
 <img src="docs/assets/demo.svg" alt="An agent reviewing Foolad through iran-bourse-mcp" width="860">
+
+[▶ 15-second tour (MP4)](docs/assets/promo.mp4) · [GIF for sharing](docs/assets/promo.gif)
 </div>
 
 ## Why it exists
@@ -59,7 +61,7 @@ claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/ira
 > Add `--scope user` to make it available in every project.
 
 #### Claude Desktop
-Add to windows: `%APPDATA%/Claude/claude_desktop_config.json`; macos: `~/Library/Application Support/Claude/claude_desktop_config.json`; linux: `~/.config/Claude/claude_desktop_config.json`:
+Add to the config file (Windows: `%APPDATA%/Claude/claude_desktop_config.json`; macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`; Linux: `~/.config/Claude/claude_desktop_config.json`):
 
 ```json
 {
@@ -437,8 +439,8 @@ _Data-plane benchmark, 2026-11-04 07:36:13 UTC. Tokens are a tiktoken `o200k_bas
 | Agent | Accuracy | Net tokens (mean/task) | Time (mean/task) | Tool calls | Answered |
 |---|---|---|---|---|---|
 | Browser-only agent (page fetch) | 6% | 109,098 | 220s | 8.8 | 3/4 |
-| Shell agent (curl/python + web, no MCP) | 100% | 13,528 | 58s | 6.0 | 4/4 |
-| Agent + iran-bourse-mcp | 100% | 10,423 | 25s | 2.5 | 4/4 |
+| Shell agent (curl/python + web, no MCP) | 100% | 13,117 | 59s | 5.6 | 4/4 |
+| Agent + iran-bourse-mcp | 100% | 10,920 | 30s | 2.8 | 4/4 |
 
 <!-- BENCH:END -->
 

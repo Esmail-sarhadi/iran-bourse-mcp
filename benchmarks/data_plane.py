@@ -142,7 +142,7 @@ async def raw_buy_queues(raw: Raw) -> None:
         and (w["maxValue"] or 0) and (w["lastPrice"]["value"] or 0) >= w["maxValue"] and w["instrumentId"] in ids
     ]
     candidates.sort(key=lambda w: w["tradeValue"]["value"] or 0, reverse=True)
-    for w in candidates[:80]:
+    for w in candidates:
         await raw.get(f"{CDN}/BestLimits/{ids[w['instrumentId']]}")
 
 

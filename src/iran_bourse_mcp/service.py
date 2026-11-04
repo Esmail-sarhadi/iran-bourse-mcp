@@ -27,6 +27,7 @@ from .text import ascii_digits, clean, match_key
 
 MARKET_FLOW = {"bourse": 1, "fara": 2, "fara-bourse": 2, "ifb": 2}
 MAX_ROWS = 5000
+QUEUE_CANDIDATES = 400  # every limit-locked symbol (about 200 on a strong day); one BestLimits call each
 SESSION_WINDOW = (83000, 123500)  # HHMMSS: pre-open through just after close
 
 
@@ -223,11 +224,12 @@ class Bourse:
         """Fetch the real order book of limit-locked candidates and keep genuine queues.
 
         The gateway's top-of-book fields are empty outside the session, so queue size has to come
-        from BestLimits.
+        from BestLimits. On a strong day about 200 symbols sit at the upper limit, so this makes up to
+        that many calls (cached, six in flight): expect around ten seconds.
         """
         index = await self._instrument_index()
         flag = "at_upper_limit" if side == "buy" else "at_lower_limit"
-        candidates = sorted((r for r in rows if r[flag] and index.get(r["instrument_id"])), key=lambda r: r["value"] or 0, reverse=True)[:80]
+        candidates = sorted((r for r in rows if r[flag] and index.get(r["instrument_id"])), key=lambda r: r["value"] or 0, reverse=True)[:QUEUE_CANDIDATES]
         books = await asyncio.gather(*(self.api.best_limits(index[r["instrument_id"]]) for r in candidates), return_exceptions=True)
         wanted = "buy_queue" if side == "buy" else "sell_queue"
         out = []

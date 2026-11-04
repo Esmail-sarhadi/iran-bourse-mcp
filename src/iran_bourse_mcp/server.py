@@ -135,7 +135,7 @@ async def top_movers(
     security_type: Annotated[str | None, Field(description="Substring filter, default 'سهام' (stocks)")] = "سهام",
     limit: Annotated[int, Field(ge=1, le=100)] = 20,
 ) -> dict:
-    """Ranked lists: top gainers/losers, most traded, buy/sell queues (صف خرید/فروش), real-person money inflow/outflow (ورود/خروج پول حقیقی), buyer power."""
+    """Ranked lists: top gainers/losers, most traded, buy/sell queues (صف خرید/فروش, confirmed against each symbol's real order book; about 10 s on a strong day), real-person money inflow/outflow (ورود/خروج پول حقیقی), buyer power."""
     return await svc().top_movers(kind, market, security_type, limit)
 
 
