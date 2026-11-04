@@ -34,55 +34,71 @@
       "label_fa": "ایجنت فقط‌مرورگر",
       "runs": {
         "T2": {
+          "n_runs": 1,
           "score": 0.25,
+          "scores": [
+            0.25
+          ],
+          "tokens": 97301,
+          "net_tokens": 94144,
+          "seconds": 197.8,
+          "tool_uses": 6.0,
+          "answered": true,
           "fields": {
             "vwap": false,
             "trades": true,
             "largest_trade_volume": false,
             "largest_trade_time": false
-          },
-          "tokens": 97301,
-          "net_tokens": 94144,
-          "seconds": 197.8,
-          "tool_uses": 6,
-          "answered": true
+          }
         },
         "T3": {
+          "n_runs": 1,
           "score": 0.0,
+          "scores": [
+            0.0
+          ],
+          "tokens": 84822,
+          "net_tokens": 81665,
+          "seconds": 161.2,
+          "tool_uses": 13.0,
+          "answered": true,
           "fields": {
             "total": false,
             "day_20261103": false,
             "day_20261102": false,
             "day_20261101": false
-          },
-          "tokens": 84822,
-          "net_tokens": 81665,
-          "seconds": 161.2,
-          "tool_uses": 13,
-          "answered": true
+          }
         },
         "T5": {
+          "n_runs": 1,
           "score": 0.0,
-          "fields": {
-            "tracing_numbers": false,
-            "titles": false
-          },
+          "scores": [
+            0.0
+          ],
           "tokens": 48785,
           "net_tokens": 45628,
           "seconds": 87.9,
-          "tool_uses": 5,
-          "answered": false
+          "tool_uses": 5.0,
+          "answered": false,
+          "fields": {
+            "tracing_numbers": false,
+            "titles": false
+          }
         },
         "T6": {
+          "n_runs": 1,
           "score": 0.0,
-          "fields": {
-            "adjusted_return": false
-          },
+          "scores": [
+            0.0
+          ],
           "tokens": 218110,
           "net_tokens": 214953,
           "seconds": 434.9,
-          "tool_uses": 11,
-          "answered": true
+          "tool_uses": 11.0,
+          "answered": true,
+          "fields": {
+            "adjusted_return": false
+          }
         }
       }
     },
@@ -91,55 +107,71 @@
       "label_fa": "ایجنت شل (بدون MCP)",
       "runs": {
         "T2": {
+          "n_runs": 1,
           "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 66576,
+          "net_tokens": 13080,
+          "seconds": 58.6,
+          "tool_uses": 6.0,
+          "answered": true,
           "fields": {
             "vwap": true,
             "trades": true,
             "largest_trade_volume": true,
             "largest_trade_time": true
-          },
-          "tokens": 66576,
-          "net_tokens": 13080,
-          "seconds": 58.6,
-          "tool_uses": 6,
-          "answered": true
+          }
         },
         "T3": {
+          "n_runs": 1,
           "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 58808,
+          "net_tokens": 5312,
+          "seconds": 17.7,
+          "tool_uses": 2.0,
+          "answered": true,
           "fields": {
             "total": true,
             "day_20261103": true,
             "day_20261102": true,
             "day_20261101": true
-          },
-          "tokens": 58808,
-          "net_tokens": 5312,
-          "seconds": 17.7,
-          "tool_uses": 2,
-          "answered": true
+          }
         },
         "T5": {
+          "n_runs": 1,
           "score": 1.0,
-          "fields": {
-            "tracing_numbers": true,
-            "titles": true
-          },
+          "scores": [
+            1.0
+          ],
           "tokens": 73455,
           "net_tokens": 19959,
           "seconds": 67.6,
-          "tool_uses": 5,
-          "answered": true
+          "tool_uses": 5.0,
+          "answered": true,
+          "fields": {
+            "tracing_numbers": true,
+            "titles": true
+          }
         },
         "T6": {
+          "n_runs": 1,
           "score": 1.0,
-          "fields": {
-            "adjusted_return": true
-          },
+          "scores": [
+            1.0
+          ],
           "tokens": 69255,
           "net_tokens": 15759,
           "seconds": 90.0,
-          "tool_uses": 11,
-          "answered": true
+          "tool_uses": 11.0,
+          "answered": true,
+          "fields": {
+            "adjusted_return": true
+          }
         }
       }
     },
@@ -148,55 +180,71 @@
       "label_fa": "ایجنت + iran-bourse-mcp",
       "runs": {
         "T2": {
+          "n_runs": 1,
           "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 65647,
+          "net_tokens": 12151,
+          "seconds": 31.2,
+          "tool_uses": 2.0,
+          "answered": true,
           "fields": {
             "vwap": true,
             "trades": true,
             "largest_trade_volume": true,
             "largest_trade_time": true
-          },
-          "tokens": 65647,
-          "net_tokens": 12151,
-          "seconds": 31.2,
-          "tool_uses": 2,
-          "answered": true
+          }
         },
         "T3": {
+          "n_runs": 1,
           "score": 1.0,
+          "scores": [
+            1.0
+          ],
+          "tokens": 60708,
+          "net_tokens": 7212,
+          "seconds": 16.5,
+          "tool_uses": 1.0,
+          "answered": true,
           "fields": {
             "total": true,
             "day_20261103": true,
             "day_20261102": true,
             "day_20261101": true
-          },
-          "tokens": 60708,
-          "net_tokens": 7212,
-          "seconds": 16.5,
-          "tool_uses": 1,
-          "answered": true
+          }
         },
         "T5": {
+          "n_runs": 1,
           "score": 1.0,
-          "fields": {
-            "tracing_numbers": true,
-            "titles": true
-          },
+          "scores": [
+            1.0
+          ],
           "tokens": 60105,
           "net_tokens": 6609,
           "seconds": 12.0,
-          "tool_uses": 1,
-          "answered": true
+          "tool_uses": 1.0,
+          "answered": true,
+          "fields": {
+            "tracing_numbers": true,
+            "titles": true
+          }
         },
         "T6": {
+          "n_runs": 1,
           "score": 1.0,
-          "fields": {
-            "adjusted_return": true
-          },
+          "scores": [
+            1.0
+          ],
           "tokens": 69217,
           "net_tokens": 15721,
           "seconds": 40.9,
-          "tool_uses": 6,
-          "answered": true
+          "tool_uses": 6.0,
+          "answered": true,
+          "fields": {
+            "adjusted_return": true
+          }
         }
       }
     }

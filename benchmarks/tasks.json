@@ -39,8 +39,8 @@
     {
       "id": "T4",
       "title": "Buy queues, market-wide",
-      "question_fa": "در آخرین جلسه بازار، بین سهم‌های عادی بورس و فرابورس (نه صندوق، نه حق تقدم)، ۵ نماد با بیشترین ارزش صف خرید (حجم صف در بهترین قیمت خرید × قیمت) کدام‌اند؟ نماد و حجم صف را بده.",
-      "question_en": "In the latest session, among ordinary shares on Bourse and Fara Bourse (not funds, not rights issues), which 5 symbols have the largest buy queue by value (queue volume at the best bid x price)? Give symbol and queue volume.",
+      "question_fa": "در آخرین جلسه بازار، بین نمادهایی که بورس آن‌ها را «سهام عادی» طبقه‌بندی کرده (بورس و فرابورس)، ۵ نماد با بیشترین ارزش صف خرید (حجم صف در بهترین قیمت خرید × قیمت) کدام‌اند؟ صف خرید یعنی بالاترین قیمت خرید روی سقف قیمت مجاز روز است و هیچ سفارش فروشی وجود ندارد. نماد و حجم صف را بده.",
+      "question_en": "In the latest session, among instruments the exchange classifies as ordinary shares (سهام عادی; Bourse and Fara Bourse), which 5 symbols have the largest buy queue by value (queue volume at the best bid x price)? A buy queue means the best bid sits at the day's upper price limit and there are no sell orders. Give symbol and queue volume.",
       "schema": {
         "top5": "[{\"symbol\": str, \"queue_volume\": integer}, ...] ordered by queue value descending"
       }

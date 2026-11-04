@@ -25,17 +25,31 @@ def main() -> None:
     out_arms = {}
     for arm, spec in runs["arms"].items():
         arm_runs = {}
-        for task_id, run in spec["runs"].items():
-            ans = run["answer"]
-            fields = grade.GRADERS[task_id](ans, grade.TRUTH[task_id])
+        for task_id, entry in spec["runs"].items():
+            repeats = entry if isinstance(entry, list) else [entry]  # one run, or several repeats of the same task
+            graded = []
+            for run in repeats:
+                fields = grade.GRADERS[task_id](run["answer"], grade.TRUTH[task_id])
+                graded.append({
+                    "score": sum(fields.values()) / len(fields),
+                    "tokens": run["tokens"],
+                    "net_tokens": max(run["tokens"] - base[arm], 0),
+                    "seconds": run["seconds"],
+                    "tool_uses": run["tool_uses"],
+                    "answered": any(v is not None for v in run["answer"].values()),
+                    "fields": fields,
+                })
+            mean = lambda key, g=graded: sum(r[key] for r in g) / len(g)  # noqa: E731
             arm_runs[task_id] = {
-                "score": round(sum(fields.values()) / len(fields), 3),
-                "fields": fields,
-                "tokens": run["tokens"],
-                "net_tokens": max(run["tokens"] - base[arm], 0),
-                "seconds": run["seconds"],
-                "tool_uses": run["tool_uses"],
-                "answered": any(v is not None for v in ans.values()),
+                "n_runs": len(graded),
+                "score": round(mean("score"), 3),
+                "scores": [round(r["score"], 3) for r in graded],
+                "tokens": round(mean("tokens")),
+                "net_tokens": round(mean("net_tokens")),
+                "seconds": round(mean("seconds"), 1),
+                "tool_uses": round(mean("tool_uses"), 1),
+                "answered": all(r["answered"] for r in graded),
+                "fields": graded[0]["fields"],
             }
         out_arms[arm] = {"label_en": spec["label_en"], "label_fa": spec["label_fa"], "runs": arm_runs}
     titles_fa = {
