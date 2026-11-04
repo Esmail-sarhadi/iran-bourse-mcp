@@ -70,9 +70,9 @@ def main() -> None:
     subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-framerate", str(args.fps), "-i", str(frames_dir / "f%04d.png"),
                     "-c:v", "libx264", "-pix_fmt", "yuv420p", "-crf", "20", "-movflags", "+faststart", str(assets / "promo.mp4")], check=True)
     palette = frames_dir / "palette.png"
-    scale = "fps=12,scale=640:-1:flags=lanczos"
+    scale = "fps=10,scale=560:-1:flags=lanczos"
     subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-framerate", str(args.fps), "-i", str(frames_dir / "f%04d.png"),
-                    "-vf", f"{scale},palettegen=max_colors=96", str(palette)], check=True)
+                    "-vf", f"{scale},palettegen=max_colors=64", str(palette)], check=True)
     subprocess.run([ffmpeg, "-y", "-loglevel", "error", "-framerate", str(args.fps), "-i", str(frames_dir / "f%04d.png"), "-i", str(palette),
                     "-lavfi", f"{scale}[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=4", str(assets / "promo.gif")], check=True)
     if not args.keep_frames:

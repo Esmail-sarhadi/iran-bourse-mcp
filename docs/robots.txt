@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://msmahdinejad.github.io/iran-bourse-mcp/sitemap.xml
