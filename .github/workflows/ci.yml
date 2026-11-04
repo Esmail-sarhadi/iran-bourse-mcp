@@ -14,8 +14,8 @@ jobs:
         python: ["3.10", "3.11", "3.12", "3.13"]
         mcp: ["mcp>=1.2,<2", "mcp>=2"]
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
       - name: Install
         run: uv sync --python ${{ matrix.python }}
       - name: Pin MCP SDK generation
@@ -33,7 +33,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build image
         run: docker build -t iran-bourse-mcp:ci .
       - name: Smoke test the image
@@ -42,8 +42,8 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
       - run: uv sync
       - name: Tool reference is up to date
         run: |
