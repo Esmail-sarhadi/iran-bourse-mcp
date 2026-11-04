@@ -489,6 +489,17 @@ iran-bourse-mcp serve --transport streamable-http --host 127.0.0.1 --port 8000
 - The unofficial endpoints can change without notice. Every quirk we found is in [docs/DATA_SOURCES.md](docs/DATA_SOURCES.md).
 - Requests are cached briefly (seconds for live data, hours for history) and limited to 6 in flight. Please be gentle: this is somebody else's server.
 
+## Troubleshooting
+
+| Symptom | Fix |
+|---|---|
+| `spawn uvx ENOENT` or "command not found" in the client | GUI clients (Claude Desktop, Cursor) may not see your shell `PATH`. Put the absolute path in `command` (`where uvx` on Windows, `which uvx` elsewhere). |
+| First start takes ~10 seconds | `uvx` downloads and caches the dependencies once. Later starts are instant. Pin it with `uv tool install git+https://github.com/msmahdinejad/iran-bourse-mcp` and use the `iran-bourse-mcp` command directly. |
+| `HTTP 403` or "Could not reach" | The Iranian IP requirement above. Run `iran-bourse-mcp doctor` to see which host fails. |
+| "The exchange server answered HTTP 502/503" | TSETMC is overloaded. The server already retried; try again in a few seconds. |
+| Empty or old live data | The market is closed (Saturday-Wednesday 09:00-12:30 Tehran time); you get the last session. |
+| Persian text looks reversed in a terminal | Terminal bidi rendering, not a data problem. The JSON is correct. |
+
 ## Safety
 
 All tools are read-only (`readOnlyHint`). There is deliberately **no order placement**, no login and no credential handling.
