@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import datetime as dt
+import time
 from typing import Any
 
 from . import shape
@@ -194,11 +195,24 @@ class Bourse:
         return {"total_instruments": total, "matched": matched, "returned": len(rows), "sorted_by": sort_by, "rows": rows, "units": "rial"}
 
     async def _instrument_index(self) -> dict[str, str]:
-        """instrumentId (as used by the TSE gateway) -> insCode (as used by the cdn API)."""
+        """instrumentId (as used by the TSE gateway) -> insCode (as used by the cdn API).
+
+        Built from the end-of-day table. During the session today's table is still empty, so walk
+        back to the most recent day that has rows (the ids are stable across days).
+        """
+        cached = getattr(self, "_index_cache", None)
+        if cached and cached[0] > time.monotonic():
+            return cached[1]
         overview = await self.api.market_overview(1)
-        deven = int(overview.get("marketActivityDEven") or 0)
-        daily = await self.api.prices_on_day(deven)
-        return {r["instrumentID"]: str(r["insCode"]) for r in daily if r.get("instrumentID") and r.get("insCode")}
+        today = to_date(int(overview.get("marketActivityDEven") or from_date(tehran_now().date())))
+        rows: list[dict] = []
+        for back in range(8):
+            rows = await self.api.prices_on_day(from_date(today - dt.timedelta(days=back)))
+            if rows:
+                break
+        index = {r["instrumentID"]: str(r["insCode"]) for r in rows if r.get("instrumentID") and r.get("insCode")}
+        self._index_cache = (time.monotonic() + 6 * 3600, index)
+        return index
 
     async def _client_flows_by_instrument(self) -> dict[str, dict]:
         """instrumentId -> raw client-type row, joined through the daily price table."""

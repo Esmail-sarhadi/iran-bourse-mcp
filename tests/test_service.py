@@ -52,6 +52,15 @@ class FakeApi:
     async def shareholders_last(self, ins):
         return load("shareholders_last")
 
+    async def market_overview(self, flow):
+        return {"marketActivityDEven": 20261104}
+
+    async def prices_on_day(self, deven):
+        # today's end-of-day table is empty during the session; yesterday's is published
+        if deven == 20261103:
+            return [{"instrumentID": "IRO1FOLD0001", "insCode": 46348559193224090}]
+        return []
+
 
 @pytest.fixture()
 def bourse():
@@ -122,3 +131,9 @@ async def test_input_validation(bourse):
         await bourse.trades("فولاد", date="not-a-date")
     with pytest.raises(InputError):
         await bourse.trades("فولاد", from_time="25:99")
+
+
+async def test_instrument_index_falls_back_to_previous_days_during_the_session(bourse):
+    index = await bourse._instrument_index()
+    assert index == {"IRO1FOLD0001": "46348559193224090"}
+    assert bourse._index_cache[1] is index  # cached for later calls

@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>iran-bourse-mcp — Tehran Stock Exchange for AI agents</title>
+<meta name="description" content="Open-source MCP server that gives any AI agent complete, clean Tehran Stock Exchange (TSETMC) and Codal data: quotes, order book, tick-by-tick trades, real/legal money flow, major shareholders and filings. Works with Claude, Codex, Gemini, Cursor, VS Code and more.">
+<meta name="theme-color" content="#0a1020">
+<link rel="canonical" href="https://msmahdinejad.github.io/iran-bourse-mcp/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="iran-bourse-mcp — Tehran Stock Exchange for AI agents">
+<meta property="og:description" content="28 read-only tools for quotes, order book, ticks, real/legal flow, shareholders and Codal. Works with every MCP agent.">
+<meta property="og:image" content="https://msmahdinejad.github.io/iran-bourse-mcp/assets/social-preview.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Vazirmatn:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="iran-bourse-mcp">
+      <svg viewBox="-34 -34 68 68" aria-hidden="true"><rect x="-30" y="-30" width="60" height="60" rx="14" fill="var(--surface)" stroke="var(--teal)" stroke-width="2.5"/><g fill="none" stroke="var(--teal)" stroke-width="3"><rect x="-15" y="-15" width="30" height="30"/><rect x="-15" y="-15" width="30" height="30" transform="rotate(45)"/></g><g fill="none" stroke="var(--saffron)" stroke-width="2.4"><rect x="-8" y="-8" width="16" height="16"/><rect x="-8" y="-8" width="16" height="16" transform="rotate(45)"/></g><circle r="3.2" fill="var(--saffron)"/></svg>
+      iran-bourse-mcp
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#why" data-i18n="nav.why">Why</a>
+      <a href="#benchmarks" data-i18n="nav.bench">Benchmarks</a>
+      <a href="#install" data-i18n="nav.install">Install</a>
+      <a href="#tools" data-i18n="nav.tools">Tools</a>
+      <a href="#faq" data-i18n="nav.faq">FAQ</a>
+    </nav>
+    <div class="nav-tools">
+      <button class="pill-btn" id="lang" type="button" aria-label="Language">فارسی</button>
+      <button class="icon-btn" id="theme" type="button" aria-label="Toggle theme" title="Theme">◐</button>
+      <a class="pill-btn" href="https://github.com/msmahdinejad/iran-bourse-mcp" target="_blank" rel="noopener">GitHub <span class="star-count" id="stars">★</span></a>
+    </div>
+  </div>
+  <div class="tape" aria-label="Market snapshot"><div class="tape-track" id="tape"></div></div>
+</header>
+
+<main id="top">
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <p class="eyebrow" data-i18n="hero.eyebrow">Model Context Protocol · open source · MIT</p>
+        <h1 data-i18n-html="hero.h1">Your AI agent, on the <em>Tehran Stock Exchange.</em></h1>
+        <p class="lead" data-i18n="hero.lead">28 read-only tools that hand any agent the quotes, order book, tick-by-tick trades, real vs legal money flow, major shareholders and Codal filings of TSETMC. Clean, labelled, and ready to reason about.</p>
+        <div class="cmd" role="group" aria-label="Quick start">
+          <code><span class="prompt">$</span><span id="hero-cmd">uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp doctor</span></code>
+          <button class="copy" type="button" data-copy-target="hero-cmd" data-i18n="copy">Copy</button>
+        </div>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#install" data-i18n="hero.cta1">Connect your agent</a>
+          <a class="btn btn-ghost" href="#benchmarks" data-i18n="hero.cta2">See the numbers</a>
+        </div>
+        <div class="works" id="works"><span data-i18n="works">Works with</span></div>
+      </div>
+
+      <div class="panel" id="panel" aria-label="Live order book example">
+        <div class="panel-head"><span class="sym" id="p-sym">فولاد</span><span class="nm" id="p-name">Foolad Mobarakeh</span><span class="live"><span class="dot"></span><span id="p-state">snapshot</span></span></div>
+        <div class="panel-price"><span class="p" id="p-price">—</span><span class="badge" id="p-pct">—</span></div>
+        <div class="ladder" id="ladder"></div>
+        <dl class="panel-stats">
+          <div><dt data-i18n="panel.vwap">VWAP</dt><dd id="p-vwap">—</dd></div>
+          <div><dt data-i18n="panel.ticks">Ticks</dt><dd id="p-ticks">—</dd></div>
+          <div><dt data-i18n="panel.power">Buyer power</dt><dd id="p-power">—</dd></div>
+        </dl>
+        <div class="snap" id="p-snap"></div>
+      </div>
+    </div>
+
+    <div class="stats" id="stats"></div>
+  </div>
+</section>
+
+<section id="why" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="why.eyebrow">The problem</p>
+      <h2 data-i18n="why.h2">An agent with a browser still cannot read this market.</h2>
+      <p class="lead" data-i18n="why.lead">We tested it. The market's data exists, but it is hidden behind JavaScript, written in codes, and shipped in megabytes.</p>
+    </div>
+    <div class="cards3">
+      <article class="card">
+        <h3 data-i18n="why.c1.h">The site is an empty shell</h3>
+        <p data-i18n="why.c1.p">Fetching a symbol page from tsetmc.com returns a title and nothing else. Codal's report list comes back as unrendered template placeholders.</p>
+<pre class="snippet"><span class="dim">GET tsetmc.com/instInfo/4634…</span>
+<span class="bad">→ ".:TSETMC:. :: مدیریت فناوری بورس تهران"</span>
+<span class="dim">GET codal.ir/ReportList.aspx</span>
+<span class="bad">→ {{::letter.Title}}  {{::letter.PublishDateTime}}</span></pre>
+      </article>
+      <article class="card">
+        <h3 data-i18n="why.c2.h">The hidden API speaks in codes</h3>
+        <p data-i18n="why.c2.p">The JSON endpoints that hold the data use cryptic names and have traps. The exchange's own change field said zero for a stock that rose 120 rial.</p>
+<pre class="snippet"><span class="dim">"qTotTran5J": 646253701,</span>
+<span class="dim">"pMeDem": 4210, "zOrdMeOf": 7,</span>
+<span class="bad">"priceChange": 0.0,</span>
+<span class="dim">"pClosing": 4210, "priceYesterday": 4090</span></pre>
+      </article>
+      <article class="card">
+        <h3 data-i18n="why.c3.h">One day of ticks is 3 MB</h3>
+        <p data-i18n="why.c3.p">Order-book history is a delta feed that must be reassembled, shareholder rows come back twice, and a symbol's messages weigh 3.5 MB. None of it fits a context window.</p>
+<pre class="snippet"><span class="dim">Trade/GetTradeHistory   </span><span class="bad">3.1 MB</span>
+<span class="dim">BestLimits/{ins}/{day}  </span><span class="bad">3.3 MB</span>
+<span class="dim">Msg/GetMsgByInsCode     </span><span class="bad">3.5 MB</span>
+<span class="dim">GetClosingPriceDailyList </span><span class="bad">1.5 MB</span></pre>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="compare">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="cmp.eyebrow">Same question, two agents</p>
+      <h2 data-i18n="cmp.h2">«Did Foolad move today?»</h2>
+    </div>
+    <div class="versus">
+      <div class="term bad">
+        <header><i></i><i></i><i></i><span data-i18n="cmp.without">Without MCP · agent with a browser</span><button class="mini" type="button" data-replay="t-bad" data-i18n="replay">Replay</button></header>
+        <pre id="t-bad"></pre>
+      </div>
+      <div class="term good">
+        <header><i></i><i></i><i></i><span data-i18n="cmp.with">With iran-bourse-mcp</span><button class="mini" type="button" data-replay="t-good" data-i18n="replay">Replay</button></header>
+        <pre id="t-good"></pre>
+      </div>
+    </div>
+    <p class="note" data-i18n="cmp.note">Outputs shown are real, captured on 2026-11-03. The browser-only agent cannot even find the data; an agent that guesses the hidden endpoint can be misled by their fields.</p>
+  </div>
+</section>
+
+<section id="benchmarks" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="bench.eyebrow">Measured, not claimed</p>
+      <h2 data-i18n="bench.h2">Fewer tokens, fewer requests, right answers.</h2>
+      <p class="lead" data-i18n="bench.lead">Eight everyday tasks, run against the live exchange. The raw route is the best case for an agent that already knows the hidden endpoints.</p>
+    </div>
+    <div class="bench-grid">
+      <div class="chart-card"><h3 data-i18n="bench.tok.h">Tokens the model must read</h3><p class="sub" data-i18n="bench.tok.sub">Log scale. Raw JSON payload vs the MCP response.</p><div class="legend" id="lg-tok"></div><div class="chart" id="ch-tok"></div></div>
+      <div class="chart-card"><h3 data-i18n="bench.time.h">Wall-clock time to the data</h3><p class="sub" data-i18n="bench.time.sub">Seconds, sequential raw requests vs one tool call.</p><div class="legend" id="lg-time"></div><div class="chart" id="ch-time"></div></div>
+      <div class="chart-card"><h3 data-i18n="bench.req.h">HTTP requests the agent has to make</h3><p class="sub" data-i18n="bench.req.sub">Log scale. MCP always needs one call.</p><div class="legend" id="lg-req"></div><div class="chart" id="ch-req"></div></div>
+      <div class="chart-card"><h3 data-i18n="bench.acc.h">Agent trials: accuracy</h3><p class="sub" id="acc-sub"></p><div class="legend" id="lg-acc"></div><div class="chart" id="ch-acc"></div></div>
+    </div>
+
+    <div class="chart-card" style="margin-top:20px">
+      <h3 data-i18n="bench.agents.h">Agent trials: cost of getting the answer</h3>
+      <p class="sub" id="agents-sub"></p>
+      <div class="table-wrap"><table class="agent-table" id="agent-table"></table></div>
+    </div>
+
+    <div class="chart-card" style="margin-top:20px">
+      <h3 data-i18n="bench.traps.h">Traps in the raw data that give confident wrong answers</h3>
+      <p class="sub" data-i18n="bench.traps.sub">Each one was found on the live endpoints and is handled by the server.</p>
+      <div class="traps" id="traps"></div>
+    </div>
+    <p class="note" id="bench-note"></p>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="inst.eyebrow">Install</p>
+      <h2 data-i18n="inst.h2">Three steps. Any agent.</h2>
+      <p class="lead" data-i18n="inst.lead">One server, every client that speaks MCP. Pick yours below, or use the shell command if your agent has no MCP support.</p>
+    </div>
+    <div class="install-top">
+      <div class="step"><h3 data-i18n="inst.s1">1 · Get uv</h3><p data-i18n="inst.s1p">uv runs the server without a manual install.</p>
+        <div class="cmd"><code id="uv-win">powershell -c "irm https://astral.sh/uv/install.ps1 | iex"</code><button class="copy" type="button" data-copy-target="uv-win" data-i18n="copy">Copy</button></div>
+        <div class="cmd"><code id="uv-nix">curl -LsSf https://astral.sh/uv/install.sh | sh</code><button class="copy" type="button" data-copy-target="uv-nix" data-i18n="copy">Copy</button></div></div>
+      <div class="step"><h3 data-i18n="inst.s2">2 · Check access</h3><p data-i18n="inst.s2p">From a machine in Iran, confirm TSETMC and Codal answer.</p>
+        <div class="cmd"><code id="doc-cmd">uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp doctor</code><button class="copy" type="button" data-copy-target="doc-cmd" data-i18n="copy">Copy</button></div></div>
+      <div class="step"><h3 data-i18n="inst.s3">3 · Connect</h3><p data-i18n="inst.s3p">Choose your agent. Some have a one-click link or an auto-installer.</p>
+        <div class="cmd"><code id="auto-cmd">uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp config</code><button class="copy" type="button" data-copy-target="auto-cmd" data-i18n="copy">Copy</button></div></div>
+    </div>
+    <div class="install">
+      <div class="clients" id="clients" role="tablist" aria-label="Agents and IDEs"></div>
+      <div class="install-pane" id="pane" role="tabpanel"></div>
+    </div>
+  </div>
+</section>
+
+<section id="examples" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="ex.eyebrow">Ask in Persian</p>
+      <h2 data-i18n="ex.h2">Questions that used to take an analyst an hour.</h2>
+    </div>
+    <div class="examples" id="examples-grid"></div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="tools.eyebrow">28 tools</p>
+      <h2 data-i18n="tools.h2">Everything TSETMC shows, and what it hides.</h2>
+      <p class="lead" data-i18n="tools.lead">Every tool is read-only, returns units explicitly, and labels anything it derives.</p>
+    </div>
+    <div class="toolbar">
+      <input class="search" id="tool-search" type="search" placeholder="Search tools: order book, صف، کدال…" aria-label="Search tools">
+      <div class="seg" id="tool-groups" role="group" aria-label="Filter by group"></div>
+    </div>
+    <div class="tools-grid" id="tools-grid"></div>
+  </div>
+</section>
+
+<section id="trust" class="band">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow" data-i18n="trust.eyebrow">Built to be trusted</p>
+      <h2 data-i18n="trust.h2">Correctness first, then convenience.</h2>
+    </div>
+    <div class="trust" id="trust-grid"></div>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head"><p class="eyebrow">FAQ</p><h2 data-i18n="faq.h2">Questions, answered.</h2></div>
+    <div class="faq" id="faq-list"></div>
+  </div>
+</section>
+
+<section class="band cta-final">
+  <div class="wrap">
+    <h2 data-i18n="final.h2">Give your agent the market.</h2>
+    <p class="lead" style="margin-inline:auto" data-i18n="final.lead">Free, open source, read-only. Star it if it saves you an afternoon.</p>
+    <div class="cmd"><code id="final-cmd"><span class="prompt">$</span>claude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp</code><button class="copy" type="button" data-copy-target="final-cmd" data-i18n="copy">Copy</button></div>
+    <div class="cta-row"><a class="btn btn-primary" href="https://github.com/msmahdinejad/iran-bourse-mcp" target="_blank" rel="noopener">★ Star on GitHub</a><a class="btn btn-ghost" href="https://github.com/msmahdinejad/iran-bourse-mcp/issues" target="_blank" rel="noopener" data-i18n="final.issue">Report an issue</a></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div><b style="color:var(--ink);font-family:var(--font-display);font-size:18px">iran-bourse-mcp</b><div id="ver">v0.1.0</div></div>
+      <ul><li><a href="https://github.com/msmahdinejad/iran-bourse-mcp">GitHub</a></li><li><a href="https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/TOOLS.md" data-i18n="foot.tools">Tool reference</a></li><li><a href="https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/docs/DATA_SOURCES.md" data-i18n="foot.data">Data notes</a></li></ul>
+      <ul><li><a href="https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/CONTRIBUTING.md" data-i18n="foot.contrib">Contributing</a></li><li><a href="https://github.com/msmahdinejad/iran-bourse-mcp/blob/main/LICENSE">MIT License</a></li><li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">modelcontextprotocol.io</a></li></ul>
+    </div>
+    <p class="disclaimer" data-i18n="foot.disc">Unofficial. Not affiliated with TSETMC, the Tehran Stock Exchange, Fara Bourse or Codal. Information only, not investment advice. Market data belongs to its owners.</p>
+  </div>
+</footer>
+
+<div class="tooltip" id="tip" hidden></div>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

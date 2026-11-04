@@ -1,0 +1,2212 @@
+{
+ "tests": 107,
+ "version": "0.1.0",
+ "tools": [
+  {
+   "name": "market_status",
+   "group": "Market",
+   "description": "Is the Tehran market open right now? Tehran time, session hours, bourse state and totals (وضعیت بازار).",
+   "fa": "وضعیت بازار",
+   "params": []
+  },
+  {
+   "name": "market_overview",
+   "group": "Market",
+   "description": "Index value, equal-weight index, total value/volume/trades and market cap for the market (نمای کلی بازار).",
+   "fa": "نمای کلی بازار",
+   "params": [
+    {
+     "name": "market",
+     "required": false,
+     "description": "'bourse' or 'fara'",
+     "default": "bourse"
+    }
+   ]
+  },
+  {
+   "name": "indices",
+   "group": "Market",
+   "description": "All indices: total, equal-weight, free-float and every industry index with change % (شاخص‌ها و شاخص صنایع).",
+   "fa": "شاخص‌ها و شاخص صنایع",
+   "params": [
+    {
+     "name": "market",
+     "required": false,
+     "description": "'bourse' or 'fara'",
+     "default": "bourse"
+    },
+    {
+     "name": "only_headline",
+     "required": false,
+     "description": "Skip the ~50 industry indices",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "market_watch",
+   "group": "Market",
+   "description": "Whole-market screen (دیده‌بان بازار): filter, sort and page through every listed instrument in one call.",
+   "fa": "دیده‌بان کل بازار با فیلتر و مرتب‌سازی",
+   "params": [
+    {
+     "name": "market",
+     "required": false,
+     "description": "'bourse' or 'fara' (Fara Bourse). Omit for both where applicable.",
+     "default": null
+    },
+    {
+     "name": "security_type",
+     "required": false,
+     "description": "Substring filter, e.g. 'سهام' (stocks), 'صندوق' (funds), 'اوراق'",
+     "default": null
+    },
+    {
+     "name": "industry",
+     "required": false,
+     "description": "Industry name substring, e.g. 'فلزات', 'بانک'",
+     "default": null
+    },
+    {
+     "name": "board",
+     "required": false,
+     "description": "Board substring, e.g. 'اول', 'دوم', 'نوآفرین'",
+     "default": null
+    },
+    {
+     "name": "min_value",
+     "required": false,
+     "description": "Minimum traded value in rial",
+     "default": 0
+    },
+    {
+     "name": "only_traded",
+     "required": false,
+     "description": "",
+     "default": true
+    },
+    {
+     "name": "sort_by",
+     "required": false,
+     "description": "last_pct, close_pct, value, volume, trades, market_cap, pe, effect_on_index",
+     "default": "value"
+    },
+    {
+     "name": "descending",
+     "required": false,
+     "description": "",
+     "default": true
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 50
+    },
+    {
+     "name": "detail",
+     "required": false,
+     "description": "'compact' (default) or 'full' (every field incl. best bid/ask, limits, EPS)",
+     "default": "compact"
+    }
+   ]
+  },
+  {
+   "name": "top_movers",
+   "group": "Market",
+   "description": "Ranked lists: top gainers/losers, most traded, buy/sell queues (صف خرید/فروش), real-person money inflow/outflow (ورود/خروج پول حقیقی), buyer power.",
+   "fa": "بیشترین رشد/ریزش، صف خرید و فروش، ورود پول حقیقی",
+   "params": [
+    {
+     "name": "kind",
+     "required": false,
+     "description": "gainers, losers, value, volume, trades, buy_queue, sell_queue, real_inflow, real_outflow, real_buyer_power",
+     "default": "gainers"
+    },
+    {
+     "name": "market",
+     "required": false,
+     "description": "'bourse' or 'fara' (Fara Bourse). Omit for both where applicable.",
+     "default": null
+    },
+    {
+     "name": "security_type",
+     "required": false,
+     "description": "Substring filter, default 'سهام' (stocks)",
+     "default": "سهام"
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 20
+    }
+   ]
+  },
+  {
+   "name": "industry_summary",
+   "group": "Market",
+   "description": "Per-industry breakdown: traded value, average and cap-weighted change, index effect, queue counts (گروه‌های صنعتی).",
+   "fa": "خلاصه گروه‌های صنعتی",
+   "params": [
+    {
+     "name": "market",
+     "required": false,
+     "description": "'bourse' or 'fara' (Fara Bourse). Omit for both where applicable.",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "index_contributors",
+   "group": "Market",
+   "description": "Stocks pushing the total index up or down the most, in index points (بیشترین تاثیر بر شاخص).",
+   "fa": "بیشترین تأثیر بر شاخص",
+   "params": [
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 15
+    }
+   ]
+  },
+  {
+   "name": "market_snapshot",
+   "group": "Market",
+   "description": "End-of-day table for every instrument on a past date (تاریخچه کل بازار در یک روز).",
+   "fa": "جدول پایان روز کل بازار",
+   "params": [
+    {
+     "name": "date",
+     "required": true,
+     "description": "Gregorian or Jalali date of a past trading day",
+     "default": null
+    },
+    {
+     "name": "sort_by",
+     "required": false,
+     "description": "value, volume, trades, change_pct",
+     "default": "value"
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 30
+    },
+    {
+     "name": "security_type",
+     "required": false,
+     "description": "stock, fund or bond",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "market_holder_moves",
+   "group": "Market",
+   "description": "Large holders whose positions changed most over the last 5 reported days, market-wide (تغییرات سهامداران عمده).",
+   "fa": "جابه‌جایی سهامداران عمده",
+   "params": [
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 30
+    }
+   ]
+  },
+  {
+   "name": "supervisor_messages",
+   "group": "Market",
+   "description": "Exchange supervisor notices (پیام ناظر): trading restrictions, clarifications, halts.",
+   "fa": "پیام ناظر",
+   "params": [
+    {
+     "name": "symbol",
+     "required": false,
+     "description": "Symbol, or omit for market-wide messages",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 10
+    },
+    {
+     "name": "full_text",
+     "required": false,
+     "description": "",
+     "default": false
+    },
+    {
+     "name": "market",
+     "required": false,
+     "description": "'bourse' or 'fara' (when no symbol)",
+     "default": "bourse"
+    }
+   ]
+  },
+  {
+   "name": "search_symbol",
+   "group": "Symbol",
+   "description": "Find instruments by symbol or name fragment; returns symbol, name, market, board, insCode (جستجوی نماد).",
+   "fa": "جستجوی نماد",
+   "params": [
+    {
+     "name": "query",
+     "required": true,
+     "description": "",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 15
+    }
+   ]
+  },
+  {
+   "name": "symbol_overview",
+   "group": "Symbol",
+   "description": "One-call dossier for a symbol: identity, quote, order book, real/legal flow, top shareholders, latest Codal filings and supervisor notices. Start here.",
+   "fa": "پرونده کامل نماد در یک فراخوانی",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "quote",
+   "group": "Symbol",
+   "description": "Live/last quote with correct change %, volume, value, VWAP, price limits, ranges, P/E and market cap (قیمت لحظه‌ای).",
+   "fa": "قیمت لحظه‌ای با درصد تغییر درست",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "order_book",
+   "group": "Symbol",
+   "description": "Five-level order book (عمق بازار) with order counts, imbalance and buy/sell queue (صف) detection.",
+   "fa": "عمق بازار و صف",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "order_book_history",
+   "group": "Symbol",
+   "description": "Intraday order-book evolution rebuilt from every event: sampled depth plus buy/sell queue episodes with peak sizes (تاریخچه صف خرید و فروش).",
+   "fa": "تاریخچه عمق بازار و بازه‌های صف",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    },
+    {
+     "name": "date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "from_time",
+     "required": false,
+     "description": "HH:MM[:SS] Tehran time",
+     "default": null
+    },
+    {
+     "name": "to_time",
+     "required": false,
+     "description": "HH:MM[:SS] Tehran time",
+     "default": null
+    },
+    {
+     "name": "step_seconds",
+     "required": false,
+     "description": "Sampling step",
+     "default": 300
+    }
+   ]
+  },
+  {
+   "name": "trades",
+   "group": "Symbol",
+   "description": "Raw tick-by-tick trades (ریز معاملات) with time, price, volume, value. Filter by time and size; prefer trade_summary for analysis.",
+   "fa": "ریز معاملات",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    },
+    {
+     "name": "date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "from_time",
+     "required": false,
+     "description": "HH:MM[:SS]",
+     "default": null
+    },
+    {
+     "name": "to_time",
+     "required": false,
+     "description": "HH:MM[:SS]",
+     "default": null
+    },
+    {
+     "name": "min_volume",
+     "required": false,
+     "description": "Only trades with at least this many shares",
+     "default": 0
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 200
+    },
+    {
+     "name": "newest_first",
+     "required": false,
+     "description": "",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "trade_summary",
+   "group": "Symbol",
+   "description": "Aggregate a day's ticks: intraday bars, VWAP, biggest trades, volume by price level, tick-rule pressure estimate, and a completeness check against official totals.",
+   "fa": "خلاصه ریز معاملات، VWAP و بزرگ‌ترین معاملات",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    },
+    {
+     "name": "date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "from_time",
+     "required": false,
+     "description": "HH:MM[:SS]",
+     "default": null
+    },
+    {
+     "name": "to_time",
+     "required": false,
+     "description": "HH:MM[:SS]",
+     "default": null
+    },
+    {
+     "name": "interval_minutes",
+     "required": false,
+     "description": "",
+     "default": 5
+    }
+   ]
+  },
+  {
+   "name": "price_history",
+   "group": "Symbol",
+   "description": "Daily OHLCV history since listing, optionally adjusted (تاریخچه قیمت).",
+   "fa": "تاریخچه قیمت (تعدیل‌شده)",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    },
+    {
+     "name": "from_date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "to_date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 250
+    },
+    {
+     "name": "adjusted",
+     "required": false,
+     "description": "Back-adjust for capital increases/dividends (تعدیل شده)",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "real_legal_flow",
+   "group": "Symbol",
+   "description": "Real vs legal buying/selling (حقیقی و حقوقی): counts, per-capita, buyer power, net money flow, with daily history.",
+   "fa": "حقیقی و حقوقی، سرانه و قدرت خریدار",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    },
+    {
+     "name": "days",
+     "required": false,
+     "description": "How many past trading days of history to add (0 = latest session only)",
+     "default": 10
+    }
+   ]
+  },
+  {
+   "name": "shareholders",
+   "group": "Symbol",
+   "description": "Major shareholders (سهامداران عمده) with shares, percent and the holder_id for deeper lookups.",
+   "fa": "سهامداران عمده",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "shareholder_history",
+   "group": "Symbol",
+   "description": "Dated major-holder snapshots for a symbol with computed changes between snapshots.",
+   "fa": "تاریخچه سهامداران",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    },
+    {
+     "name": "date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "shareholder_portfolio",
+   "group": "Symbol",
+   "description": "Everything else that major holder owns across the market (پرتفوی سهامدار).",
+   "fa": "پرتفوی یک سهامدار",
+   "params": [
+    {
+     "name": "holder_id",
+     "required": true,
+     "description": "holder_id from shareholders",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "corporate_actions",
+   "group": "Symbol",
+   "description": "Capital increases and price adjustments (افزایش سرمایه، تعدیل قیمت) with dates and factors.",
+   "fa": "افزایش سرمایه و تعدیل",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "symbol_statistics",
+   "group": "Symbol",
+   "description": "Exchange-computed averages and stats for the symbol (e.g. average traded value over 3 months).",
+   "fa": "آمارهای نماد",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "etf_nav",
+   "group": "Symbol",
+   "description": "Fund/ETF issue and redemption NAV vs market price: premium/discount (صدور و ابطال).",
+   "fa": "حباب صندوق نسبت به NAV",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "codal_filings",
+   "group": "Codal",
+   "description": "Search Codal disclosures (کدال): title, publish time, tracing number and links to the page, PDF, Excel and attachments.",
+   "fa": "اطلاعیه‌های کدال با لینک PDF و اکسل",
+   "params": [
+    {
+     "name": "symbol",
+     "required": false,
+     "description": "Symbol, or omit for all companies",
+     "default": null
+    },
+    {
+     "name": "from_date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "to_date",
+     "required": false,
+     "description": "Gregorian 2026-11-03 / 20261103 or Jalali 1405/08/12. Omit for the latest trading day.",
+     "default": null
+    },
+    {
+     "name": "title_contains",
+     "required": false,
+     "description": "Client-side title filter, e.g. 'صورت‌های مالی', 'افزایش سرمایه', 'فعالیت ماهانه'",
+     "default": null
+    },
+    {
+     "name": "category",
+     "required": false,
+     "description": "Codal category id, -1 for all",
+     "default": -1
+    },
+    {
+     "name": "letter_type",
+     "required": false,
+     "description": "Codal letter type id, -1 for all",
+     "default": -1
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "description": "",
+     "default": 20
+    },
+    {
+     "name": "page",
+     "required": false,
+     "description": "",
+     "default": 1
+    }
+   ]
+  },
+  {
+   "name": "codal_company",
+   "group": "Codal",
+   "description": "Issuer profile from Codal: CEO, ISIC, address, activity description (اطلاعات ناشر).",
+   "fa": "اطلاعات ناشر کدال",
+   "params": [
+    {
+     "name": "symbol",
+     "required": true,
+     "description": "Persian symbol such as 'فولاد', or an insCode",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "glossary",
+   "group": "Help",
+   "description": "Explain Iranian market terms (صف خرید، سرانه خرید، حقیقی/حقوقی، دامنه نوسان …) so answers use them correctly.",
+   "fa": "واژه‌نامه بازار",
+   "params": [
+    {
+     "name": "term",
+     "required": false,
+     "description": "Persian or English term; omit to list all",
+     "default": null
+    }
+   ]
+  }
+ ],
+ "clients": [
+  {
+   "id": "claude-code",
+   "label": "Claude Code",
+   "group": "cli",
+   "note": "Add `--scope user` to make it available in every project.",
+   "docs": "https://docs.claude.com/en/docs/claude-code/mcp",
+   "snippet": "# Run once in your terminal:\nclaude mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp\n\n# Note: Add `--scope user` to make it available in every project.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "claude-desktop",
+   "label": "Claude Desktop",
+   "group": "desktop",
+   "note": "Restart Claude Desktop after editing the file.",
+   "docs": "https://modelcontextprotocol.io/quickstart/user",
+   "snippet": "# Put this in C:\\Users\\SALEH\\AppData\\Roaming\\Claude\\claude_desktop_config.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Restart Claude Desktop after editing the file.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": true
+  },
+  {
+   "id": "codex",
+   "label": "OpenAI Codex CLI",
+   "group": "cli",
+   "note": "",
+   "docs": "https://developers.openai.com/codex/mcp",
+   "snippet": "# Run once in your terminal:\ncodex mcp add iran-bourse -- uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp\n\n# or add to ~/.codex/config.toml:\n[mcp_servers.iran-bourse]\ncommand = \"uvx\"\nargs = [\"--from\", \"git+https://github.com/msmahdinejad/iran-bourse-mcp\", \"iran-bourse-mcp\"]\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "gemini-cli",
+   "label": "Gemini CLI",
+   "group": "cli",
+   "note": "",
+   "docs": "https://github.com/google-gemini/gemini-cli/blob/main/docs/tools/mcp-server.md",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.gemini\\settings.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": true
+  },
+  {
+   "id": "cursor",
+   "label": "Cursor",
+   "group": "ide",
+   "note": "Restart Cursor after editing. A one-click install link is available (see `config cursor`).",
+   "docs": "https://cursor.com/docs/mcp",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.cursor\\mcp.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# One-click install (paste in a browser):\ncursor://anysphere.cursor-deeplink/mcp/install?name=iran-bourse&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL21zbWFoZGluZWphZC9pcmFuLWJvdXJzZS1tY3AiLCJpcmFuLWJvdXJzZS1tY3AiXX0=\n\n# Note: Restart Cursor after editing. A one-click install link is available (see `config cursor`).\n",
+   "oneclick": {
+    "cursor": "cursor://anysphere.cursor-deeplink/mcp/install?name=iran-bourse&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyItLWZyb20iLCJnaXQraHR0cHM6Ly9naXRodWIuY29tL21zbWFoZGluZWphZC9pcmFuLWJvdXJzZS1tY3AiLCJpcmFuLWJvdXJzZS1tY3AiXX0=",
+    "vscode": null,
+    "goose": null
+   },
+   "auto": true
+  },
+  {
+   "id": "vscode",
+   "label": "VS Code (GitHub Copilot)",
+   "group": "ide",
+   "note": "Project-level file. Top-level key is `servers`, not `mcpServers`.",
+   "docs": "https://code.visualstudio.com/docs/copilot/customization/mcp-servers",
+   "snippet": "# Put this in .vscode\\mcp.json:\n{\n  \"servers\": {\n    \"iran-bourse\": {\n      \"type\": \"stdio\",\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# One-click install:\nvscode:mcp/install?%7B%22name%22%3A%22iran-bourse%22%2C%22type%22%3A%22stdio%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--from%22%2C%22git%2Bhttps%3A//github.com/msmahdinejad/iran-bourse-mcp%22%2C%22iran-bourse-mcp%22%5D%7D\n\n# or from a terminal:\ncode --add-mcp '{\"name\":\"iran-bourse\",\"type\":\"stdio\",\"command\":\"uvx\",\"args\":[\"--from\",\"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\"iran-bourse-mcp\"]}'\n\n# Note: Project-level file. Top-level key is `servers`, not `mcpServers`.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": "vscode:mcp/install?%7B%22name%22%3A%22iran-bourse%22%2C%22type%22%3A%22stdio%22%2C%22command%22%3A%22uvx%22%2C%22args%22%3A%5B%22--from%22%2C%22git%2Bhttps%3A//github.com/msmahdinejad/iran-bourse-mcp%22%2C%22iran-bourse-mcp%22%5D%7D",
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "windsurf",
+   "label": "Windsurf",
+   "group": "ide",
+   "note": "Newer releases may relocate the file; open it from Cascade's MCP panel if this path is missing.",
+   "docs": "https://docs.windsurf.com/windsurf/cascade/mcp",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.codeium\\windsurf\\mcp_config.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Newer releases may relocate the file; open it from Cascade's MCP panel if this path is missing.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": true
+  },
+  {
+   "id": "cline",
+   "label": "Cline",
+   "group": "ide",
+   "note": "Open the MCP Servers panel, choose *Configure MCP Servers*, and paste the entry into the JSON it opens.",
+   "docs": "https://docs.cline.bot/mcp/configuring-mcp-servers",
+   "snippet": "{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Open the MCP Servers panel, choose *Configure MCP Servers*, and paste the entry into the JSON it opens.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "roo-code",
+   "label": "Roo Code",
+   "group": "ide",
+   "note": "Project file shown; the global file is opened from the MCP settings view.",
+   "docs": "https://docs.roocode.com/features/mcp/using-mcp-in-roo",
+   "snippet": "# Put this in .roo\\mcp.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Project file shown; the global file is opened from the MCP settings view.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "kiro",
+   "label": "Kiro",
+   "group": "ide",
+   "note": "",
+   "docs": "https://kiro.dev/docs/mcp/",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.kiro\\settings\\mcp.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": true
+  },
+  {
+   "id": "qwen-code",
+   "label": "Qwen Code",
+   "group": "cli",
+   "note": "",
+   "docs": "https://qwenlm.github.io/qwen-code-docs/en/users/features/mcp/",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.qwen\\settings.json:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": true
+  },
+  {
+   "id": "jetbrains",
+   "label": "JetBrains AI Assistant",
+   "group": "ide",
+   "note": "Settings > Tools > AI Assistant > Model Context Protocol (MCP) > Add, then paste the JSON.",
+   "docs": "https://www.jetbrains.com/help/ai-assistant/mcp.html",
+   "snippet": "{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Settings > Tools > AI Assistant > Model Context Protocol (MCP) > Add, then paste the JSON.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "zed",
+   "label": "Zed",
+   "group": "ide",
+   "note": "Older Zed versions expect `command` as an object: {\"path\": ..., \"args\": [...]}.",
+   "docs": "https://zed.dev/docs/ai/mcp",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.config\\zed\\settings.json:\n{\n  \"context_servers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Older Zed versions expect `command` as an object: {\"path\": ..., \"args\": [...]}.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "opencode",
+   "label": "OpenCode",
+   "group": "cli",
+   "note": "OpenCode uses `command` as one array and `type: local`.",
+   "docs": "https://opencode.ai/docs/mcp-servers",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.config\\opencode\\opencode.json:\n{\n  \"mcp\": {\n    \"iran-bourse\": {\n      \"type\": \"local\",\n      \"command\": [\n        \"uvx\",\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ],\n      \"enabled\": true\n    }\n  }\n}\n\n# Note: OpenCode uses `command` as one array and `type: local`.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "goose",
+   "label": "Goose",
+   "group": "cli",
+   "note": "Or run `goose configure` > Add Extension > Command-line Extension and enter the command below.",
+   "docs": "https://block.github.io/goose/docs/getting-started/using-extensions",
+   "snippet": "# One-click link:\ngoose://extension?cmd=uvx&arg=--from&arg=git%2Bhttps%3A%2F%2Fgithub.com%2Fmsmahdinejad%2Firan-bourse-mcp&arg=iran-bourse-mcp&id=iran-bourse&name=Iran%20Bourse&description=Tehran%20Stock%20Exchange%20and%20Codal%20data\n\n# or in `goose configure`, use this command:\nuvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp\n\n# Note: Or run `goose configure` > Add Extension > Command-line Extension and enter the command below.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": "goose://extension?cmd=uvx&arg=--from&arg=git%2Bhttps%3A%2F%2Fgithub.com%2Fmsmahdinejad%2Firan-bourse-mcp&arg=iran-bourse-mcp&id=iran-bourse&name=Iran%20Bourse&description=Tehran%20Stock%20Exchange%20and%20Codal%20data"
+   },
+   "auto": false
+  },
+  {
+   "id": "amp",
+   "label": "Amp",
+   "group": "cli",
+   "note": "",
+   "docs": "https://ampcode.com/manual/mcp",
+   "snippet": "# Put this in C:\\Users\\SALEH\\.config\\amp\\settings.json:\n{\n  \"amp.mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  },
+  {
+   "id": "generic",
+   "label": "Any MCP client (stdio)",
+   "group": "framework",
+   "note": "Command: `uvx`, arguments as shown. Works in every client that can launch a stdio MCP server.",
+   "docs": "",
+   "snippet": "command: uvx\nargs: [\"--from\", \"git+https://github.com/msmahdinejad/iran-bourse-mcp\", \"iran-bourse-mcp\"]\n\n# JSON form used by most clients:\n{\n  \"mcpServers\": {\n    \"iran-bourse\": {\n      \"command\": \"uvx\",\n      \"args\": [\n        \"--from\",\n        \"git+https://github.com/msmahdinejad/iran-bourse-mcp\",\n        \"iran-bourse-mcp\"\n      ]\n    }\n  }\n}\n\n# Note: Command: `uvx`, arguments as shown. Works in every client that can launch a stdio MCP server.\n",
+   "oneclick": {
+    "cursor": null,
+    "vscode": null,
+    "goose": null
+   },
+   "auto": false
+  }
+ ],
+ "snapshot": {
+  "captured_at_utc": "2026-11-04 07:35 UTC",
+  "tehran_time": "2026-11-04 11:05:53",
+  "market_state": "باز",
+  "index": {
+   "value": 7903510.01,
+   "change": 78906.62,
+   "change_pct": 1.01
+  },
+  "trades_today": 580491,
+  "value_today": 227119622521265,
+  "tape": [
+   {
+    "symbol": "فملی",
+    "last": 29170.0,
+    "pct": 2.97
+   },
+   {
+    "symbol": "شبندر",
+    "last": 12660.0,
+    "pct": -0.63
+   },
+   {
+    "symbol": "فولاد",
+    "last": 4330.0,
+    "pct": 2.85
+   },
+   {
+    "symbol": "فکور",
+    "last": 8670.0,
+    "pct": 2.97
+   },
+   {
+    "symbol": "شپنا",
+    "last": 11920.0,
+    "pct": 0.0
+   },
+   {
+    "symbol": "شتران",
+    "last": 6150.0,
+    "pct": 2.84
+   },
+   {
+    "symbol": "وبملت",
+    "last": 1434.0,
+    "pct": 2.94
+   },
+   {
+    "symbol": "تاصیکو",
+    "last": 38710.0,
+    "pct": 2.98
+   },
+   {
+    "symbol": "فپردیس",
+    "last": 101900.0,
+    "pct": 0.0
+   },
+   {
+    "symbol": "فزر",
+    "last": 322500.0,
+    "pct": 2.97
+   },
+   {
+    "symbol": "وبصادر",
+    "last": 1015.0,
+    "pct": 2.94
+   },
+   {
+    "symbol": "وکغدیر",
+    "last": 9210.0,
+    "pct": 2.79
+   },
+   {
+    "symbol": "فارس",
+    "last": 14380.0,
+    "pct": -1.37
+   },
+   {
+    "symbol": "پکرمان",
+    "last": 10880.0,
+    "pct": 2.93
+   },
+   {
+    "symbol": "فنقره",
+    "last": 29860.0,
+    "pct": 1.81
+   },
+   {
+    "symbol": "شستا",
+    "last": 3290.0,
+    "pct": 2.49
+   }
+  ],
+  "gainers": [
+   {
+    "symbol": "کخاک",
+    "name": "صنایع‌خاک‌چینی‌ایران‌",
+    "last": 81430.0,
+    "last_pct": 3.0,
+    "close": 80480.0,
+    "close_pct": 1.8,
+    "volume": 13394758,
+    "value": 1077959272590,
+    "trades": 3623,
+    "pe": 16.14,
+    "market_cap": 285005000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "سایر محصولات کانی غیرفلزی"
+   },
+   {
+    "symbol": "وخارزم",
+    "name": "سرمایه گذاری خوارزمی",
+    "last": 11680.0,
+    "last_pct": 3.0,
+    "close": 11650.0,
+    "close_pct": 2.73,
+    "volume": 69260180,
+    "value": 806899736430,
+    "trades": 3431,
+    "pe": 11.66,
+    "market_cap": 934400000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "سرمایه گذاریها"
+   },
+   {
+    "symbol": "ولغدر",
+    "name": "لیزینگ‌خودروغدیر",
+    "last": 4470.0,
+    "last_pct": 3.0,
+    "close": 4370.0,
+    "close_pct": 0.69,
+    "volume": 89976106,
+    "value": 393011764450,
+    "trades": 1003,
+    "pe": 52.65,
+    "market_cap": 10728000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "سایر واسطه گریهای مالی"
+   },
+   {
+    "symbol": "سیتا",
+    "name": "سرمایه گذاری سیمان تامین",
+    "last": 42640.0,
+    "last_pct": 3.0,
+    "close": 42610.0,
+    "close_pct": 2.92,
+    "volume": 6946505,
+    "value": 295976032350,
+    "trades": 1057,
+    "pe": 9.97,
+    "market_cap": 938080000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "سیمان، آهک و گچ"
+   },
+   {
+    "symbol": "فسبزوار",
+    "name": "پارس فولاد سبزوار",
+    "last": 101660.0,
+    "last_pct": 3.0,
+    "close": 101660.0,
+    "close_pct": 3.0,
+    "volume": 2322335,
+    "value": 236088576100,
+    "trades": 374,
+    "pe": 5.81,
+    "market_cap": 406640000000000,
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "industry": "فلزات اساسی"
+   }
+  ],
+  "buy_queues": [],
+  "real_inflow": [],
+  "foolad": {
+   "identity": {
+    "symbol": "فولاد",
+    "name": "فولاد مبارکه اصفهان",
+    "name_en": "S*Mobarakeh Steel",
+    "ins_code": "46348559193224090",
+    "isin": "IRO1FOLD0009",
+    "instrument_id": "IRO1FOLD0001",
+    "market": "بازار بورس",
+    "board": "بازار اول (تابلوی اصلی) بورس",
+    "sector": "فلزات اساسی",
+    "sector_code": "27",
+    "sub_sector": "تولید آهن و فولاد پایه",
+    "instrument_kind": "stock"
+   },
+   "quote": {
+    "date": "2026-11-04",
+    "jdate": "1405/08/13",
+    "last_update": "11:05:42",
+    "status": {
+     "code": "A",
+     "title": "مجاز",
+     "under_supervision": 0
+    },
+    "last": {
+     "price": 4330.0,
+     "change": 120.0,
+     "change_pct": 2.85
+    },
+    "close": {
+     "price": 4280.0,
+     "change": 70.0,
+     "change_pct": 1.66
+    },
+    "yesterday_close": 4210.0,
+    "open": 4240.0,
+    "high": 4330.0,
+    "low": 4140.0,
+    "volume": 1173623959,
+    "value": 5028573575570,
+    "trades": 14340,
+    "vwap": 4284.65,
+    "price_limits": {
+     "upper": 4330.0,
+     "lower": 4090.0
+    },
+    "at_upper_limit": true,
+    "at_lower_limit": false,
+    "ranges": {
+     "week": {
+      "low": 4020.0,
+      "high": 4210.0
+     },
+     "year": {
+      "low": 2182.0,
+      "high": 4540.0
+     }
+    },
+    "avg_volume": 2877533991,
+    "volume_vs_avg": 0.41,
+    "fundamentals": {
+     "eps": 693.0,
+     "pe": 6.25,
+     "sector_pe": 11.45,
+     "psr": 2541.02,
+     "shares_outstanding": 1935000000000,
+     "market_cap": 8378550000000000,
+     "note": "eps is the exchange's estimated EPS; pe = last price / eps"
+    },
+    "units": "rial"
+   },
+   "order_book": {
+    "bids": [
+     {
+      "level": 1,
+      "price": 4330.0,
+      "volume": 175683690,
+      "orders": 941
+     },
+     {
+      "level": 2,
+      "price": 4320.0,
+      "volume": 2967375,
+      "orders": 26
+     },
+     {
+      "level": 3,
+      "price": 4310.0,
+      "volume": 104688,
+      "orders": 4
+     },
+     {
+      "level": 4,
+      "price": 4300.0,
+      "volume": 2479929,
+      "orders": 31
+     },
+     {
+      "level": 5,
+      "price": 4290.0,
+      "volume": 4075173,
+      "orders": 23
+     }
+    ],
+    "asks": [
+     {
+      "level": 1,
+      "price": 4340.0,
+      "volume": 250526,
+      "orders": 10
+     },
+     {
+      "level": 2,
+      "price": 4350.0,
+      "volume": 1200,
+      "orders": 1
+     },
+     {
+      "level": 3,
+      "price": 4360.0,
+      "volume": 1335000,
+      "orders": 7
+     },
+     {
+      "level": 4,
+      "price": 4370.0,
+      "volume": 12000,
+      "orders": 2
+     },
+     {
+      "level": 5,
+      "price": 4400.0,
+      "volume": 50000,
+      "orders": 1
+     }
+    ],
+    "best_bid": 4330.0,
+    "best_ask": 4340.0,
+    "spread": 10.0,
+    "spread_pct": 0.23,
+    "total_bid_volume": 185310855,
+    "total_ask_volume": 1648726,
+    "total_bid_orders": 1025,
+    "total_ask_orders": 21,
+    "imbalance": 0.9824,
+    "queue": {
+     "state": null,
+     "queue_volume": 0,
+     "queue_orders": 0,
+     "queue_value": 0
+    },
+    "price_limits": {
+     "upper": 4330.0,
+     "lower": 4090.0
+    },
+    "units": "price in rial, volume in shares"
+   },
+   "real_legal": {
+    "real": {
+     "buy": {
+      "volume": 754610196,
+      "count": 2170,
+      "value": 3233240576291,
+      "value_estimated": true,
+      "avg_per_participant": 1489972615.8,
+      "avg_volume_per_participant": 347746.63
+     },
+     "sell": {
+      "volume": 1037435195,
+      "count": 3374,
+      "value": 4445046708256,
+      "value_estimated": true,
+      "avg_per_participant": 1317441229.48,
+      "avg_volume_per_participant": 307479.31
+     },
+     "net_volume": -282824999,
+     "net_value": -1211806131965
+    },
+    "legal": {
+     "buy": {
+      "volume": 418551526,
+      "count": 30,
+      "value": 1793346795875,
+      "value_estimated": true,
+      "avg_per_participant": 59778226529.2,
+      "avg_volume_per_participant": 13951717.53
+     },
+     "sell": {
+      "volume": 135726527,
+      "count": 24,
+      "value": 581540663910,
+      "value_estimated": true,
+      "avg_per_participant": 24230860996.27,
+      "avg_volume_per_participant": 5655271.96
+     },
+     "net_volume": 282824999,
+     "net_value": 1211806131965
+    },
+    "real_buyer_power": 1.13,
+    "real_share_of_buy_volume_pct": 64.32,
+    "real_share_of_sell_volume_pct": 88.43,
+    "reading": "real_buyer_power > 1: the average real-person buyer is larger than the average real-person seller (smart-money accumulation proxy). net_* > 0 on 'real' means money flowed INTO the stock from real persons."
+   },
+   "holders": {
+    "top5_percent": 35.8,
+    "top": [
+     {
+      "name": "سازمان توسعه ونوسازی معادن وصنایع معدنی ایران",
+      "shares": 323334093547,
+      "percent": 16.709,
+      "change_amount": 0.0,
+      "holder_id": 1241318
+     },
+     {
+      "name": "شرکت توسعه سرمایه رفاه -سهامی خاص -",
+      "shares": 203548440651,
+      "percent": 10.519,
+      "change_amount": 0.0,
+      "holder_id": 1245645
+     },
+     {
+      "name": "موسسه صندوق بازنشستگی ،وظیفه ،ازکارافتادگی وپ",
+      "shares": 68902471229,
+      "percent": 3.56,
+      "change_amount": 0.0,
+      "holder_id": 1242405
+     },
+     {
+      "name": "موسسه صندوق بیمه اجتماعی روستائیان وعشایر",
+      "shares": 51974268209,
+      "percent": 2.686,
+      "change_amount": 0.0,
+      "holder_id": 1245644
+     },
+     {
+      "name": "شرکت سرمایه گذاری صدرتامین -سهامی عام -",
+      "shares": 45059916642,
+      "percent": 2.328,
+      "change_amount": 0.0,
+      "holder_id": 1244694
+     }
+    ]
+   },
+   "filings": [
+    {
+     "tracing_no": 1621524,
+     "symbol": "فولاد",
+     "company": "فولاد مبارکه اصفهان",
+     "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به ۱۴۰۵/۰۷/۳۰",
+     "letter_code": "ن-۳۰",
+     "published": "1405/08/06 16:01:48",
+     "sent": "1405/08/06 16:01:48",
+     "under_supervision": false,
+     "is_estimate": false,
+     "has": {
+      "html": true,
+      "pdf": true,
+      "excel": true,
+      "xbrl": false,
+      "attachment": true
+     },
+     "links": {
+      "page": "https://codal.ir/Reports/Decision.aspx?LetterSerial=LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d&rt=0&let=58&ct=0&ft=-1",
+      "pdf": "https://codal.ir/DownloadFile.aspx?hs=LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d&ft=1005&let=58",
+      "excel": "https://excel.codal.ir/service/Excel/GetAll/LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d/0",
+      "attachments": "https://codal.ir/Reports/Attachment.aspx?LetterSerial=LyQnlYP7OOObOOOIDLto8TGJDkDQ%3d%3d"
+     }
+    },
+    {
+     "tracing_no": 1618277,
+     "symbol": "فولاد",
+     "company": "فولاد مبارکه اصفهان",
+     "title": "توضیحات در خصوص اطلاعات و صورت های مالی منتشر شده",
+     "letter_code": "ن-۲۶",
+     "published": "1405/07/30 14:40:53",
+     "sent": "1405/07/30 14:40:53",
+     "under_supervision": false,
+     "is_estimate": false,
+     "has": {
+      "html": true,
+      "pdf": true,
+      "excel": false,
+      "xbrl": false,
+      "attachment": true
+     },
+     "links": {
+      "page": "https://codal.ir/Reports/Decision.aspx?LetterSerial=q1TwzvITsscrZmqLPHatbw%3d%3d&rt=0&let=174&ct=0&ft=-1",
+      "pdf": "https://codal.ir/DownloadFile.aspx?hs=q1TwzvITsscrZmqLPHatbw%3d%3d&ft=1005&let=174",
+      "excel": null,
+      "attachments": "https://codal.ir/Reports/Attachment.aspx?LetterSerial=q1TwzvITsscrZmqLPHatbw%3d%3d"
+     }
+    },
+    {
+     "tracing_no": 1612323,
+     "symbol": "فولاد",
+     "company": "فولاد مبارکه اصفهان",
+     "title": "اطلاعات و صورت‌های مالی میاندوره‌ای دوره ۶ ماهه منتهی به ۱۴۰۵/۰۶/۳۱ (حسابرسی نشده)",
+     "letter_code": "ن-۱۰",
+     "published": "1405/07/30 14:37:13",
+     "sent": "1405/07/30 14:37:13",
+     "under_supervision": false,
+     "is_estimate": false,
+     "has": {
+      "html": true,
+      "pdf": true,
+      "excel": true,
+      "xbrl": false,
+      "attachment": true
+     },
+     "links": {
+      "page": "https://codal.ir/Reports/Decision.aspx?LetterSerial=qV4MKXMUUbQQQaQQQ9cOOObOOO8qmo3wRg%3d%3d&rt=0&let=6&ct=0&ft=-1",
+      "pdf": "https://codal.ir/DownloadFile.aspx?hs=qV4MKXMUUbQQQaQQQ9cOOObOOO8qmo3wRg%3d%3d&ft=1005&let=6",
+      "excel": "https://excel.codal.ir/service/Excel/GetAll/qV4MKXMUUbQQQaQQQ9cOOObOOO8qmo3wRg%3d%3d/0",
+      "attachments": "https://codal.ir/Reports/Attachment.aspx?LetterSerial=qV4MKXMUUbQQQaQQQ9cOOObOOO8qmo3wRg%3d%3d"
+     }
+    },
+    {
+     "tracing_no": 1618061,
+     "symbol": "فولاد",
+     "company": "فولاد مبارکه اصفهان",
+     "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به ۱۴۰۵/۰۶/۳۱(اصلاحیه)",
+     "letter_code": "ن-۳۰",
+     "published": "1405/07/29 20:50:26",
+     "sent": "1405/07/29 20:50:26",
+     "under_supervision": false,
+     "is_estimate": false,
+     "has": {
+      "html": true,
+      "pdf": true,
+      "excel": true,
+      "xbrl": false,
+      "attachment": false
+     },
+     "links": {
+      "page": "https://codal.ir/Reports/Decision.aspx?LetterSerial=UF9BctCE5jV6HYNuyA8yYA%3d%3d&rt=0&let=58&ct=0&ft=-1",
+      "pdf": "https://codal.ir/DownloadFile.aspx?hs=UF9BctCE5jV6HYNuyA8yYA%3d%3d&ft=1005&let=58",
+      "excel": "https://excel.codal.ir/service/Excel/GetAll/UF9BctCE5jV6HYNuyA8yYA%3d%3d/0",
+      "attachments": null
+     }
+    },
+    {
+     "tracing_no": 1605314,
+     "symbol": "فولاد",
+     "company": "فولاد مبارکه اصفهان",
+     "title": "گزارش فعالیت ماهانه دوره ۱ ماهه منتهی به ۱۴۰۵/۰۶/۳۱",
+     "letter_code": "ن-۳۰",
+     "published": "1405/07/07 18:55:34",
+     "sent": "1405/07/07 18:55:34",
+     "under_supervision": false,
+     "is_estimate": false,
+     "has": {
+      "html": true,
+      "pdf": true,
+      "excel": true,
+      "xbrl": false,
+      "attachment": true
+     },
+     "links": {
+      "page": "https://codal.ir/Reports/Decision.aspx?LetterSerial=yDB53PvV4XTHKOOOObOOOckOo9tw%3d%3d&rt=0&let=58&ct=0&ft=-1",
+      "pdf": "https://codal.ir/DownloadFile.aspx?hs=yDB53PvV4XTHKOOOObOOOckOo9tw%3d%3d&ft=1005&let=58",
+      "excel": "https://excel.codal.ir/service/Excel/GetAll/yDB53PvV4XTHKOOOObOOOckOo9tw%3d%3d/0",
+      "attachments": "https://codal.ir/Reports/Attachment.aspx?LetterSerial=yDB53PvV4XTHKOOOObOOOckOo9tw%3d%3d"
+     }
+    }
+   ],
+   "trade_summary": {
+    "summary": {
+     "ticks": 15643,
+     "cancelled_ticks": 0,
+     "first_trade": "09:00:12",
+     "last_trade": "12:30:00",
+     "volume": 980098090,
+     "value": 4010393789380,
+     "vwap": 4091.83,
+     "open": 4080.0,
+     "high": 4160.0,
+     "low": 4020.0,
+     "close": 4130.0,
+     "avg_trade_volume": 62654,
+     "median_trade_volume": 20000
+    },
+    "completeness": {
+     "ticks_volume": 980098090,
+     "ticks_count": 15643,
+     "official_volume": 980098090,
+     "volume_coverage_pct": 100.0,
+     "official_trade_count": 15643,
+     "count_coverage_pct": 100.0,
+     "note": "Coverage compares tick data with the exchange's own daily totals; ~100% means nothing is missing."
+    },
+    "pressure": {
+     "method": "tick rule: volume of trades printed above/below the previous trade price",
+     "uptick_volume_pct": 47.92,
+     "downtick_volume_pct": 51.09,
+     "neutral_volume_pct": 1.0,
+     "caveat": "TSETMC does not publish who initiated a trade; this is a heuristic, not exchange data."
+    },
+    "bars": [
+     {
+      "from": "09:00",
+      "open": 4080.0,
+      "high": 4160.0,
+      "low": 4080.0,
+      "close": 4130.0,
+      "volume": 41085253,
+      "value": 169169771830,
+      "trades": 666,
+      "vwap": 4117.53
+     },
+     {
+      "from": "09:05",
+      "open": 4130.0,
+      "high": 4130.0,
+      "low": 4030.0,
+      "close": 4060.0,
+      "volume": 54435211,
+      "value": 221033266220,
+      "trades": 886,
+      "vwap": 4060.48
+     },
+     {
+      "from": "09:10",
+      "open": 4050.0,
+      "high": 4070.0,
+      "low": 4030.0,
+      "close": 4050.0,
+      "volume": 32229321,
+      "value": 130564548990,
+      "trades": 608,
+      "vwap": 4051.11
+     },
+     {
+      "from": "09:15",
+      "open": 4050.0,
+      "high": 4090.0,
+      "low": 4050.0,
+      "close": 4090.0,
+      "volume": 47976746,
+      "value": 195473329130,
+      "trades": 609,
+      "vwap": 4074.33
+     },
+     {
+      "from": "09:20",
+      "open": 4090.0,
+      "high": 4090.0,
+      "low": 4040.0,
+      "close": 4050.0,
+      "volume": 26411392,
+      "value": 107189058460,
+      "trades": 506,
+      "vwap": 4058.44
+     },
+     {
+      "from": "09:25",
+      "open": 4050.0,
+      "high": 4060.0,
+      "low": 4020.0,
+      "close": 4040.0,
+      "volume": 70887683,
+      "value": 286697731570,
+      "trades": 902,
+      "vwap": 4044.39
+     },
+     {
+      "from": "09:30",
+      "open": 4060.0,
+      "high": 4090.0,
+      "low": 4050.0,
+      "close": 4090.0,
+      "volume": 31602141,
+      "value": 128517342260,
+      "trades": 536,
+      "vwap": 4066.73
+     },
+     {
+      "from": "09:35",
+      "open": 4090.0,
+      "high": 4150.0,
+      "low": 4080.0,
+      "close": 4150.0,
+      "volume": 82559042,
+      "value": 339791986420,
+      "trades": 877,
+      "vwap": 4115.75
+     },
+     {
+      "from": "09:40",
+      "open": 4150.0,
+      "high": 4150.0,
+      "low": 4120.0,
+      "close": 4140.0,
+      "volume": 18396512,
+      "value": 76108780710,
+      "trades": 349,
+      "vwap": 4137.13
+     },
+     {
+      "from": "09:45",
+      "open": 4130.0,
+      "high": 4140.0,
+      "low": 4110.0,
+      "close": 4110.0,
+      "volume": 10359594,
+      "value": 42675728070,
+      "trades": 242,
+      "vwap": 4119.44
+     },
+     {
+      "from": "09:50",
+      "open": 4120.0,
+      "high": 4130.0,
+      "low": 4110.0,
+      "close": 4120.0,
+      "volume": 9535532,
+      "value": 39256877850,
+      "trades": 208,
+      "vwap": 4116.9
+     },
+     {
+      "from": "09:55",
+      "open": 4120.0,
+      "high": 4140.0,
+      "low": 4120.0,
+      "close": 4130.0,
+      "volume": 15533143,
+      "value": 64094187660,
+      "trades": 281,
+      "vwap": 4126.29
+     },
+     {
+      "from": "10:00",
+      "open": 4130.0,
+      "high": 4150.0,
+      "low": 4120.0,
+      "close": 4150.0,
+      "volume": 21437908,
+      "value": 88638969240,
+      "trades": 329,
+      "vwap": 4134.68
+     },
+     {
+      "from": "10:05",
+      "open": 4140.0,
+      "high": 4150.0,
+      "low": 4130.0,
+      "close": 4140.0,
+      "volume": 11242457,
+      "value": 46480202660,
+      "trades": 223,
+      "vwap": 4134.35
+     },
+     {
+      "from": "10:10",
+      "open": 4130.0,
+      "high": 4150.0,
+      "low": 4130.0,
+      "close": 4140.0,
+      "volume": 12855511,
+      "value": 53187814950,
+      "trades": 252,
+      "vwap": 4137.36
+     },
+     {
+      "from": "10:15",
+      "open": 4140.0,
+      "high": 4140.0,
+      "low": 4120.0,
+      "close": 4130.0,
+      "volume": 14815589,
+      "value": 61201069670,
+      "trades": 241,
+      "vwap": 4130.86
+     },
+     {
+      "from": "10:20",
+      "open": 4120.0,
+      "high": 4130.0,
+      "low": 4120.0,
+      "close": 4130.0,
+      "volume": 9371769,
+      "value": 38621802530,
+      "trades": 188,
+      "vwap": 4121.08
+     },
+     {
+      "from": "10:25",
+      "open": 4120.0,
+      "high": 4130.0,
+      "low": 4100.0,
+      "close": 4100.0,
+      "volume": 14211063,
+      "value": 58467708260,
+      "trades": 296,
+      "vwap": 4114.24
+     },
+     {
+      "from": "10:30",
+      "open": 4100.0,
+      "high": 4120.0,
+      "low": 4100.0,
+      "close": 4110.0,
+      "volume": 14348809,
+      "value": 58904511430,
+      "trades": 291,
+      "vwap": 4105.18
+     },
+     {
+      "from": "10:35",
+      "open": 4110.0,
+      "high": 4120.0,
+      "low": 4100.0,
+      "close": 4100.0,
+      "volume": 5451642,
+      "value": 22374419650,
+      "trades": 126,
+      "vwap": 4104.16
+     },
+     {
+      "from": "10:40",
+      "open": 4100.0,
+      "high": 4120.0,
+      "low": 4100.0,
+      "close": 4120.0,
+      "volume": 12412013,
+      "value": 51060579950,
+      "trades": 247,
+      "vwap": 4113.8
+     },
+     {
+      "from": "10:45",
+      "open": 4110.0,
+      "high": 4130.0,
+      "low": 4080.0,
+      "close": 4090.0,
+      "volume": 28901900,
+      "value": 118587788950,
+      "trades": 475,
+      "vwap": 4103.11
+     },
+     {
+      "from": "10:50",
+      "open": 4090.0,
+      "high": 4110.0,
+      "low": 4070.0,
+      "close": 4100.0,
+      "volume": 15487664,
+      "value": 63301799470,
+      "trades": 283,
+      "vwap": 4087.24
+     },
+     {
+      "from": "10:55",
+      "open": 4090.0,
+      "high": 4110.0,
+      "low": 4080.0,
+      "close": 4090.0,
+      "volume": 9767508,
+      "value": 40012171130,
+      "trades": 194,
+      "vwap": 4096.46
+     },
+     {
+      "from": "11:00",
+      "open": 4090.0,
+      "high": 4100.0,
+      "low": 4060.0,
+      "close": 4060.0,
+      "volume": 26150645,
+      "value": 106582354410,
+      "trades": 446,
+      "vwap": 4075.71
+     },
+     {
+      "from": "11:05",
+      "open": 4060.0,
+      "high": 4070.0,
+      "low": 4050.0,
+      "close": 4050.0,
+      "volume": 17452122,
+      "value": 70820564790,
+      "trades": 378,
+      "vwap": 4057.99
+     },
+     {
+      "from": "11:10",
+      "open": 4070.0,
+      "high": 4070.0,
+      "low": 4030.0,
+      "close": 4050.0,
+      "volume": 24251655,
+      "value": 98121095110,
+      "trades": 497,
+      "vwap": 4045.95
+     },
+     {
+      "from": "11:15",
+      "open": 4050.0,
+      "high": 4070.0,
+      "low": 4050.0,
+      "close": 4060.0,
+      "volume": 11789074,
+      "value": 47809046030,
+      "trades": 264,
+      "vwap": 4055.37
+     },
+     {
+      "from": "11:20",
+      "open": 4070.0,
+      "high": 4090.0,
+      "low": 4060.0,
+      "close": 4080.0,
+      "volume": 11090336,
+      "value": 45257212290,
+      "trades": 226,
+      "vwap": 4080.78
+     },
+     {
+      "from": "11:25",
+      "open": 4090.0,
+      "high": 4090.0,
+      "low": 4070.0,
+      "close": 4070.0,
+      "volume": 4885820,
+      "value": 19906702530,
+      "trades": 135,
+      "vwap": 4074.38
+     },
+     {
+      "from": "11:30",
+      "open": 4070.0,
+      "high": 4080.0,
+      "low": 4060.0,
+      "close": 4060.0,
+      "volume": 7078036,
+      "value": 28840368550,
+      "trades": 161,
+      "vwap": 4074.63
+     },
+     {
+      "from": "11:35",
+      "open": 4060.0,
+      "high": 4070.0,
+      "low": 4040.0,
+      "close": 4060.0,
+      "volume": 22259835,
+      "value": 90208000930,
+      "trades": 388,
+      "vwap": 4052.5
+     },
+     {
+      "from": "11:40",
+      "open": 4050.0,
+      "high": 4070.0,
+      "low": 4050.0,
+      "close": 4060.0,
+      "volume": 8542179,
+      "value": 34708522650,
+      "trades": 161,
+      "vwap": 4063.19
+     },
+     {
+      "from": "11:45",
+      "open": 4070.0,
+      "high": 4090.0,
+      "low": 4060.0,
+      "close": 4080.0,
+      "volume": 16885234,
+      "value": 68944289650,
+      "trades": 230,
+      "vwap": 4083.11
+     },
+     {
+      "from": "11:50",
+      "open": 4090.0,
+      "high": 4100.0,
+      "low": 4080.0,
+      "close": 4090.0,
+      "volume": 14140129,
+      "value": 57899517190,
+      "trades": 220,
+      "vwap": 4094.7
+     },
+     {
+      "from": "11:55",
+      "open": 4100.0,
+      "high": 4100.0,
+      "low": 4090.0,
+      "close": 4090.0,
+      "volume": 15590203,
+      "value": 63805790690,
+      "trades": 227,
+      "vwap": 4092.69
+     },
+     {
+      "from": "12:00",
+      "open": 4090.0,
+      "high": 4100.0,
+      "low": 4090.0,
+      "close": 4090.0,
+      "volume": 12673527,
+      "value": 51881557350,
+      "trades": 208,
+      "vwap": 4093.7
+     },
+     {
+      "from": "12:05",
+      "open": 4100.0,
+      "high": 4110.0,
+      "low": 4090.0,
+      "close": 4110.0,
+      "volume": 36735482,
+      "value": 150604882740,
+      "trades": 464,
+      "vwap": 4099.71
+     },
+     {
+      "from": "12:10",
+      "open": 4100.0,
+      "high": 4120.0,
+      "low": 4100.0,
+      "close": 4120.0,
+      "volume": 16081669,
+      "value": 66101465600,
+      "trades": 224,
+      "vwap": 4110.36
+     },
+     {
+      "from": "12:15",
+      "open": 4110.0,
+      "high": 4140.0,
+      "low": 4110.0,
+      "close": 4130.0,
+      "volume": 45550127,
+      "value": 187800450750,
+      "trades": 558,
+      "vwap": 4122.94
+     },
+     {
+      "from": "12:20",
+      "open": 4120.0,
+      "high": 4130.0,
+      "low": 4100.0,
+      "close": 4120.0,
+      "volume": 27642716,
+      "value": 113765139660,
+      "trades": 359,
+      "vwap": 4115.56
+     },
+     {
+      "from": "12:25",
+      "open": 4110.0,
+      "high": 4130.0,
+      "low": 4110.0,
+      "close": 4130.0,
+      "volume": 49348898,
+      "value": 203305881400,
+      "trades": 673,
+      "vwap": 4119.77
+     },
+     {
+      "from": "12:30",
+      "open": 4120.0,
+      "high": 4130.0,
+      "low": 4120.0,
+      "close": 4130.0,
+      "volume": 635000,
+      "value": 2619500000,
+      "trades": 9,
+      "vwap": 4125.2
+     }
+    ],
+    "biggest": [
+     {
+      "time": "09:02:19",
+      "price": 4140.0,
+      "volume": 300000,
+      "value": 1242000000
+     },
+     {
+      "time": "09:42:41",
+      "price": 4140.0,
+      "volume": 300000,
+      "value": 1242000000
+     },
+     {
+      "time": "09:42:21",
+      "price": 4130.0,
+      "volume": 299681,
+      "value": 1237682530
+     }
+    ]
+   },
+   "flow": {
+    "instrument": {
+     "symbol": "فولاد",
+     "name": "فولاد مبارکه اصفهان",
+     "ins_code": "46348559193224090",
+     "market": "bourse"
+    },
+    "latest_session": {
+     "date": "2026-11-04",
+     "real": {
+      "buy": {
+       "volume": 754610196,
+       "count": 2170,
+       "value": 3233244228155,
+       "value_estimated": true,
+       "avg_per_participant": 1489974298.69,
+       "avg_volume_per_participant": 347746.63
+      },
+      "sell": {
+       "volume": 1037435195,
+       "count": 3374,
+       "value": 4445051728824,
+       "value_estimated": true,
+       "avg_per_participant": 1317442717.49,
+       "avg_volume_per_participant": 307479.31
+      },
+      "net_volume": -282824999,
+      "net_value": -1211807500669
+     },
+     "legal": {
+      "buy": {
+       "volume": 418551526,
+       "count": 30,
+       "value": 1793348821415,
+       "value_estimated": true,
+       "avg_per_participant": 59778294047.2,
+       "avg_volume_per_participant": 13951717.53
+      },
+      "sell": {
+       "volume": 135726527,
+       "count": 24,
+       "value": 581541320746,
+       "value_estimated": true,
+       "avg_per_participant": 24230888364.42,
+       "avg_volume_per_participant": 5655271.96
+      },
+      "net_volume": 282824999,
+      "net_value": 1211807500669
+     },
+     "real_buyer_power": 1.13,
+     "real_share_of_buy_volume_pct": 64.32,
+     "real_share_of_sell_volume_pct": 88.43,
+     "reading": "real_buyer_power > 1: the average real-person buyer is larger than the average real-person seller (smart-money accumulation proxy). net_* > 0 on 'real' means money flowed INTO the stock from real persons."
+    },
+    "history": [
+     {
+      "date": "2026-10-28",
+      "jdate": "1405/08/06",
+      "real_net_volume": -92887888,
+      "real_net_value": -388245130720,
+      "real_buy_value": 2571369056520,
+      "real_sell_value": 2959614187240,
+      "real_buy_count": 2446,
+      "real_sell_count": 4731,
+      "real_buyer_power": 1.68,
+      "legal_net_value": 388245130720
+     },
+     {
+      "date": "2026-10-31",
+      "jdate": "1405/08/09",
+      "real_net_volume": -1102983090,
+      "real_net_value": -4727175787150,
+      "real_buy_value": 4918073964410,
+      "real_sell_value": 9645249751560,
+      "real_buy_count": 4978,
+      "real_sell_count": 4268,
+      "real_buyer_power": 0.44,
+      "legal_net_value": 4727175787150
+     },
+     {
+      "date": "2026-11-01",
+      "jdate": "1405/08/10",
+      "real_net_volume": -1551469198,
+      "real_net_value": -6393196426360,
+      "real_buy_value": 1450707902800,
+      "real_sell_value": 7843904329160,
+      "real_buy_count": 3619,
+      "real_sell_count": 3947,
+      "real_buyer_power": 0.2,
+      "legal_net_value": 6393196426360
+     },
+     {
+      "date": "2026-11-02",
+      "jdate": "1405/08/11",
+      "real_net_volume": -226662060,
+      "real_net_value": -929876343200,
+      "real_buy_value": 2057504906860,
+      "real_sell_value": 2987381250060,
+      "real_buy_count": 3790,
+      "real_sell_count": 2881,
+      "real_buyer_power": 0.52,
+      "legal_net_value": 929876343200
+     },
+     {
+      "date": "2026-11-03",
+      "jdate": "1405/08/12",
+      "real_net_volume": -189148381,
+      "real_net_value": -795831735270,
+      "real_buy_value": 1120371817710,
+      "real_sell_value": 1916203552980,
+      "real_buy_count": 426,
+      "real_sell_count": 2060,
+      "real_buyer_power": 2.83,
+      "legal_net_value": 795831735270
+     }
+    ],
+    "history_summary": {
+     "days": 5,
+     "real_net_value_total": -13234325422700,
+     "days_with_real_inflow": 0,
+     "days_with_real_outflow": 5
+    },
+    "units": "value in rial, volume in shares"
+   },
+   "book_history": {
+    "date": "2026-11-02",
+    "events_span": {
+     "first": "06:01:28",
+     "last": "14:15:30",
+     "covers_full_session": true
+    },
+    "queue_episodes": [],
+    "samples": [
+     {
+      "time": "08:45:00",
+      "best_bid": 4000.0,
+      "best_ask": 4000.0,
+      "bid_volume": 453225,
+      "ask_volume": 662000,
+      "imbalance": -0.1872,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "09:00:00",
+      "best_bid": 4050.0,
+      "best_ask": 4050.0,
+      "bid_volume": 34867117,
+      "ask_volume": 20791861,
+      "imbalance": 0.2529,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "09:30:00",
+      "best_bid": 4050.0,
+      "best_ask": 4060.0,
+      "bid_volume": 43812178,
+      "ask_volume": 22089923,
+      "imbalance": 0.3296,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "10:00:00",
+      "best_bid": 4130.0,
+      "best_ask": 4140.0,
+      "bid_volume": 40656286,
+      "ask_volume": 15712835,
+      "imbalance": 0.4425,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "10:30:00",
+      "best_bid": 4100.0,
+      "best_ask": 4110.0,
+      "bid_volume": 28213043,
+      "ask_volume": 24886802,
+      "imbalance": 0.0626,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "11:00:00",
+      "best_bid": 4090.0,
+      "best_ask": 4100.0,
+      "bid_volume": 16620371,
+      "ask_volume": 32670348,
+      "imbalance": -0.3256,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "11:30:01",
+      "best_bid": 4070.0,
+      "best_ask": 4080.0,
+      "bid_volume": 14101550,
+      "ask_volume": 23212613,
+      "imbalance": -0.2442,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "12:00:04",
+      "best_bid": 4090.0,
+      "best_ask": 4100.0,
+      "bid_volume": 22193699,
+      "ask_volume": 35975039,
+      "imbalance": -0.2369,
+      "queue": null,
+      "queue_volume": 0
+     },
+     {
+      "time": "12:30:00",
+      "best_bid": 4120.0,
+      "best_ask": 4130.0,
+      "bid_volume": 15313078,
+      "ask_volume": 33326542,
+      "imbalance": -0.3703,
+      "queue": null,
+      "queue_volume": 0
+     }
+    ]
+   }
+  }
+ },
+ "bench_data_plane": null,
+ "bench_agents": null
+}

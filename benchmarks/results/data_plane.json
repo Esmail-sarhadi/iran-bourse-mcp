@@ -1,0 +1,211 @@
+{
+  "generated": "2026-11-04 07:36:13 UTC",
+  "tokenizer": "tiktoken o200k_base (proxy)",
+  "repeats": 1,
+  "tasks": [
+    {
+      "id": "quote",
+      "title": "Live quote with correct % change",
+      "raw": {
+        "requests": 3,
+        "seconds": 0.42,
+        "bytes": 17819,
+        "tokens": 6225
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.47,
+        "bytes": 953,
+        "tokens": 337
+      },
+      "token_reduction": 18.5,
+      "byte_reduction": 18.7
+    },
+    {
+      "id": "order_book",
+      "title": "Order book with queue detection",
+      "raw": {
+        "requests": 3,
+        "seconds": 0.33,
+        "bytes": 17917,
+        "tokens": 6298
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.51,
+        "bytes": 1110,
+        "tokens": 390
+      },
+      "token_reduction": 16.1,
+      "byte_reduction": 16.1
+    },
+    {
+      "id": "trade_summary",
+      "title": "One day of ticks: VWAP, biggest trades, bars",
+      "raw": {
+        "requests": 3,
+        "seconds": 0.73,
+        "bytes": 4643639,
+        "tokens": 2142302
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.82,
+        "bytes": 8316,
+        "tokens": 3380
+      },
+      "token_reduction": 633.8,
+      "byte_reduction": 558.4
+    },
+    {
+      "id": "real_legal_10d",
+      "title": "Real vs legal money flow, 10 days",
+      "raw": {
+        "requests": 12,
+        "seconds": 0.87,
+        "bytes": 1522382,
+        "tokens": 612009
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.98,
+        "bytes": 4101,
+        "tokens": 1331
+      },
+      "token_reduction": 459.8,
+      "byte_reduction": 371.2
+    },
+    {
+      "id": "shareholders",
+      "title": "Major shareholders",
+      "raw": {
+        "requests": 3,
+        "seconds": 0.36,
+        "bytes": 20349,
+        "tokens": 7018
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.5,
+        "bytes": 2411,
+        "tokens": 679
+      },
+      "token_reduction": 10.3,
+      "byte_reduction": 8.4
+    },
+    {
+      "id": "buy_queues",
+      "title": "Market-wide ranking of buy queues",
+      "raw": {
+        "requests": 3,
+        "seconds": 0.75,
+        "bytes": 954825,
+        "tokens": 274284
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.88,
+        "bytes": 52,
+        "tokens": 17
+      },
+      "token_reduction": 16134.4,
+      "byte_reduction": 18362.0
+    },
+    {
+      "id": "codal_5",
+      "title": "Latest 5 Codal filings with links",
+      "raw": {
+        "requests": 1,
+        "seconds": 1.05,
+        "bytes": 18274,
+        "tokens": 6489
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 1.84,
+        "bytes": 4194,
+        "tokens": 1539
+      },
+      "token_reduction": 4.2,
+      "byte_reduction": 4.4
+    },
+    {
+      "id": "price_history_1y",
+      "title": "One year of daily prices, adjusted",
+      "raw": {
+        "requests": 2,
+        "seconds": 0.51,
+        "bytes": 1518641,
+        "tokens": 610549
+      },
+      "mcp": {
+        "requests": 1,
+        "seconds": 0.53,
+        "bytes": 46002,
+        "tokens": 20245
+      },
+      "token_reduction": 30.2,
+      "byte_reduction": 33.0
+    }
+  ],
+  "traps": [
+    {
+      "id": "price_change_field",
+      "what": "The exchange's own `priceChange` field in GetClosingPriceInfo",
+      "naive_reading": 0.0,
+      "correct": 120.0,
+      "wrong": true
+    },
+    {
+      "id": "shareholder_rows_doubled",
+      "what": "Counting holders / summing percent from the dated shareholder endpoint",
+      "naive_reading": {
+        "holders": 24,
+        "percent_sum": 92.97
+      },
+      "correct": {
+        "holders": 12,
+        "percent_sum": 46.48
+      },
+      "wrong": true
+    },
+    {
+      "id": "client_type_field_names",
+      "what": "Reading real-buyer count with the key used by the live endpoint (`buy_CountI`) on history rows",
+      "naive_reading": null,
+      "correct": 3790.0,
+      "wrong": true
+    },
+    {
+      "id": "queue_false_positives",
+      "what": "Calling every limit-up stock without visible sell orders a buy queue, using the gateway's market watch alone",
+      "naive_reading": 80,
+      "correct": 0,
+      "wrong": true,
+      "note": "Only meaningful when the gateway's top-of-book fields are empty (outside the session)."
+    },
+    {
+      "id": "arabic_letters",
+      "what": "Matching the company name the user types (Persian letters) against the exchange's text (Arabic letters)",
+      "naive_reading": false,
+      "correct": true,
+      "wrong": true
+    }
+  ],
+  "browser_baseline": {
+    "tsetmc symbol page": {
+      "status": 200,
+      "bytes": 868,
+      "tokens": 241,
+      "has_price_data": false,
+      "unrendered_template_markers": 0
+    },
+    "codal report list": {
+      "status": 200,
+      "bytes": 103049,
+      "tokens": 18375,
+      "has_price_data": false,
+      "unrendered_template_markers": 48
+    }
+  }
+}

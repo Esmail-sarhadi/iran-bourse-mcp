@@ -1,0 +1,40 @@
+{
+  "context": "The Tehran market is closed; use the most recent session's data. All money amounts in Rial. Answer with ONE final JSON object (no prose after it) following the schema.",
+  "tasks": [
+    {
+      "id": "T1",
+      "title": "Quote",
+      "question_fa": "برای نماد «فولاد» در آخرین جلسه معاملاتی بازار بورس تهران بگو: آخرین قیمت معامله، قیمت پایانی، درصد تغییر آخرین معامله نسبت به قیمت پایانی دیروز، حجم و ارزش (ریال) معاملات آن روز.",
+      "question_en": "For the symbol فولاد (Foolad Mobarakeh) in the latest Tehran Stock Exchange session: last trade price, closing price, percent change of the last trade versus yesterday's closing price, traded volume (shares) and traded value (Rial).",
+      "schema": {"last": "number", "close": "number", "change_pct": "number (2 decimals)", "volume": "integer", "value_rial": "integer"}
+    },
+    {
+      "id": "T2",
+      "title": "Ticks of one day",
+      "question_fa": "برای نماد «فولاد» در روز دوشنبه ۱۱ آبان ۱۴۰۵ (2026-11-02): میانگین وزنی قیمت (VWAP) از روی تک‌تک معاملات، تعداد معاملات، حجم بزرگ‌ترین معامله و ساعت آن (HH:MM:SS).",
+      "question_en": "For فولاد on 2026-11-02 (1405/08/11): VWAP computed from the individual trades, number of trades, volume of the largest single trade and its time (HH:MM:SS).",
+      "schema": {"vwap": "number (2 decimals)", "trades": "integer", "largest_trade_volume": "integer", "largest_trade_time": "HH:MM:SS"}
+    },
+    {
+      "id": "T3",
+      "title": "Real-person money flow",
+      "question_fa": "برای نماد «فولاد» در ۳ روز معاملاتی اخیر، برای هر روز خالص ورود پول حقیقی (ارزش خرید حقیقی منهای ارزش فروش حقیقی، به ریال) و مجموع سه روز را بده.",
+      "question_en": "For فولاد over the 3 most recent trading days: for each day the net real-person money flow (real-person buy value minus real-person sell value, Rial) and the 3-day total.",
+      "schema": {"days": "{\"YYYY-MM-DD\": integer, ...}", "total_net_real_value_rial": "integer"}
+    },
+    {
+      "id": "T4",
+      "title": "Buy queues, market-wide",
+      "question_fa": "در آخرین جلسه بازار، بین سهم‌های عادی بورس و فرابورس (نه صندوق، نه حق تقدم)، ۵ نماد با بیشترین ارزش صف خرید (حجم صف در بهترین قیمت خرید × قیمت) کدام‌اند؟ نماد و حجم صف را بده.",
+      "question_en": "In the latest session, among ordinary shares on Bourse and Fara Bourse (not funds, not rights issues), which 5 symbols have the largest buy queue by value (queue volume at the best bid x price)? Give symbol and queue volume.",
+      "schema": {"top5": "[{\"symbol\": str, \"queue_volume\": integer}, ...] ordered by queue value descending"}
+    },
+    {
+      "id": "T5",
+      "title": "Codal filings",
+      "question_fa": "سه اطلاعیه آخر «فولاد» در سامانه کدال را با شماره پیگیری، عنوان و زمان انتشار (شمسی) بده.",
+      "question_en": "The three most recent Codal filings of فولاد with tracing number, title and Jalali publish time.",
+      "schema": {"filings": "[{\"tracing_no\": integer, \"title\": str, \"published\": \"YYYY/MM/DD HH:MM:SS\"}, ...] newest first"}
+    }
+  ]
+}
