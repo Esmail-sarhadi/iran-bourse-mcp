@@ -383,7 +383,7 @@ uvx --from git+https://github.com/msmahdinejad/iran-bourse-mcp iran-bourse-mcp c
 | Data | Tools |
 |---|---|
 | Market state, indices, industry indices | `market_status` `market_overview` `indices` `industry_summary` `index_contributors` |
-| Whole-market screens (~590 instruments) | `market_watch` `top_movers` (gainers, losers, buy/sell queues, real-money inflow/outflow, buyer power) `market_snapshot` |
+| Whole-market screens (~600 ordinary shares) | `market_watch` `top_movers` (gainers, losers, buy/sell queues, real-money inflow/outflow, buyer power) `market_snapshot` |
 | One-call symbol dossier | `symbol_overview` |
 | Price, limits, VWAP, P/E, market cap | `quote` `price_history` (optionally **back-adjusted**) `symbol_statistics` `corporate_actions` |
 | Order book and queues (صف خرید/فروش) | `order_book` `order_book_history` (rebuilt from every event, with queue episodes) |

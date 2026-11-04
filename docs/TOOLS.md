@@ -27,12 +27,12 @@ All indices: total, equal-weight, free-float and every industry index with chang
 
 ### `market_watch`
 
-Whole-market screen (دیده‌بان بازار): filter, sort and page through every listed instrument in one call.
+Whole-market screen (دیده‌بان بازار) of ordinary shares on Bourse and Fara Bourse: filter, sort and page through ~600 symbols in one call.
 
 | parameter | type | description |
 |---|---|---|
 | `market` | string | 'bourse' or 'fara' (Fara Bourse). Omit for both where applicable. |
-| `security_type` | string | Substring filter, e.g. 'سهام' (stocks), 'صندوق' (funds), 'اوراق' |
+| `security_type` | string | Substring filter on the exchange's security type. The gateway's watch lists ordinary shares (سهام عادی) of Bourse and Fara Bourse; funds and bonds are in market_snapshot. |
 | `industry` | string | Industry name substring, e.g. 'فلزات', 'بانک' |
 | `board` | string | Board substring, e.g. 'اول', 'دوم', 'نوآفرین' |
 | `min_value` | number | Minimum traded value in rial (default `0`) |

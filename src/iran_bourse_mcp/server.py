@@ -111,7 +111,7 @@ async def indices(
 @tool()
 async def market_watch(
     market: Market = None,
-    security_type: Annotated[str | None, Field(description="Substring filter, e.g. 'سهام' (stocks), 'صندوق' (funds), 'اوراق'")] = None,
+    security_type: Annotated[str | None, Field(description="Substring filter on the exchange's security type. The gateway's watch lists ordinary shares (سهام عادی) of Bourse and Fara Bourse; funds and bonds are in market_snapshot.")] = None,
     industry: Annotated[str | None, Field(description="Industry name substring, e.g. 'فلزات', 'بانک'")] = None,
     board: Annotated[str | None, Field(description="Board substring, e.g. 'اول', 'دوم', 'نوآفرین'")] = None,
     min_value: Annotated[float, Field(description="Minimum traded value in rial")] = 0,
@@ -121,7 +121,7 @@ async def market_watch(
     limit: Annotated[int, Field(ge=1, le=700)] = 50,
     detail: Annotated[str, Field(description="'compact' (default) or 'full' (every field incl. best bid/ask, limits, EPS)")] = "compact",
 ) -> dict:
-    """Whole-market screen (دیده‌بان بازار): filter, sort and page through every listed instrument in one call."""
+    """Whole-market screen (دیده‌بان بازار) of ordinary shares on Bourse and Fara Bourse: filter, sort and page through ~600 symbols in one call."""
     return await svc().market_watch(market, security_type, industry, board, min_value, only_traded, sort_by, descending, limit, detail)
 
 

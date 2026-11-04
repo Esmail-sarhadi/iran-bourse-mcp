@@ -9,7 +9,7 @@ from typing import Any
 
 from . import shape
 from .api import CODAL_SITE, TseApi
-from .client import Http, NotAvailable
+from .client import Http, NotAvailable, UpstreamError
 from .dates import (
     DateError,
     fmt_date,
@@ -765,21 +765,25 @@ class Bourse:
         inst = await self._inst(symbol)
         ins = inst.ins_code
 
-        async def safe(coro: Any) -> Any:
+        missing: list[str] = []
+
+        async def safe(name: str, coro: Any) -> Any:
+            """Optional sections must not sink the whole dossier; say which ones are missing instead."""
             try:
                 return await coro
-            except NotAvailable:
+            except UpstreamError:
+                missing.append(name)
                 return None
 
         info, identity, closing, book, client, holders, filings, messages = await asyncio.gather(
             self.api.instrument_info(ins),
-            safe(self.api.identity(ins)),
+            safe("identity", self.api.identity(ins)),
             self.api.closing_info(ins),
-            safe(self.api.best_limits(ins)),
-            safe(self.api.client_type(ins)),
-            safe(self.api.shareholders_last(ins)),
-            safe(self.api.codal_search(Symbol=inst.symbol, PageNumber=1)),
-            safe(self.api.messages_for(ins)),
+            safe("order_book", self.api.best_limits(ins)),
+            safe("real_legal", self.api.client_type(ins)),
+            safe("major_shareholders", self.api.shareholders_last(ins)),
+            safe("recent_filings", self.api.codal_search(Symbol=inst.symbol, PageNumber=1)),
+            safe("recent_supervisor_messages", self.api.messages_for(ins)),
         )
         quote = shape.shape_quote(closing, info)
         thr = info.get("staticThreshold") or {}
@@ -798,6 +802,8 @@ class Bourse:
         if messages:
             recent = sorted(messages, key=lambda r: (r.get("dEven") or 0, r.get("hEven") or 0), reverse=True)[:3]
             out["recent_supervisor_messages"] = [shape.shape_message(r, limit=240) for r in recent]
+        if missing:
+            out["unavailable_sections"] = sorted(set(missing))
         return out
 
 

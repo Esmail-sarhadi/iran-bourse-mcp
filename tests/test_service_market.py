@@ -323,3 +323,23 @@ async def test_price_history_only_reports_adjustments_that_affect_the_returned_r
     assert len(everything["adjustment_events"]) == 1
     recent = await b.price_history("فولاد", adjusted=True, limit=2)  # rows after the split
     assert recent["adjustment_events"] == []
+
+
+async def test_symbol_overview_survives_a_failing_optional_section():
+    from iran_bourse_mcp.client import UpstreamError
+
+    class Flaky(MarketApi):
+        async def messages_for(self, ins):
+            raise UpstreamError("HTTP 502")
+
+        async def codal_search(self, **params):
+            raise NotAvailable("500")
+
+    b = Bourse()
+    api = Flaky()
+    b.api = api
+    b.resolver._api = api
+    out = await b.symbol_overview("فولاد")
+    assert out["quote"]["last"]["price"] and out["order_book"] is not None
+    assert out["unavailable_sections"] == ["recent_filings", "recent_supervisor_messages"]
+    assert "recent_filings" not in out

@@ -50,13 +50,16 @@ class Http:
         concurrency: int = 6,
         proxy: str | None = None,
         max_cache_entries: int = 96,
+        max_cache_bytes: int = 48 * 1024 * 1024,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
         self._timeout = timeout or float(os.environ.get("IRAN_BOURSE_TIMEOUT", "45"))
         self._proxy = proxy or os.environ.get("IRAN_BOURSE_PROXY") or None
         self._sem = asyncio.Semaphore(concurrency)
-        self._cache: OrderedDict[str, tuple[float, Any]] = OrderedDict()
+        self._cache: OrderedDict[str, tuple[float, Any, int]] = OrderedDict()
+        self._cache_bytes = 0
         self._max_cache = max_cache_entries
+        self._max_cache_bytes = max_cache_bytes
         self._transport = transport
         self._client: httpx.AsyncClient | None = None
 
@@ -87,20 +90,28 @@ class Http:
         hit = self._cache.get(key)
         if hit is None:
             return None
-        expires, data = hit
+        expires, data, _size = hit
         if expires < time.monotonic():
-            self._cache.pop(key, None)
+            self._evict(key)
             return None
         self._cache.move_to_end(key)
         return data
 
-    def _cache_put(self, key: str, data: Any, ttl: float) -> None:
-        if ttl <= 0:
+    def _evict(self, key: str) -> None:
+        entry = self._cache.pop(key, None)
+        if entry is not None:
+            self._cache_bytes -= entry[2]
+
+    def _cache_put(self, key: str, data: Any, ttl: float, size: int = 0) -> None:
+        """Cache with both an entry cap and a byte budget (a day of ticks is megabytes of JSON)."""
+        if ttl <= 0 or size > self._max_cache_bytes // 2:
             return
-        self._cache[key] = (time.monotonic() + ttl, data)
-        self._cache.move_to_end(key)
-        while len(self._cache) > self._max_cache:
-            self._cache.popitem(last=False)
+        self._evict(key)
+        self._cache[key] = (time.monotonic() + ttl, data, size)
+        self._cache_bytes += size
+        while len(self._cache) > self._max_cache or self._cache_bytes > self._max_cache_bytes:
+            oldest = next(iter(self._cache))
+            self._evict(oldest)
 
     async def get(self, url: str, *, ttl: float = 0.0, retries: int = 4, as_json: bool = True) -> Any:
         key = f"{'j' if as_json else 't'}:{url}"
@@ -122,7 +133,7 @@ class Http:
             status = response.status_code
             if status == 200:
                 data = self._decode(response, as_json, url)
-                self._cache_put(key, data, ttl)
+                self._cache_put(key, data, ttl, len(response.content))
                 return data
             if status == 204:
                 self._cache_put(key, None, ttl)

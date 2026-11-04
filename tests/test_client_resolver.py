@@ -163,3 +163,20 @@ async def test_persistent_502_is_reported_as_an_overloaded_server_not_an_ip_prob
         await http.get_json(URL)
     assert "overloaded" in str(err.value) and "Iranian" not in str(err.value) and err.value.status == 502
     await http.aclose()
+
+
+@respx.mock
+async def test_cache_respects_a_byte_budget():
+    big = "x" * 4000
+    for name in "abc":
+        respx.get(f"{URL}/{name}").mock(return_value=httpx.Response(200, json={"v": big}))
+    http = Http(max_cache_bytes=10_000)  # room for two 4 kB responses, not three
+    for name in "abc":
+        await http.get_json(f"{URL}/{name}", ttl=60)
+    assert http._cache_bytes <= 10_000 and len(http._cache) == 2
+    assert f"j:{URL}/a" not in http._cache  # oldest was evicted
+    huge = httpx.Response(200, json={"v": "y" * 20_000})
+    respx.get(f"{URL}/huge").mock(return_value=huge)
+    await http.get_json(f"{URL}/huge", ttl=60)
+    assert f"j:{URL}/huge" not in http._cache  # larger than half the budget: never cached
+    await http.aclose()
